@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="hengyi-controller:war">
+    <output-path>$PROJECT_DIR$/hengyi-controller/target</output-path>
+    <root id="archive" name="hengyi-controller-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="hengyi-controller:war exploded" />
+    </root>
+  </artifact>
+</component>

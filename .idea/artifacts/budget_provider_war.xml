@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="budget-provider:war">
+    <output-path>$PROJECT_DIR$/budget-provider/target</output-path>
+    <root id="archive" name="budget-provider-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="budget-provider:war exploded" />
+    </root>
+  </artifact>
+</component>
