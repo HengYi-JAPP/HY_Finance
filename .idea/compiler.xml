@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="budget-provider" />
+        <module name="hengyi-api" />
+        <module name="hengyi-controller" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="budget-provider" target="1.8" />
+      <module name="finance" target="1.5" />
+      <module name="finance-server" target="1.5" />
+      <module name="hengyi-api" target="1.8" />
+      <module name="hengyi-controller" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

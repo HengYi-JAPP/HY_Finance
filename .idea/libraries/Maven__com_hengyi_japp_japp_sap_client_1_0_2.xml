@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.hengyi.japp:japp-sap-client:1.0.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/hengyi/japp/japp-sap-client/1.0.2/japp-sap-client-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/hengyi/japp/japp-sap-client/1.0.2/japp-sap-client-1.0.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/hengyi/japp/japp-sap-client/1.0.2/japp-sap-client-1.0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,96 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="hengyi-controller:war exploded">
+    <output-path>$PROJECT_DIR$/hengyi-controller/target/hengyi-controller-1.0-SNAPSHOT</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="hengyi-controller" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="archive" name="hengyi-api-0.0.1-SNAPSHOT.jar">
+            <element id="module-output" name="hengyi-api" />
+          </element>
+          <element id="library" level="project" name="Maven: org.jzb:jzb-core:1.0" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.6" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-collections4:4.1" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-text:1.1" />
+          <element id="library" level="project" name="Maven: com.google.guava:guava:23.0" />
+          <element id="library" level="project" name="Maven: com.google.code.findbugs:jsr305:1.3.9" />
+          <element id="library" level="project" name="Maven: com.google.errorprone:error_prone_annotations:2.0.18" />
+          <element id="library" level="project" name="Maven: com.google.j2objc:j2objc-annotations:1.1" />
+          <element id="library" level="project" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.14" />
+          <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt:0.8.0" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.8.9" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.8.9" />
+          <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.10" />
+          <element id="library" level="project" name="Maven: commons-io:commons-io:2.4" />
+          <element id="library" level="project" name="Maven: com.fasterxml.uuid:java-uuid-generator:3.1.4" />
+          <element id="library" level="project" name="Maven: com.belerweb:pinyin4j:2.5.1" />
+          <element id="library" level="project" name="Maven: ch.qos.logback:logback-classic:1.2.3" />
+          <element id="library" level="project" name="Maven: ch.qos.logback:logback-core:1.2.3" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
+          <element id="library" level="project" name="Maven: ch.qos.logback:logback-access:1.2.3" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.1" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.1" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.9.1" />
+          <element id="library" level="project" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.1" />
+          <element id="library" level="project" name="Maven: com.hengyi.japp:japp-sap-client:1.0.2" />
+          <element id="library" level="project" name="Maven: com.google.api.grpc:proto-google-common-protos:1.0.1" />
+          <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.3.0" />
+          <element id="library" level="project" name="Maven: io.grpc:grpc-netty:1.6.1" />
+          <element id="library" level="project" name="Maven: io.grpc:grpc-core:1.6.1" />
+          <element id="library" level="project" name="Maven: io.grpc:grpc-context:1.6.1" />
+          <element id="library" level="project" name="Maven: com.google.instrumentation:instrumentation-api:0.4.3" />
+          <element id="library" level="project" name="Maven: io.opencensus:opencensus-api:0.5.1" />
+          <element id="library" level="project" name="Maven: io.netty:netty-codec-http2:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-codec-http:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-codec:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-handler:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-buffer:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-common:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-handler-proxy:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-transport:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-resolver:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.netty:netty-codec-socks:4.1.14.Final" />
+          <element id="library" level="project" name="Maven: io.grpc:grpc-protobuf:1.6.1" />
+          <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java-util:3.3.1" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.7" />
+          <element id="library" level="project" name="Maven: io.grpc:grpc-protobuf-lite:1.6.1" />
+          <element id="library" level="project" name="Maven: io.grpc:grpc-stub:1.6.1" />
+          <element id="library" level="project" name="Maven: com.squareup.okhttp3:okhttp:3.9.0" />
+          <element id="library" level="project" name="Maven: com.squareup.okio:okio:1.13.0" />
+          <element id="library" level="project" name="Maven: com.hengyi.japp:japp-sap-core:1.0.1" />
+          <element id="library" level="project" name="Maven: com.alibaba.edas:edas-sdk:1.5.4" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-core:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: commons-logging:commons-logging:1.1.3" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-beans:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-expression:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-aop:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: aopalliance:aopalliance:1.0" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-context-support:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-tx:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-web:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:4.1.1.RELEASE" />
+          <element id="library" level="project" name="Maven: org.mybatis:mybatis-spring:1.3.0" />
+          <element id="library" level="project" name="Maven: org.mybatis:mybatis:3.4.4" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.38" />
+          <element id="library" level="project" name="Maven: com.alibaba:druid:1.0.12" />
+          <element id="library" level="project" name="Maven: com.aliyun.oss:aliyun-sdk-oss:2.7.0" />
+          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient:4.4.1" />
+          <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.4.1" />
+          <element id="library" level="project" name="Maven: org.jdom:jdom:1.1" />
+          <element id="library" level="project" name="Maven: net.sf.json-lib:json-lib:jdk15:2.4" />
+          <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.8.0" />
+          <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2.1" />
+          <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.5" />
+          <element id="library" level="project" name="Maven: net.sf.ezmorph:ezmorph:1.0.6" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/hengyi-controller/target/hengyi-controller-1.0-SNAPSHOT/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="hengyi-controller/web/Web" />
+    </root>
+  </artifact>
+</component>
