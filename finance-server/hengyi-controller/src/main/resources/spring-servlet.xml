@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<context:component-scan base-package="com.hengyi.*" />
+
+	<!--<bean-->
+		<!--class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+		<!--<property name="prefix" value="/WEB-INF/" />-->
+		<!--<property name="suffix" value=".jsp" />-->
+		<!--<property name="viewClass"-->
+			<!--value="org.springframework.web.servlet.view.JstlView" />-->
+	<!--</bean>-->
+	<!-- 启用MVC注解 -->
+	<mvc:annotation-driven />
+	<!-- 由于web.xml中设置是：由SpringMVC拦截所有请求,于是在读取静态资源文件的时候就会受到影响(说白了就是读不到) -->
+	<!-- 经过下面的配置，该标签的作用就是：所有页面中引用"/js/**"的资源，都会从"/resources/js/"里面进行查找 -->
+	<!-- 我们可以访问http://IP:8080/xxx/js/my.css和http://IP:8080/xxx/resources/js/my.css对比出来 -->
+	<!--<mvc:resources mapping="/js/**" location="/static/js/"/>-->
+	<!--<mvc:resources mapping="/css/**" location="/static/css/"/>-->
+	<!--<mvc:resources mapping="/WEB-INF/**" location="/WEB-INF/"/>-->
+
+	<!-- 静态资源处理 -->
+	<!--<mvc:default-servlet-handler />-->
+
+	<!--Swagger  -->
+	<!-- 使用bean声明 可去掉configuration注解 -->
+	<!--<bean class="com.hengyi.util.SwaggerConfig"/>-->
+	<!--Swagger资源重定向(仅作为后台使用不提供静态资源) -->
+	<!--<mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/>-->
+	<!--<mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>-->
+	<!--Aop切面编程的配置-->
+	<!-- 因为日志需持久化 开启切面扫描时 需保证log-provider启动 否则将报错 -->
+<!--	<aop:aspectj-autoproxy expose-proxy="true"></aop:aspectj-autoproxy>
+	<bean id="logAop" class="com.hengyi.aop.LogAop"></bean>-->
+
+</beans>
