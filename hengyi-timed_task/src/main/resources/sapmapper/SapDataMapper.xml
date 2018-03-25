@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hengyi.sapmapper.SapDataMapper" >
+  <resultMap id="BaseResultMap" type="com.hengyi.bean.SapDataBean" >
+    <id column="AUFNR" property="orderId" jdbcType="CHAR" />
+    <result column="KSTAR" property="costId" jdbcType="NVARCHAR" />
+    <result column="PERIO" property="month" jdbcType="DOUBLE" />
+    <result column="GJAHR" property="year" jdbcType="DOUBLE" />
+    <result column="MATNR_MX" property="costMaterialId" jdbcType="NVARCHAR" />
+    <result column="MAKTX_MX" property="costMaterialDescribe" jdbcType="NVARCHAR" />
+    <result column="STATE" property="state" jdbcType="CHAR" />
+    <result column="LEIBIE" property="leibie" jdbcType="NVARCHAR" />
+    <result column="MIAOSHU" property="costDescribe" jdbcType="CHAR" />
+    <result column="MATNR_CP" property="sapMaterialId" jdbcType="NVARCHAR" />
+    <result column="BUKRS" property="company" jdbcType="NVARCHAR" />
+    <result column="MAKTX_CP" property="sapMaterialDescribe" jdbcType="NVARCHAR" />
+    <result column="PRODUCT" property="orderProductQuantity" jdbcType="DOUBLE" />
+    <result column="PRUDUCT" property="orderProductQuantity" jdbcType="DOUBLE" />
+    <result column="MONEY" property="money" jdbcType="DOUBLE" />
+    <result column="KWMENG" property="costQuantity" jdbcType="DOUBLE" />
+    <result column="NAME" property="workShop" jdbcType="NVARCHAR" />
+  </resultMap>
+
+  <select id="selectsapdatabycompany" resultMap="BaseResultMap" parameterType="com.hengyi.bean.SapDataMonthBean" >
+      <if test="company == '3000' ">
+           SELECT * FROM(
+          -----高新2018年一月份实际成本明细数据
+          --控制参数perio(月)；gjahr(年)；a.date1(时间年月)
+          --字段解释：matnr_mx(明细物料号)；maktx_cp(产成品物料号)；product(产量)；money(金额)；kwmeng(数量)
+          select a.*,b.name from
+          (select  to_char(substr(objnr,3))aufnr,kstar,perio,gjahr,a.matnr matnr_mx,e.maktx maktx_mx,
+          case when kstar in ('0050010001','0050010002') then '聚酯阶段—原料' else state end state,'一般贸易' leibie,
+          a.miaoshu
+          ,a.bukrs,a.matnr_cp,a.maktx maktx_cp,wemng pruduct,sum_money money,sum_kwmeng kwmeng ,MEINb
+          from (
+          select a.*,c.miaoshu,e.kind,d.describe,g.matnr matnr_cp,g.maktx,g.wemng,decode(e.kind,null,d.describe,decode(e.kind,1,'聚酯阶段','纺丝阶段'))state from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,sum(wkgbtr)sum_money,bukrs,sum(mbgbtr)sum_kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          and objnr not in ('OR000000020000','OR000000020001','OR000000020002','OR000000020003','OR000000020004','OR000000020005','OR000000020007',
+          'OR000000020008','OR000000020013','OR000000020040','OR000000020041','OR000000020060','OR000000020100','OR000000020120','OR000000020121'
+          )
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('3000')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,bukrs)a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join(select distinct main,bukrs,describe from parob) d
+          on substr(a.parob,10,7)=d.main
+          left join (select case when maktx like '%二甘醇%' then 1
+          when maktx like '%三甘醇%' then 1
+          when maktx like '%二氧化钛%' then 1
+          when  maktx like '%乙二醇锑%' then 1
+          when  maktx like '%季戊四醇%' then 1
+          else 2 end kind,matnr,maktx from sap_makt) e
+          on a.matnr=e.matnr
+          left join
+          (select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)WEMNG from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where
+          --a.BWART not  in ('531','532')     and
+          to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)g
+          on substr(a.objnr,3)=g.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where a.kstar not in ('0050019901','0050010018','0050019998','0050010001','0050010002','0050010003','0050010004','0050010006','0050010033')
+          )a
+          left join sap_makt e
+          on a.matnr=e.matnr
+          where (a.maktx like '%dtex%' or a.maktx like '%切片%' )
+          and a.bukrs in ('3000')
+          union all
+
+          select to_char(a.aufnr)aufnr,b.kstar,b.perio,b.gjahr,b.matnr_mx,b.maktx_mx,b.state,'加工贸易' leibie,b.miaoshu,b.bukrs,b.matnr_cp,b.maktx_cp,
+          abs(a.product)pruduct,
+          abs(a.product)/b.pruduct*money money,
+          abs(a.product)/b.pruduct*kwmeng kwmeng,MEINb from
+          --选出加工贸易物料明细及订单量
+          (select a.* from
+          (select a.matnr,a.year,a.aufnr,a.bukrs,sum(wemng)product,b.maktx from
+          (select aufnr,matnr,TO_char(date1,'yyyy-mm')year,bukrs,sum(product)WEMNG from  YUSUAN_DATE_PRODUCT_all
+          where BWART  in ('531','532')
+          and  to_char(date1,'yyyy')>='2018'
+
+          group by aufnr,matnr,TO_char(date1,'yyyy-mm'),bukrs) a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where a.bukrs in (3000)
+          --AND MAKTX NOT LIKE '%短纤%'
+          group by a.matnr,a.year,a.aufnr,bukrs,b.maktx )a
+          )a
+          left join
+          ---加工贸易各项成本
+          (
+          select  to_char(substr(objnr,3))aufnr,kstar,perio,gjahr,a.matnr matnr_mx,e.maktx maktx_mx,
+          case when kstar in ('0050010001','0050010002') then '聚酯阶段—原料' else state end state,'一般贸易' leibie,
+          a.miaoshu
+          ,a.bukrs,a.matnr_cp,a.maktx maktx_cp,wemng pruduct,sum_money money,sum_kwmeng kwmeng ,MEINb
+          from (
+          select a.*,c.miaoshu,e.kind,d.describe,g.matnr matnr_cp,g.maktx,g.wemng,decode(e.kind,null,d.describe,decode(e.kind,1,'聚酯阶段','纺丝阶段'))state from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,sum(wkgbtr)sum_money,bukrs,sum(mbgbtr)sum_kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          and objnr not in ('OR000000020000','OR000000020001','OR000000020002','OR000000020003','OR000000020004','OR000000020005','OR000000020007',
+          'OR000000020008','OR000000020013','OR000000020040','OR000000020041','OR000000020060','OR000000020100','OR000000020120','OR000000020121'
+          )
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('3000')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,bukrs)a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join(select distinct main,bukrs,describe from parob) d
+          on substr(a.parob,10,7)=d.main
+          left join (select case when maktx like '%二甘醇%' then 1
+          when maktx like '%三甘醇%' then 1
+          when maktx like '%二氧化钛%' then 1
+          when  maktx like '%乙二醇锑%' then 1
+          when  maktx like '%季戊四醇%' then 1
+          else 2 end kind,matnr,maktx from sap_makt) e
+          on a.matnr=e.matnr
+          left join
+          (select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)WEMNG from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where
+          -- a.BWART not  in ('531','532')    and
+          to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)g
+          on substr(a.objnr,3)=g.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where a.kstar not in ('0050019901','0050010018','0050019998','0050010001','0050010002','0050010003','0050010004','0050010006','0050010033')
+          )a
+          left join sap_makt e
+          on a.matnr=e.matnr
+          where (a.maktx like '%dtex%' or a.maktx like '%切片%' )
+          and a.bukrs in ('3000')
+
+          )b
+          on a.aufnr=b.aufnr
+          and a.bukrs=b.bukrs
+          and a.year=to_char(TO_DATE(b.gjahr||b.perio,'yyyymm'),'YYYY-MM')
+          order  by aufnr,kstar)a
+          left join
+          ( select distinct h.dispo,h.aufnr,kk.name from
+          (select  distinct a.aufnr,a.bukrs,b.dispo from  YUSUAN_DATE_PRODUCT_ALL a
+          left join sap_afko b
+          on a.aufnr=b.aufnr) h
+          left join
+          (select DISTINCT AA.NAME,AA.MRPC,BB.BURKS from workshop_machine aa
+          left join sys_factor bb
+          on aa.WERKS=bb.factor_id
+          where bb.factor_id is not null
+          )kk
+          on h.DISPO=kk.mrpc
+          and h.bukrs=kk.burks
+          where kk.name is not null )b
+          on a.aufnr=b.aufnr
+       ) WHERE PERIO=#{month} and   GJAHR=#{year}
+      </if>
+      <if test="company == '2000' ">
+          SELECT * FROM(
+          -----聚合物2018年一月份实际成本明细数据
+          --控制参数perio(月)；gjahr(年)；a.date1(时间年月)
+          --字段解释：matnr_mx(明细物料号)；maktx_cp(产成品物料号)；product(产量)；money(金额)；kwmeng(数量)
+
+          select a.*,b.name from
+          (select  to_char(substr(objnr,3))aufnr,kstar,perio,gjahr,a.matnr matnr_mx,e.maktx maktx_mx,
+          case when kstar in ('0050010001','0050010002') then '聚酯阶段—原料' else state end state,'一般贸易' leibie,
+          a.miaoshu
+          ,a.bukrs,a.matnr_cp,a.maktx maktx_cp,wemng pruduct,sum_money money,sum_kwmeng kwmeng ,MEINb
+          from (
+          select a.*,c.miaoshu,e.kind,d.describe,g.matnr matnr_cp,g.maktx,g.wemng,decode(e.kind,null,d.describe,decode(e.kind,1,'聚酯阶段','纺丝阶段'))state from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,sum(wkgbtr)sum_money,bukrs,sum(mbgbtr)sum_kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          and objnr not in ('OR000000020000','OR000000020001','OR000000020002','OR000000020003','OR000000020004','OR000000020005','OR000000020007',
+          'OR000000020008','OR000000020013','OR000000020040','OR000000020041','OR000000020060','OR000000020100','OR000000020120','OR000000020121'
+          )
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('2000')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,bukrs)a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join(select distinct main,bukrs,describe from parob) d
+          on substr(a.parob,10,7)=d.main
+          left join (select case when maktx like '%二甘醇%' then 1
+          when maktx like '%三甘醇%' then 1
+          when maktx like '%二氧化钛%' then 1
+          when  maktx like '%乙二醇锑%' then 1
+          when  maktx like '%季戊四醇%' then 1
+          else 2 end kind,matnr,maktx from sap_makt) e
+          on a.matnr=e.matnr
+          left join
+          (select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)WEMNG from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where
+          --a.BWART not  in ('531','532')     and
+          to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)g
+          on substr(a.objnr,3)=g.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where a.kstar not in ('0050019901','0050010018','0050019998','0050010001','0050010002','0050010003','0050010004','0050010006','0050010033')
+          )a
+          left join sap_makt e
+          on a.matnr=e.matnr
+          where (a.maktx like '%dtex%' or a.maktx like '%切片%'  or a.maktx like '%雪尼尔%')
+          and a.bukrs in ('2000')
+          union all
+
+          select to_char(a.aufnr)aufnr,b.kstar,b.perio,b.gjahr,b.matnr_mx,b.maktx_mx,b.state,'加工贸易' leibie,b.miaoshu,b.bukrs,b.matnr_cp,b.maktx_cp,
+          abs(a.product)pruduct,
+          abs(a.product)/b.pruduct*money money,
+          abs(a.product)/b.pruduct*kwmeng kwmeng,MEINb from
+          --选出加工贸易物料明细及订单量
+          (select a.* from
+          (select a.matnr,a.year,a.aufnr,a.bukrs,sum(wemng)product,b.maktx from
+          (select aufnr,matnr,TO_char(date1,'yyyy-mm')year,bukrs,sum(product)WEMNG from  YUSUAN_DATE_PRODUCT_all
+          where BWART  in ('531','532')
+          and  to_char(date1,'yyyy')>='2018'
+
+          group by aufnr,matnr,TO_char(date1,'yyyy-mm'),bukrs) a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where a.bukrs in (2000)
+          --AND MAKTX NOT LIKE '%短纤%'
+          group by a.matnr,a.year,a.aufnr,bukrs,b.maktx )a
+          )a
+          left join
+          ---加工贸易各项成本
+          (
+          select  to_char(substr(objnr,3))aufnr,kstar,perio,gjahr,a.matnr matnr_mx,e.maktx maktx_mx,
+          case when kstar in ('0050010001','0050010002') then '聚酯阶段—原料' else state end state,'一般贸易' leibie,
+          a.miaoshu
+          ,a.bukrs,a.matnr_cp,a.maktx maktx_cp,wemng pruduct,sum_money money,sum_kwmeng kwmeng ,MEINb
+          from (
+          select a.*,c.miaoshu,e.kind,d.describe,g.matnr matnr_cp,g.maktx,g.wemng,decode(e.kind,null,d.describe,decode(e.kind,1,'聚酯阶段','纺丝阶段'))state from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,sum(wkgbtr)sum_money,bukrs,sum(mbgbtr)sum_kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          and objnr not in ('OR000000020000','OR000000020001','OR000000020002','OR000000020003','OR000000020004','OR000000020005','OR000000020007',
+          'OR000000020008','OR000000020013','OR000000020040','OR000000020041','OR000000020060','OR000000020100','OR000000020120','OR000000020121'
+          )
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('2000')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,bukrs)a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join(select distinct main,bukrs,describe from parob) d
+          on substr(a.parob,10,7)=d.main
+          left join (select case when maktx like '%二甘醇%' then 1
+          when maktx like '%三甘醇%' then 1
+          when maktx like '%二氧化钛%' then 1
+          when  maktx like '%乙二醇锑%' then 1
+          when  maktx like '%季戊四醇%' then 1
+          else 2 end kind,matnr,maktx from sap_makt) e
+          on a.matnr=e.matnr
+          left join
+          (select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)WEMNG from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where
+          -- a.BWART not  in ('531','532')    and
+          to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)g
+          on substr(a.objnr,3)=g.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where a.kstar not in ('0050019901','0050010018','0050019998','0050010001','0050010002','0050010003','0050010004','0050010006','0050010033')
+          )a
+          left join sap_makt e
+          on a.matnr=e.matnr
+          where (a.maktx like '%dtex%' or a.maktx like '%切片%'  or a.maktx like '%雪尼尔%' )
+          and a.bukrs in ('2000')
+
+          )b
+          on a.aufnr=b.aufnr
+          and a.bukrs=b.bukrs
+          and a.year=to_char(TO_DATE(b.gjahr||b.perio,'yyyymm'),'YYYY-MM')
+          order  by aufnr,kstar)a
+          left join
+          ( select distinct h.dispo,h.aufnr,kk.name from
+          (select  distinct a.aufnr,a.bukrs,b.dispo from  YUSUAN_DATE_PRODUCT_ALL a
+          left join sap_afko b
+          on a.aufnr=b.aufnr) h
+          left join
+          (select DISTINCT AA.NAME,AA.MRPC,BB.BURKS from workshop_machine aa
+          left join sys_factor bb
+          on aa.WERKS=bb.factor_id
+          where bb.factor_id is not null
+          )kk
+          on h.DISPO=kk.mrpc
+          and h.bukrs=kk.burks
+          where kk.name is not null )b
+          on a.aufnr=b.aufnr
+          ) WHERE PERIO=#{month} and GJAHR=#{year}
+      </if>
+      <if test="company == '1000' ">
+          SELECT * FROM(
+          --石化2018年一月份实际成本明细数据
+          --控制参数perio(月)；gjahr(年)；a.date1(时间年月)
+          --字段解释：matnr_mx(明细物料号)；maktx_cp(产成品物料号)；product(产量)；money(金额)；kwmeng(数量)
+          select a.*,b.name from
+          (select substr(a.objnr,3)aufnr,a.kstar,a.perio,a.gjahr,a.matnr matnr_mx,a.maktx_mx,'纺丝阶段' state,
+          '一般贸易' leibie,a.miaoshu,a.bukrs,a.matnr_cp,a.maktx_cp,a.product,a.money,a.kwmeng,MEINb
+          from (
+          select a.*,b.maktx maktx_mx,c.miaoshu,d.matnr matnr_cp,d.MAKTX MAKTx_cp,d.product from (
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,sum(wkgbtr)money,bukrs,sum(mbgbtr)kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          --and perio=1
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs='1000'
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,bukrs
+          )a
+          left join (
+          select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)product from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where
+          --a.BWART not  in ('531','532')     and
+          to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)d
+          on substr(a.objnr,3)=d.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          left join cost_centre c
+          on a.kstar=c.kstar
+          left join sap_makt b
+          on a.matnr=b.matnr
+          ))a
+          where kstar not in ('0050019901','0050010018','0050019902','0050010003')
+          and maktx_cp not like '%POY%'
+          and maktx_cp not like '%切片%'
+          order by a.bukrs,objnr,kstar)a
+          left join
+          ( select distinct h.dispo,h.aufnr,kk.name from
+          (select  distinct a.aufnr,a.bukrs,b.dispo from  YUSUAN_DATE_PRODUCT_ALL a
+          left join sap_afko b
+          on a.aufnr=b.aufnr) h
+          left join
+          (select DISTINCT AA.NAME,AA.MRPC,BB.BURKS from workshop_machine aa
+          left join sys_factor bb
+          on aa.WERKS=bb.factor_id
+          where bb.factor_id is not null
+          )kk
+          on h.DISPO=kk.mrpc
+          and h.bukrs=kk.burks
+          where kk.name is not null )b
+          on a.aufnr=b.aufnr
+          ) WHERE PERIO=#{month} and GJAHR=#{year}
+      </if>
+      <if test="company == '9300' ">
+          SELECT * FROM(
+          --新工厂逸枫2018年一月份实际成本明细数据
+          --控制参数perio(月)；gjahr(年)；a.date1(时间年月)
+          --字段解释：matnr_mx(明细物料号)；maktx_cp(产成品物料号)；product(产量)；money(金额)；kwmeng(数量)
+          select a.*,b.name from
+          ( select substr(a.objnr,3)aufnr,a.kstar,a.perio,a.gjahr,a.matnr_mx,e.maktx maktx_mx,'纺丝阶段' state,'一般贸易'leibie,c.miaoshu,a.bukrs,d.matnr matnr_cp,d.maktx as maktx_cp,
+          d.product,a.money,a.kwmeng,MEINb from
+          (select objnr,KSTAR,perio,gjahr,matnr matnr_mx,MEINb,sum(wkgbtr)money,bukrs,sum(mbgbtr)kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          --and perio='2'
+          and gjahr>='2018'
+          --and substr(objnr,8,7)>1000000
+          and bukrs in ('9300')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,bukrs
+          )a
+          left join sap_makt e
+          on a.matnr_mx=e.matnr
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join (
+          select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)product from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where a.BWART not  in ('531','532')
+          and  to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs
+          )d
+          on substr(a.objnr,3)=d.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
+          and (d.maktx not like '%熔体%' or d.maktx is null)
+          --;--
+          union all
+          ---9100，9200，9300聚酯阶段成本
+          select substr(a.objnr,3)aufnr,b.kstar kstar,a.perio,a.gjahr,b.matnr matnr_mx,b.maktx_mx,'聚酯阶段' state,'一般贸易'leibie
+          ,b.miaoshu,a.bukrs,a.matnr_cp,a.maktx maktx_cp,a.product,
+          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money,2) money,
+          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_kwmeng,2) KWMENG,MEINb
+
+          from
+          --a选出订单中含有熔体的那一笔
+          (select a.*,c.miaoshu,d.matnr matnr_cp,d.maktx,d.product,f.maktx mm from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,
+          case when  kstar='0050019901' then  sum(abs(wkgbtr)) else sum(wkgbtr) end  sum_money
+          ,bukrs,
+          case when kstar='0050019901' then sum(abs(mbgbtr)) else sum(mbgbtr) end sum_kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('9300')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,bukrs
+          order by objnr,bukrs
+          )a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join sap_makt f
+          on a.matnr=f.matnr
+          left join (
+          select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)product from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where a.BWART not  in ('531','532')
+          and  to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)d
+          on substr(a.objnr,3)=d.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where f.maktx like '%熔体%'
+          --and a.kstar not in ('0050019901','0050010018')
+          )a
+          left join
+          --b各工厂熔体各项制造费用
+          (select a.*,e.maktx maktx_mx,c.miaoshu,d.matnr matnr_rt,d.maktx from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,sum(wkgbtr)money_jz,bukrs,sum(mbgbtr)kwmeng_jz from sap_coep
+          where objnr like '%OR00000%'
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('9300')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,bukrs)a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join (select a.aufnr,a.matnr,b.maktx from  sap_afpo a
+          left join sap_makt b
+          on a.matnr=b.matnr)d
+          on substr(a.objnr,3)=d.aufnr
+          left join sap_makt e
+          on a.matnr=e.matnr
+          where (d.maktx like '%熔体%')
+          and (e.maktx not like '%熔体%' or e.maktx is null)
+          order by a.bukrs,a.objnr,A.KSTAR)b
+          on a.matnr=b.matnr_rt
+          and a.bukrs=b.bukrs
+          and a.perio=b.perio
+          and a.gjahr=b.gjahr
+          where a.kstar not in ('0050010001','0050010002')
+          order by  aufnr,kstar
+          )a
+          left join
+          ( select distinct h.dispo,h.aufnr,kk.name from
+          (select  distinct a.aufnr,a.bukrs,b.dispo from  YUSUAN_DATE_PRODUCT_ALL a
+          left join sap_afko b
+          on a.aufnr=b.aufnr) h
+          left join
+          (select DISTINCT AA.NAME,AA.MRPC,BB.BURKS from workshop_machine aa
+          left join sys_factor bb
+          on aa.WERKS=bb.factor_id
+          where bb.factor_id is not null
+          )kk
+          on h.DISPO=kk.mrpc
+          and h.bukrs=kk.burks
+          where kk.name is not null )b
+          on a.aufnr=b.aufnr
+          ) WHERE PERIO=#{month} and GJAHR=#{year}
+      </if>
+      <if test="company == '9200' ">
+          SELECT * FROM(
+          --新工厂逸暻2018年一月份实际成本明细数据
+          --控制参数perio(月)；gjahr(年)；a.date1(时间年月)
+          --字段解释：matnr_mx(明细物料号)；maktx_cp(产成品物料号)；product(产量)；money(金额)；kwmeng(数量)
+
+          select a.*,b.name from
+          (select substr(a.objnr,3)aufnr,a.kstar,a.perio,a.gjahr,a.matnr_mx,e.maktx maktx_mx,'纺丝阶段' state,
+          '一般贸易'leibie,c.miaoshu,a.bukrs,d.matnr matnr_cp,d.maktx as maktx_cp,
+          d.product,a.money,a.kwmeng,MEINb from
+          (select objnr,KSTAR,perio,gjahr,matnr matnr_mx,MEINb,sum(wkgbtr)money,bukrs,sum(mbgbtr)kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          --and perio='2'
+          and gjahr>='2018'
+          --and substr(objnr,8,7)>1000000
+          and bukrs in ('9200')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,bukrs
+          )a
+          left join sap_makt e
+          on a.matnr_mx=e.matnr
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join (
+          select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)product from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where a.BWART not  in ('531','532')
+          and  to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs
+          )d
+          on substr(a.objnr,3)=d.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
+          and (d.maktx not like '%熔体%' or d.maktx is null)
+          --;--
+          union all
+          ---9100，9200，9300聚酯阶段成本
+          select substr(a.objnr,3)aufnr,b.kstar kstar,a.perio,a.gjahr,b.matnr matnr_mx,b.maktx_mx,'聚酯阶段' state,'一般贸易'leibie
+          ,b.miaoshu,a.bukrs,a.matnr_cp,a.maktx maktx_cp,a.product,
+          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money,2) money,
+          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_kwmeng,2) KWMENG,MEINb
+
+          from
+          --a选出订单中含有熔体的那一笔
+          (select a.*,c.miaoshu,d.matnr matnr_cp,d.maktx,d.product,f.maktx mm from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,
+          case when  kstar='0050019901' then  sum(abs(wkgbtr)) else sum(wkgbtr) end  sum_money
+          ,bukrs,
+          case when kstar='0050019901' then sum(abs(mbgbtr)) else sum(mbgbtr) end sum_kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('9200')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,bukrs
+          order by objnr,bukrs
+          )a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join sap_makt f
+          on a.matnr=f.matnr
+          left join (
+          select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)product from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where a.BWART not  in ('531','532')
+          and  to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)d
+          on substr(a.objnr,3)=d.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where f.maktx like '%熔体%'
+          --and a.kstar not in ('0050019901','0050010018')
+          )a
+          left join
+          --b各工厂熔体各项制造费用
+          (select a.*,e.maktx maktx_mx,c.miaoshu,d.matnr matnr_rt,d.maktx from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,sum(wkgbtr)money_jz,bukrs,sum(mbgbtr)kwmeng_jz from sap_coep
+          where objnr like '%OR00000%'
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('9200')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,bukrs)a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join (select a.aufnr,a.matnr,b.maktx from  sap_afpo a
+          left join sap_makt b
+          on a.matnr=b.matnr)d
+          on substr(a.objnr,3)=d.aufnr
+          left join sap_makt e
+          on a.matnr=e.matnr
+          where (d.maktx like '%熔体%')
+          and (e.maktx not like '%熔体%' or e.maktx is null)
+          order by a.bukrs,a.objnr,A.KSTAR)b
+          on a.matnr=b.matnr_rt
+          and a.bukrs=b.bukrs
+          and a.perio=b.perio
+          and a.gjahr=b.gjahr
+          where a.kstar not in ('0050010001','0050010002')
+          order by  aufnr,kstar)a
+          left join
+          ( select distinct h.dispo,h.aufnr,kk.name from
+          (select  distinct a.aufnr,a.bukrs,b.dispo from  YUSUAN_DATE_PRODUCT_ALL a
+          left join sap_afko b
+          on a.aufnr=b.aufnr) h
+          left join
+          (select DISTINCT AA.NAME,AA.MRPC,BB.BURKS from workshop_machine aa
+          left join sys_factor bb
+          on aa.WERKS=bb.factor_id
+          where bb.factor_id is not null
+          )kk
+          on h.DISPO=kk.mrpc
+          and h.bukrs=kk.burks
+          where kk.name is not null )b
+          on a.aufnr=b.aufnr
+
+          ) WHERE PERIO=#{month} and GJAHR=#{year}
+      </if>
+      <if test="company == '9100' ">
+          SELECT * FROM(
+          --新工厂逸鹏2018年一月份实际成本明细数据
+          --控制参数perio(月)；gjahr(年)；a.date1(时间年月)
+          --字段解释：matnr_mx(明细物料号)；maktx_cp(产成品物料号)；product(产量)；money(金额)；kwmeng(数量)
+          --新工厂9100,9200,9300纺丝阶段成本
+          select a.*,b.name from
+          (select substr(a.objnr,3)aufnr,a.kstar,a.perio,a.gjahr,a.matnr_mx,e.maktx maktx_mx,'纺丝阶段' state,
+          '一般贸易' leibie,c.miaoshu,a.bukrs,d.matnr matnr_cp,d.maktx as maktx_cp,
+          d.product,a.money,a.kwmeng,MEINb from
+          (select objnr,KSTAR,perio,gjahr,matnr matnr_mx,MEINb,sum(wkgbtr)money,bukrs,sum(mbgbtr)kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          --and perio='2'
+          and gjahr>='2018'
+          --and substr(objnr,8,7)>1000000
+          and bukrs in ('9100')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,bukrs
+          )a
+          left join sap_makt e
+          on a.matnr_mx=e.matnr
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join (
+          select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)product from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where a.BWART not  in ('531','532')
+          and  to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs
+          )d
+          on substr(a.objnr,3)=d.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
+          and (d.maktx not like '%熔体%' or d.maktx is null)
+          --;--
+          union all
+          ---9100，9200，9300聚酯阶段成本
+          select substr(a.objnr,3)aufnr,b.kstar kstar,a.perio,a.gjahr,b.matnr matnr_mx,b.maktx_mx,'聚酯阶段' state
+          ,'一般贸易' leibie,b.miaoshu,a.bukrs,a.matnr_cp,a.maktx maktx_cp,a.product,
+          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money,2) money,
+          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_kwmeng,2) KWMENG
+          ,MEINb
+          from
+          --a选出订单中含有熔体的那一笔
+          (select a.*,c.miaoshu,d.matnr matnr_cp,d.maktx,d.product,f.maktx mm from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,
+          case when  kstar='0050019901' then  sum(abs(wkgbtr)) else sum(wkgbtr) end  sum_money
+          ,bukrs,
+          case when kstar='0050019901' then sum(abs(mbgbtr)) else sum(mbgbtr) end sum_kwmeng from sap_coep
+          where objnr like '%OR00000%'
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('9100')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,bukrs
+          order by objnr,bukrs
+          )a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join sap_makt f
+          on a.matnr=f.matnr
+          left join (
+          select a.aufnr,a.matnr,TO_char(date1,'yyyy-mm')year,b.maktx,a.bukrs,sum(a.product)product from  YUSUAN_DATE_PRODUCT_all a
+          left join sap_makt b
+          on a.matnr=b.matnr
+          where a.BWART not  in ('531','532')
+          and  to_char(a.date1,'yyyy')>='2018'
+          and length(aufnr)>6
+          group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)d
+          on substr(a.objnr,3)=d.aufnr
+          and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
+          where f.maktx like '%熔体%'
+          --and a.kstar not in ('0050019901','0050010018')
+          )a
+          left join
+          --b各工厂熔体各项制造费用
+          (select a.*,e.maktx maktx_mx,c.miaoshu,d.matnr matnr_rt,d.maktx from
+          (select kokrs,objnr,KSTAR,perio,gjahr,matnr,sum(wkgbtr)money_jz,bukrs,sum(mbgbtr)kwmeng_jz from sap_coep
+          where objnr like '%OR00000%'
+          --and perio=2
+          and gjahr>=2018
+          and substr(objnr,8,7)>1000000
+          and bukrs in ('9100')
+          group by kokrs,objnr,KSTAR,perio,gjahr,matnr,bukrs)a
+          left join cost_centre c
+          on a.kstar=c.kstAR
+          left join (select a.aufnr,a.matnr,b.maktx from  sap_afpo a
+          left join sap_makt b
+          on a.matnr=b.matnr)d
+          on substr(a.objnr,3)=d.aufnr
+          left join sap_makt e
+          on a.matnr=e.matnr
+          where (d.maktx like '%熔体%')
+          and (e.maktx not like '%熔体%' or e.maktx is null)
+          order by a.bukrs,a.objnr,A.KSTAR)b
+          on a.matnr=b.matnr_rt
+          and a.bukrs=b.bukrs
+          and a.perio=b.perio
+          and a.gjahr=b.gjahr
+          where a.kstar not in ('0050010001','0050010002')
+          order by  aufnr,kstar)a
+          left join
+          ( select distinct h.dispo,h.aufnr,kk.name from
+          (select  distinct a.aufnr,a.bukrs,b.dispo from  YUSUAN_DATE_PRODUCT_ALL a
+          left join sap_afko b
+          on a.aufnr=b.aufnr) h
+          left join
+          (select DISTINCT AA.NAME,AA.MRPC,BB.BURKS from workshop_machine aa
+          left join sys_factor bb
+          on aa.WERKS=bb.factor_id
+          where bb.factor_id is not null
+          )kk
+          on h.DISPO=kk.mrpc
+          and h.bukrs=kk.burks
+          where kk.name is not null )b
+          on a.aufnr=b.aufnr
+          ) WHERE PERIO=#{month} and GJAHR=#{year}
+      </if>
+  </select>
+
+</mapper>
