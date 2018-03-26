@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/HY_Finance_ZM.iml" filepath="$PROJECT_DIR$/.idea/HY_Finance_ZM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/budget-provider/budget-provider.iml" filepath="$PROJECT_DIR$/budget-provider/budget-provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/budget-provider/budget-provider.iml" filepath="$PROJECT_DIR$/budget-provider/budget-provider.iml" />
       <module fileurl="file://$PROJECT_DIR$/finance-server.iml" filepath="$PROJECT_DIR$/finance-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/hengyi-api/hengyi-api.iml" filepath="$PROJECT_DIR$/hengyi-api/hengyi-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hengyi-api/hengyi-api.iml" filepath="$PROJECT_DIR$/hengyi-api/hengyi-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hengyi-controller/hengyi-controller.iml" filepath="$PROJECT_DIR$/hengyi-controller/hengyi-controller.iml" />
       <module fileurl="file://$PROJECT_DIR$/hengyi-controller/hengyi-controller.iml" filepath="$PROJECT_DIR$/hengyi-controller/hengyi-controller.iml" />
     </modules>
   </component>
