@@ -116,13 +116,28 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
     </select>
     <insert id="insertbudgetdetail" parameterType="com.hengyi.bean.BudgetdetailBean">
         INSERT  INTO Budgetdetail (
-        company,month,YEAR ,product,line,spec,yarnKind,budget_total_product,type,
+        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type,
         <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator="," >
         ${item.field}
         </foreach>
         )
         VALUES (
-        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际',
+        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际',
+        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator="," >
+            #{item.id}
+        </foreach>
+        )
+    </insert>
+
+    <insert id="insertdetail" parameterType="com.hengyi.bean.BudgetdetailBean">
+        INSERT  INTO Budgetdetail (
+        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type,
+        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator="," >
+            ${item.field}
+        </foreach>
+        )
+        VALUES (
+        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'预算',
         <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator="," >
             #{item.id}
         </foreach>

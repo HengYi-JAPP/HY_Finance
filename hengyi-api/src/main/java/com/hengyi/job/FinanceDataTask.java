@@ -20,5 +20,5 @@ public interface FinanceDataTask {
      * @return
      * 生产线-规格-差异化维度     单位成本与修正计算定时任务
      */
-    public void companyproductdatatask();
+    public void companyproductdatatask() throws Exception;
 }

@@ -7,6 +7,49 @@
         <groupId>com.hengyi</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
+
+    <dependencies>
+
+        <dependency>
+
+        <groupId>org.apache.poi</groupId>
+
+        <artifactId>poi</artifactId>
+
+        <version>3.17</version>
+
+    </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+
+
+
+       <dependency>
+
+        <groupId>org.apache.poi</groupId>
+
+        <artifactId>poi-ooxml</artifactId>
+
+        <version>3.17</version>
+
+    </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad -->
+
+
+
+       <dependency>
+
+        <groupId>org.apache.poi</groupId>
+
+        <artifactId>poi-scratchpad</artifactId>
+
+        <version>3.17</version>
+
+    </dependency>
+
+    </dependencies>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>hengyi-api</artifactId>
     <packaging>jar</packaging>

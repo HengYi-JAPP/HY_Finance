@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/budget-provider" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hengyi-api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hengyi-controller" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/hengyi-timed_task" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

@@ -10,6 +10,13 @@
           <element id="archive" name="hengyi-api-0.0.1-SNAPSHOT.jar">
             <element id="module-output" name="hengyi-api" />
           </element>
+          <element id="library" level="project" name="Maven: org.apache.poi:poi:3.17" />
+          <element id="library" level="project" name="Maven: org.apache.poi:poi-ooxml:3.17" />
+          <element id="library" level="project" name="Maven: org.apache.poi:poi-ooxml-schemas:3.17" />
+          <element id="library" level="project" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" />
+          <element id="library" level="project" name="Maven: stax:stax-api:1.0.1" />
+          <element id="library" level="project" name="Maven: com.github.virtuald:curvesapi:1.04" />
+          <element id="library" level="project" name="Maven: org.apache.poi:poi-scratchpad:3.17" />
           <element id="library" level="project" name="Maven: org.jzb:jzb-core:1.0" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.6" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-collections4:4.1" />

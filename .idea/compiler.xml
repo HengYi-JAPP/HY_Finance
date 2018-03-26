@@ -9,6 +9,7 @@
         <module name="budget-provider" />
         <module name="hengyi-api" />
         <module name="hengyi-controller" />
+        <module name="hengyi-timed_task" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -17,6 +18,7 @@
       <module name="finance-server" target="1.5" />
       <module name="hengyi-api" target="1.8" />
       <module name="hengyi-controller" target="1.8" />
+      <module name="hengyi-timed_task" target="1.8" />
       <module name="HY_Finance_ZM" target="1.5" />
     </bytecodeTargetLevel>
   </component>

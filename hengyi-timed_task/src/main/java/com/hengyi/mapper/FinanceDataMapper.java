@@ -65,11 +65,12 @@ public interface FinanceDataMapper {
      */
    public ArrayList<MaterialOfLineSelectBean> selectmaterialofline(SapDataMonthBean onthBean);
    public int insertmaterialcostdetails( MaterialcostdetailsBean materialcostdetailsBean);
-   public String selectfieldbymaterialname(String materialName);
+   public ArrayList<String> selectfieldbymaterialname(String materialName);
    public int insertbudgetdetail(@Param("bdb") BudgetdetailBean budgetdetailBean);
    public ArrayList<Map<String,Object>> selectbudgetdata();
    public ArrayList<Map<String,Object>> selectbudgetdatabydate(SapDataMonthBean sapDataMonthBean);
    public MaterialcostdetailsBean selectcostdetailbyid(Integer id);
    public DictBean selectsysdictbykey(String key);
+   public int insertdetail(@Param("bdb") BudgetdetailBean budgetdetailBean);
 
 }

@@ -3,11 +3,13 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/budget-provider" />
     <file type="web" url="file://$PROJECT_DIR$/hengyi-controller" />
+    <file type="web" url="file://$PROJECT_DIR$/hengyi-timed_task" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/hengyi-timed_task/pom.xml" />
       </list>
     </option>
   </component>

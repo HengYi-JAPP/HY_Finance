@@ -72,4 +72,17 @@ public class MaterialcostdetailsBean {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "MaterialcostdetailsBean{" +
+                "id=" + id +
+                ", consumption=" + consumption +
+                ", unitPrice=" + unitPrice +
+                ", materialName='" + materialName + '\'' +
+                ", state='" + state + '\'' +
+                ", price=" + price +
+                ", field='" + field + '\'' +
+                '}';
+    }
 }
