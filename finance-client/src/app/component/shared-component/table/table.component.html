@@ -1,0 +1,71 @@
+<!--根据字段动态生成表格组件-->
+<div style="margin-top: 10px">
+  <nz-table #groupingTable
+            [nzDataSource]="tableData"
+            [nzPageSize]="10"
+            (nzDataChange)="_displayDataChange($event)"
+            (nzPageIndexChange)="_refreshStatus()"
+            (nzPageSizeChange)="_refreshStatus()"
+            nzBordered
+            [nzScroll]="{ x: 1920, y: 300 }">
+    <ng-template #nzFixedHeader>
+      <thead nz-thead>
+        <tr>
+          <th nz-th nzCheckbox nzWidth="150px">
+            <label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 10px">
+            </label>
+          </th>
+          <template *ngFor="let col of cols1">
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="1" *ngIf="col.rowSpan=== 1">
+              <span>{{col.colName}}</span>
+            </th>
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="2" *ngIf="col.rowSpan=== 2">
+              <span>{{col.colName}}</span>
+            </th>
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="3" *ngIf="col.rowSpan=== 3">
+              <span>{{col.colName}}</span>
+            </th>
+          </template>
+          <template *ngFor="let col of cols2">
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="1" *ngIf="col.rowSpan=== 1">
+              <span>{{col.colName}}</span>
+            </th>
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="2" *ngIf="col.rowSpan=== 2">
+              <span>{{col.colName}}</span>
+            </th>
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="3" *ngIf="col.rowSpan=== 3">
+              <span>{{col.colName}}</span>
+            </th>
+          </template>
+          <template *ngFor="let col of cols3">
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="1" *ngIf="col.rowSpan=== 1">
+              <span>{{col.colName}}</span>
+            </th>
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="2" *ngIf="col.rowSpan=== 2">
+              <span>{{col.colName}}</span>
+            </th>
+            <th nz-th nzWidth="150px" style="text-align: center" rowspan="3" *ngIf="col.rowSpan=== 3">
+              <span>{{col.colName}}</span>
+            </th>
+          </template>
+        </tr>
+      </thead>
+    </ng-template>
+    <tbody nz-tbody>
+    <tr nz-tbody-tr *ngFor="let data of tableData">
+      <td nz-td nzCheckbox>
+        <label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">
+        </label>
+      </td>
+      <td nz-td *ngFor="let key of getkeys(data)" style="text-align: center">
+        {{data[key]}}
+      </td>
+    </tr>
+    <tr nz-tbody-tr>
+      <td nz-td style="text-align: center"><el-button type="primary" size="mini">合计</el-button></td>
+      <td *ngFor="let sum of sums" style="text-align: center">{{sum}}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</div>
+

@@ -1,0 +1,80 @@
+<div class="box">
+  <app-select (FindList)="findList()"></app-select>
+  <div style="margin-top: 10px">
+    <nz-table #groupingTable
+              [nzDataSource]="tableData"
+              [nzPageSize]="10"
+              (nzDataChange)="_displayDataChange($event)"
+              (nzPageIndexChange)="_refreshStatus()"
+              (nzPageSizeChange)="_refreshStatus()"
+              nzBordered
+              [nzScroll]="{ x: 3000, y: 300 }">
+      <ng-template #nzFixedHeader>
+        <thead nz-thead>
+        <tr>
+          <th nz-th nzCheckbox nzWidth="100px" rowspan="2">
+            <label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 10px">
+            </label>
+          </th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>公司</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>产品</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>生产线</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>规格</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1" colspan="8"><span>聚酯成本</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1" colspan="8"><span>纺丝成本</span></th>
+        </tr>
+        <tr>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>辅料</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>工资</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>折旧</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>水电</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>配件</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>燃料</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>其他</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>制造费用合计</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>辅料</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>工资</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>折旧</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>水电</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>配件</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>燃料</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>其他</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>制造费用合计</span></th>
+        </tr>
+        </thead>
+      </ng-template>
+      <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of tableData">
+        <td nz-td nzCheckbox>
+          <label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">
+          </label>
+        </td>
+        <td nz-td style="text-align: center">{{data.company}}</td>
+        <td nz-td style="text-align: center">{{data.product}}</td>
+        <td nz-td style="text-align: center">{{data.productLine}}</td>
+        <td nz-td style="text-align: center">{{data.spec}}</td>
+        <td nz-td style="text-align: center">{{data.jz1}}</td>
+        <td nz-td style="text-align: center">{{data.jz2}}</td>
+        <td nz-td style="text-align: center">{{data.jz3}}</td>
+        <td nz-td style="text-align: center">{{data.jz4}}</td>
+        <td nz-td style="text-align: center">{{data.jz5}}</td>
+        <td nz-td style="text-align: center">{{data.jz6}}</td>
+        <td nz-td style="text-align: center">{{data.jz7}}</td>
+        <td nz-td style="text-align: center">{{data.jz8}}</td>
+        <td nz-td style="text-align: center">{{data.fs1}}</td>
+        <td nz-td style="text-align: center">{{data.fs2}}</td>
+        <td nz-td style="text-align: center">{{data.fs3}}</td>
+        <td nz-td style="text-align: center">{{data.fs4}}</td>
+        <td nz-td style="text-align: center">{{data.fs5}}</td>
+        <td nz-td style="text-align: center">{{data.fs6}}</td>
+        <td nz-td style="text-align: center">{{data.fs7}}</td>
+        <td nz-td style="text-align: center">{{data.fs8}}</td>
+      </tr>
+      <tr nz-tbody-tr>
+        <td nz-td style="text-align: center"><el-button type="primary" size="mini">合计</el-button></td>
+        <td *ngFor="let sum of sums" style="text-align: center">{{sum}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

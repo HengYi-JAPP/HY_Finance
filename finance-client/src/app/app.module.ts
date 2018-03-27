@@ -1,34 +1,58 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {RouterModule, Routes} from '@angular/router';
-import { HttpModule } from '@angular/http';
+import {CommonModule} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
+import {AppRoutingModule} from './router/app-routing.module';
 import { AppComponent } from './app.component';
 import { ElModule } from 'element-angular/release/element-angular.module';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { AppRoutingModule } from './/app-routing.module';
-import { FactComponent } from './total-amount/fact/fact.component';
-import { BudgetComponent } from './total-amount/budget/budget.component';
-import { ResultComponent } from './total-amount/result/result.component';
+import {NgZorroAntdModule} from 'ng-zorro-antd';
+import { HomeComponent} from './component/home/home.component';
+import { BudgetComponent } from './component/total-amount/budget/budget.component';
+import { ResultComponent } from './component/total-amount/result/result.component';
+import {UnitBudgetComponent} from './component/unit-cost/budget/budget.component';
+import {UnitOverviewComponent} from './component/unit-cost/overview/overview.component';
+import {UnitResultComponent} from './component/unit-cost/result/one-company-all-product/result.component';
+import { ErrorComponent } from './component/error/error.component';
+import {SelectComponent} from './component/shared-component/select/select.component';
+import {TableComponent} from './component/shared-component/table/table.component';
 
-
+import {BudgetService} from './api/budget.service';
+import {OverviewService} from './api/overview.service';
+import {ResultService} from './api/result.service';
+import { AllCompanyComponent } from './component/unit-cost/result/all-company/all-company/all-company.component';
+import {GetResponseService} from './api/getResponse.service';
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent,
-    FactComponent,
     BudgetComponent,
-    ResultComponent
+    ResultComponent,
+    UnitBudgetComponent,
+    UnitResultComponent,
+    ErrorComponent,
+    UnitOverviewComponent,
+    SelectComponent,
+    TableComponent,
+    AllCompanyComponent
   ],
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    ElModule.forRoot(),
-    AppRoutingModule,
+    BrowserModule, // 在浏览器上运行所需的模块
+    BrowserAnimationsModule, // 动画所需模块
+    FormsModule,
+    ElModule.forRoot(), // 引入element-UI
+    CommonModule, // 使用*ngFor,*ngIf所需模块
+    AppRoutingModule, // 引入路由模块
+    HttpClientModule, // 与服务端交互所需模块
+    NgZorroAntdModule.forRoot()// 由于elementUI的表格组件有bug，故引入该库
   ],
-  providers: [],
+  providers: [
+    BudgetService,
+    OverviewService,
+    ResultService,
+    GetResponseService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

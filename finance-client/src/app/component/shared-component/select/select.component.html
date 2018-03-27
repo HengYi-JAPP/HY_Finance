@@ -1,0 +1,51 @@
+<div style="margin-top: 10px">
+  <div el-row gutter="20">
+    <!--<div el-col span="5">-->
+      <!--<el-date-picker (modelChange)="handle($event)" placeholder="开始时间" title="开始时间">-->
+      <!--</el-date-picker>-->
+    <!--</div>-->
+    <!--<div el-col span="5">-->
+      <!--<el-date-picker (modelChange)="handle($event)" placeholder="结束时间" title="结束时间">-->
+      <!--</el-date-picker>-->
+    <!--</div>-->
+    <div el-col span="3">
+      <el-select title="年" placeholder="请选择年份" [(model)]="year" [clearable]="true">
+        <el-option *ngFor="let item of years" [label]="item.label" [value]="item.value" ></el-option>
+      </el-select>
+    </div>
+    <div el-col span="3">
+      <el-select title="月" placeholder="请选择月份" [(model)]="month" [clearable]="true">
+        <el-option *ngFor="let item of months" [label]="item.label" [value]="item.value" ></el-option>
+      </el-select>
+    </div>
+    <div el-col span="3">
+      <el-select title="公司" placeholder="请选择公司" [(model)]="company" [clearable]="true" (modelChange)="changeCompany()">
+        <el-option *ngFor="let item of companys" [label]="item.label" [value]="item.value" ></el-option>
+      </el-select>
+    </div>
+    <div el-col span="3">
+      <el-select title="产品" placeholder="请选择产品" [(model)]="product" [clearable]="true" (modelChange)="changeProduct()">
+        <el-option *ngFor="let item of products" [label]="item.label" [value]="item.value" ></el-option>
+      </el-select>
+    </div>
+    <div el-col span="3">
+      <el-select title="产品" placeholder="请选择车间" [(model)]="workshop" [clearable]="true" (modelChange)="changeProduct()">
+        <el-option *ngFor="let item of workshops" [label]="item.label" [value]="item.value" ></el-option>
+      </el-select>
+    </div>
+    <div el-col span="4">
+      <el-select title="生产线" placeholder="请选择生产线" [(model)]="productLine" [clearable]="true" (modelChange)="changeProductLine()">
+        <el-option *ngFor="let item of productLines" [label]="item.label" [value]="item.value" ></el-option>
+      </el-select>
+    </div>
+    <div el-col span="3">
+      <el-select title="规格" placeholder="请选择规格" [(model)]="spec" [clearable]="true" (modelChange)="changeSpec()">
+        <el-option *ngFor="let item of specs" [label]="item.label" [value]="item.value" ></el-option>
+      </el-select>
+    </div>
+    <div el-col span="2">
+      <el-button (click)="findList()" type="primary">查询</el-button>
+    </div>
+  </div>
+</div>
+

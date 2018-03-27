@@ -24,6 +24,7 @@
     "animations": "0.0.0",
     "core-js": "^2.4.1",
     "element-angular": "^0.6.3",
+    "ng-zorro-antd": "^0.6.15",
     "rxjs": "^5.5.6",
     "zone.js": "^0.8.19"
   },

@@ -1,0 +1,68 @@
+<div class="box">
+  <app-select (FindList)="findList($event)"></app-select>
+  <div style="margin-top: 10px">
+    <nz-table #groupingTable
+              [nzDataSource]="tableData"
+              [nzPageSize]="10"
+              (nzDataChange)="_displayDataChange($event)"
+              (nzPageIndexChange)="_refreshStatus()"
+              (nzPageSizeChange)="_refreshStatus()"
+              nzBordered
+              [nzScroll]="{ x: 2048, y: 300 }">
+      <ng-template #nzFixedHeader>
+        <thead nz-thead>
+        <tr>
+          <th nz-th nzCheckbox nzWidth="100px" rowspan="2">
+            <label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 10px">
+            </label>
+          </th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>公司</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>产品</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>生产线</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>规格</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>实际单位成本①</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>考核维度实际单位成本②</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>考核维度预算单位成本③</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>目标预算单位成本④</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>单价变动影响单位成本②-①</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>单耗变动影响单位成本③-②</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>结构变动影响单位成本④-③</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>总体差异④-①</span></th>
+        </tr>
+        <tr>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>实际单价*实际单耗*实际结构</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>预算单价*预算单耗*实际结构</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>预算单价*预算单耗*实际结构</span></th>
+          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>预算单价*预算单耗*预算结构</span></th>
+        </tr>
+        </thead>
+      </ng-template>
+      <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of tableData">
+        <td nz-td nzCheckbox>
+          <label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">
+          </label>
+        </td>
+        <td nz-td style="text-align: center">{{data.company}}</td>
+        <td nz-td style="text-align: center">{{data.product}}</td>
+        <td nz-td style="text-align: center">{{data.productLine}}</td>
+        <td nz-td style="text-align: center">{{data.spec}}</td>
+        <td nz-td style="text-align: center">{{data.fact}}</td>
+        <td nz-td style="text-align: center">{{data.checkFact}}</td>
+        <td nz-td style="text-align: center">{{data.checkBudget}}</td>
+        <td nz-td style="text-align: center">{{data.budget}}</td>
+        <td nz-td style="text-align: center">{{data.priceEffect}}</td>
+        <td nz-td style="text-align: center">{{data.consumerEffect}}</td>
+        <td nz-td style="text-align: center">{{data.structureEffect}}</td>
+        <td nz-td style="text-align: center">{{data.totalDifference}}</td>
+      </tr>
+      <tr nz-tbody-tr>
+        <td nz-td style="text-align: center"><el-button type="primary" size="mini">合计</el-button></td>
+        <td *ngFor="let sum of sums" style="text-align: center">{{sum}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+    <!--<h3 style="text-align: center;">2018年度高新FDY成本对比分析</h3>-->
+  <!--</div>-->
+</div>
