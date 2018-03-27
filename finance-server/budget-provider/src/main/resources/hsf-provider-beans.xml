@@ -6,9 +6,8 @@
        http://www.taobao.com/hsf
        http://www.taobao.com/hsf/hsf.xsd"
 	   default-autowire="byName">
-
-	<!-- 测试服务 -->
-	<bean id="testService" class="com.hengyi.service.TestServiceImpl" />
-	<hsf:provider id="testServiceProvider" interface="com.hengyi.service.Testservice"
-				  ref="testService" version="1.0.0" group="budgetProvider" clientTimeout="10000"/>
+	<!--财务预算模块服务提供者 -->
+	<bean id="financeBudgetService" class="com.hengyi.service.FinanceBudgetServiceImpl"/>
+	<hsf:provider id="financeBudgetServiceProvider" interface="com.hengyi.service.FinanceBudgetService"
+				  ref="financeBudgetService" version="1.0.0" group="financeBudget" clientTimeout="10000"/>
 </beans>

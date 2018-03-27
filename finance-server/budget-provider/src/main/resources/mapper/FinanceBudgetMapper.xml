@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hengyi.mapper.FinanceBudgetMapper">
+  <resultMap id="dictionaryMap" type="com.hengyi.domain.DictionaryDomain">
+    <id column="id" property="id" jdbcType="INTEGER"></id>
+    <result column="dict_type" property="dictType" jdbcType="VARCHAR"/>
+    <result column="dict_key" property="dictKey" jdbcType="VARCHAR"/>
+    <result column="dict_value" property="dictValue" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="page">
+    <if test="limit != null">
+      <if test="offset != null">
+        limit ${offset},${limit}
+      </if>
+      <if test="offset == null">
+        limit ${limit}
+      </if>
+    </if>
+  </sql>
+  <!--获取详情数据-->
+  <select id="getDetailData" parameterType="com.hengyi.vo.ConditionVo" resultType="java.util.LinkedHashMap">
+    SELECT * FROM Budgetdetail WHERE 1=1
+    <if test="year != null">
+      AND `year` = #{year}
+    </if>
+    <!--<if test="year == null">-->
+      <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
+    <!--</if>-->
+    <if test="month != null">
+      AND `month` = #{month}
+    </if>
+    <if test="company != null">
+      AND company = #{company,jdbcType=VARCHAR}
+    </if>
+    <if test="product != null">
+      AND product = #{product,jdbcType=VARCHAR}
+    </if>
+    <if test="workshop != null">
+      AND workshop = #{workshop,jdbcType=VARCHAR}
+    </if>
+    <if test="productLine != null">
+      AND line = #{productLine,jdbcType=VARCHAR}
+    </if>
+    <if test="spec != null">
+      AND spec = #{spec,jdbcType=VARCHAR}
+    </if>
+    ORDER BY `year`,`month`,company,product,spec,yarnKind
+    <include refid="page" />
+  </select>
+  <!--获取字典表数据-->
+  <select id="getDictionary" resultMap="dictionaryMap">
+    SELECT * FROM SysDict
+  </select>
+  <!--获取总记录数-->
+  <select id="getTotalCount" resultType="java.lang.Long" parameterType="com.hengyi.vo.ConditionVo">
+    SELECT COUNT(*) FROM Budgetdetail WHERE 1=1
+    <if test="year != null">
+      AND `year` = #{year}
+    </if>
+    <!--<if test="year == null">-->
+    <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
+    <!--</if>-->
+    <if test="month != null">
+      AND `month` = #{month}
+    </if>
+    <if test="company != null">
+      AND company = #{company,jdbcType=VARCHAR}
+    </if>
+    <if test="product != null">
+      AND product = #{product,jdbcType=VARCHAR}
+    </if>
+    <if test="workshop != null">
+      AND workshop = #{workshop,jdbcType=VARCHAR}
+    </if>
+    <if test="productLine != null">
+      AND line = #{productLine,jdbcType=VARCHAR}
+    </if>
+    <if test="spec != null">
+      AND spec = #{spec,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <!--获取物料详情值-->
+  <select id="getCostDetail" resultType="com.hengyi.bean.MaterialcostdetailsBean" parameterType="java.lang.Integer">
+    SELECT id id,consumption consumption,unit_price unitPrice,material_name materialName,state state,price price FROM MaterialCostDetails WHERE id = #{id,jdbcType=INTEGER}
+  </select>
+</mapper>

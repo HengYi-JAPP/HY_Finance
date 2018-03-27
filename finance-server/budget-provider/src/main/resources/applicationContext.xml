@@ -60,10 +60,11 @@
 
     <!-- 让spring管理sqlsessionfactory 使用mybatis和spring整合包中的 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatisConfig.xml" />
         <!-- 数据库连接池 -->
         <property name="dataSource" ref="dataSource" />
         <!-- 加载mybatis的配置文件 -->
-        <property name="mapperLocations" value="classpath*:*/*/mapper/*.xml"/>
+        <property name="mapperLocations" value="classpath*:/mapper/*.xml"/>
     </bean>
     <!-- mapper扫描器 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">

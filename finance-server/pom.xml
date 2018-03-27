@@ -80,11 +80,24 @@
             <artifactId>japp-sap-core</artifactId>
             <version>1.0.1</version>
         </dependency>
+        <!--引入servlet包-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
         <!--edas-->
         <dependency>
             <groupId>com.alibaba.edas</groupId>
             <artifactId>edas-sdk</artifactId>
             <version>1.5.4</version>
+        </dependency>
+        <!--引入fastJson包-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.38</version>
         </dependency>
         <!--spring引入-->
         <dependency>
@@ -173,6 +186,12 @@
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
             <version>2.7.0</version>
+        </dependency>
+        <!--上传下载包-->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.1</version>
         </dependency>
     </dependencies>
 
