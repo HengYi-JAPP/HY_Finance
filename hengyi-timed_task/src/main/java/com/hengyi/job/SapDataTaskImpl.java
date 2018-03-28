@@ -41,7 +41,7 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-    @Scheduled(cron = "0 0 4 * * ?")
+    @Scheduled(cron = "0 16 8 * * ?")
     public void getsapdata() {
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
         financeDataMapper.deleteFinanceSapDatabymonth(sapDataMonthBean);//清空原有数据，重新同步

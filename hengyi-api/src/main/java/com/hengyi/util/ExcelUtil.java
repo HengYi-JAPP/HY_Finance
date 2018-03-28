@@ -22,6 +22,7 @@ public class ExcelUtil {
             switch (cell.getCellType()) {
                 case HSSFCell.CELL_TYPE_NUMERIC:
                     strCell = String.valueOf(cell.getNumericCellValue());
+
                     break;
                 case HSSFCell.CELL_TYPE_STRING:
                     strCell = cell.getStringCellValue();
@@ -39,7 +40,29 @@ public class ExcelUtil {
         }
     }
 
+    public static String changeinttostring(Cell cell) {
+        String strCell = "";
+        if (cell != null) {
+            switch (cell.getCellType()) {
+                case HSSFCell.CELL_TYPE_NUMERIC:
+                    strCell = String.valueOf((int) cell.getNumericCellValue());
 
+                    break;
+                case HSSFCell.CELL_TYPE_STRING:
+                    strCell = cell.getStringCellValue();
+                    break;
+                case HSSFCell.CELL_TYPE_BOOLEAN:
+                    strCell = String.valueOf(cell.getBooleanCellValue());
+                    break;
+                default:
+                    strCell = cell.getStringCellValue();
+                    break;
+            }
+            return strCell;
+        } else {
+            return null;
+        }
+    }
 
 
 }

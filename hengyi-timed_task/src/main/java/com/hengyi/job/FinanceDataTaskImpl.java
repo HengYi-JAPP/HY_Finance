@@ -42,7 +42,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * 从SAP定期同步数据到本系统Mysql数据库,将物料描述分解成生产线、规格、产品等信息
      */
     @Override
-    @Scheduled(cron = "0 0 10 * * ?")
+    @Scheduled(cron = "15 1 8 * * ?")
     public void productlinedatatask() {
         ArrayList<MaterialOfLineSelectBean> materialoflinelist = new ArrayList<MaterialOfLineSelectBean>();
         ArrayList<BudgetdetailBean> budgetdetailBeanlist = new ArrayList<BudgetdetailBean>();
@@ -58,8 +58,8 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
         for (MaterialOfLineSelectBean materialOfLineSelectBean : materialoflinelist) {
             boolean budgetdetailBeanexist = false;
             for (MaterialMatchBean materialMatchBean : materialmatchlist) {
-                if ((materialMatchBean.getMaterialId() != null && StringUtil.equals(materialOfLineSelectBean.getCostMaterialId(), "00000000" + materialMatchBean.getMaterialId()))
-                        || (materialMatchBean.getCostId() != null && StringUtil.equals(materialOfLineSelectBean.getCostId(), materialMatchBean.getCostId()) && StringUtil.equals(materialMatchBean.getState(), materialOfLineSelectBean.getState()))) {
+                if ((materialMatchBean.getMaterialId() != null && StringUtil.equals(materialOfLineSelectBean.getCostMaterialId(), "00000000" + materialMatchBean.getMaterialId())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))
+                        || (materialMatchBean.getCostId() != null && StringUtil.equals(materialOfLineSelectBean.getCostId(), materialMatchBean.getCostId()) && StringUtil.equals(materialMatchBean.getState(), materialOfLineSelectBean.getState())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))) {
                     for (BudgetdetailBean budgetdetailBean : budgetdetailBeanlist) {
                         if (StringUtil.equals(budgetdetailBean.getCompany(), materialOfLineSelectBean.getCompany())
                                 && StringUtil.equals(budgetdetailBean.getProduct(), materialOfLineSelectBean.getProductName())
@@ -75,10 +75,11 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                             boolean materialcostdetailsBeanexist = false;
                             for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
                                 if (StringUtil.equals(materialcostdetailsBean.getMaterialName(), materialMatchBean.getMaterialName())) {
-                                    materialcostdetailsBean.setPrice(MathUtil.add(materialcostdetailsBean.getPrice(), MathUtil.divide(materialOfLineSelectBean.getMoney(), materialOfLineSelectBean.getCostQuantity())));
+
                                     materialcostdetailsBean.setConsumption(MathUtil.add(materialcostdetailsBean.getConsumption(), MathUtil.divide(materialOfLineSelectBean.getCostQuantity(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000")))));
                                     materialcostdetailsBean.setState(materialOfLineSelectBean.getState());
                                     materialcostdetailsBean.setUnitPrice(MathUtil.add(materialcostdetailsBean.getUnitPrice(), MathUtil.divide(materialOfLineSelectBean.getMoney(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000")))));
+                                    materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getUnitPrice(),materialcostdetailsBean.getConsumption()));
                                     materialcostdetailsBeanexist = true;
                                     break;
                                 }
@@ -133,7 +134,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
 
 
     @Override
-    @Scheduled(cron = "10 8 23 * * ?")
+    @Scheduled(cron = "10 1 14 * * ?")
     public void companyproductdatatask () throws Exception {
         ArrayList<Map<String, Object>> budgetresult = financeDataMapper.selectbudgetdata();
         ArrayList<BudgetdetailBean> Budgetdetaillist = new ArrayList<BudgetdetailBean>();
@@ -303,7 +304,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
     }
 
 
-    @Scheduled(cron = "20 26 18 * * ?")
+    @Scheduled(cron = "0 56 11 * * ?")
     public void exceltest() throws Exception {
         System.out.println("excel");
         File file = new File("C:\\Users\\38521\\Documents\\Tencent Files\\385213918\\FileRecv\\六家公司_预算单耗&单价.xlsx");
@@ -318,21 +319,21 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
 
         //遍历所有的sheet
         for (int j = 0; j < book.getNumberOfSheets(); j++) {
-
             // 获取当前excel中sheet的下标：0开始
             Sheet sheet = book.getSheetAt(j);   // 遍历Sheet
-
             //遍历所有的行和列
             for (int i = 0; i < sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
+                if (row!=null){
+                    continue;
+                }
 
-                if (i >= 4) {
+                if (i >= 4&&row.getCell(0)!=null&&!ExcelUtil.changetostring(row.getCell(0)).equals("")) {
                     //一行数据作为一个对象插入
                     BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
-
                     for (int k = 0; k < sheet.getRow(0).getLastCellNum(); k++) {
 
-                        if (k > 11) {
+                        if (68> k&&k > 11) {
                             //单耗
                             Cell cell = row.getCell(k);
                             //单价
@@ -348,22 +349,16 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                             mcdb.setMaterialName(ExcelUtil.changetostring(cell_name));
                             //单耗
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell))) {
-
-
                                 mcdb.setConsumption(new BigDecimal((ExcelUtil.changetostring(cell))));
-
                             }else {
                                 continue;
                             }
-
                             //单价
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price))) {
                                 mcdb.setPrice(new BigDecimal(ExcelUtil.changetostring(cell_price)));
                             }else {
                                 continue;
                             }
-
-
                             //单位成本
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price)) && StringUtil.isNotEmpty(ExcelUtil.changetostring(cell))) {
                                 BigDecimal decimal = new BigDecimal(ExcelUtil.changetostring(cell)).multiply(new BigDecimal(ExcelUtil.changetostring(cell_price)));
@@ -379,8 +374,6 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                             mcdb.setField(fields.get(0));
                             budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(mcdb);}
                         }
-
-
                     }
 
                     Cell cell_company = sheet.getRow(i).getCell(0);
@@ -396,13 +389,13 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                     Cell cell_dayProduct = sheet.getRow(i).getCell(10);
                     Cell cell_budgetTotalProduct = sheet.getRow(i).getCell(11);
 
-                    budgetdetailBean.setCompany(ExcelUtil.changetostring(cell_company));
+                    budgetdetailBean.setCompany(ExcelUtil.changeinttostring(cell_company));
 
-                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_month))) {
-                        budgetdetailBean.setMonth(new BigDecimal(ExcelUtil.changetostring(cell_month)));
+                    if (StringUtil.isNotEmpty(ExcelUtil.changeinttostring(cell_month))) {
+                        budgetdetailBean.setMonth(new BigDecimal(ExcelUtil.changeinttostring(cell_month)));
                     }
-                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_year))) {
-                        budgetdetailBean.setYear(new BigDecimal(ExcelUtil.changetostring(cell_year)));
+                    if (StringUtil.isNotEmpty(ExcelUtil.changeinttostring(cell_year))) {
+                        budgetdetailBean.setYear(new BigDecimal(ExcelUtil.changeinttostring(cell_year)));
                     }
                     budgetdetailBean.setProduct(ExcelUtil.changetostring(cell_product));
                     budgetdetailBean.setWorkshop(ExcelUtil.changetostring(cell_workshop));
@@ -426,9 +419,6 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
 
                     budgetdetailBeanList.add(budgetdetailBean);
                 }
-
-
-
             }
             for (BudgetdetailBean budgetdetailBean : budgetdetailBeanList) {
                 for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
@@ -439,6 +429,115 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
         }
     }
 
+
+
+
+
+    public void unitpricecomparetask ()  {
+        ArrayList<Map<String, Object>> budgetresult = financeDataMapper.selectbudgetdata();
+        ArrayList<BudgetdetailBean> Budgetdetaillist = new ArrayList<BudgetdetailBean>();
+        for (Map<String, Object> singleRecord : budgetresult) {
+            BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
+            if (singleRecord.get("id") instanceof Integer) {
+                budgetdetailBean.setId(new BigDecimal((Integer) singleRecord.get("id")));
+
+            }
+            if (singleRecord.get("year") instanceof Integer) {
+                budgetdetailBean.setYear(new BigDecimal((Integer) singleRecord.get("year")));
+
+            }
+            if (singleRecord.get("month") instanceof Integer) {
+                budgetdetailBean.setMonth(new BigDecimal((Integer) singleRecord.get("month")));
+
+            }
+            if (singleRecord.get("company") instanceof String) {
+                budgetdetailBean.setCompany((String) singleRecord.get("company"));
+
+            }
+            if (singleRecord.get("product") instanceof String) {
+                budgetdetailBean.setProduct((String) singleRecord.get("product"));
+
+            }
+            if (singleRecord.get("line") instanceof String) {
+                budgetdetailBean.setLine((String) singleRecord.get("line"));
+
+            }
+            if (singleRecord.get("spec") instanceof String) {
+                budgetdetailBean.setSpec((String) singleRecord.get("spec"));
+
+            }
+            if (singleRecord.get("yarnKind") instanceof String) {
+                budgetdetailBean.setYarnkind((String) singleRecord.get("yarnKind"));
+
+            }
+            if (singleRecord.get("workshop") instanceof String) {
+                budgetdetailBean.setWorkshop((String) singleRecord.get("workshop"));
+
+            }
+            if (singleRecord.get("AArate") instanceof Double) {
+                budgetdetailBean.setAarate(new BigDecimal((Double) singleRecord.get("AArate")));
+
+            }
+            if (singleRecord.get("FSrate") instanceof Double) {
+                budgetdetailBean.setFsrate(new BigDecimal((Double) singleRecord.get("FSrate")));
+
+            }
+            if (singleRecord.get("day_product") instanceof Double) {
+                budgetdetailBean.setDayProduct(new BigDecimal((Double) singleRecord.get("day_product")));
+
+            }
+            if (singleRecord.get("budget_total_product") instanceof Double) {
+                budgetdetailBean.setBudgetTotalProduct(new BigDecimal((Double) singleRecord.get("budget_total_product")));
+
+            }
+            if (singleRecord.get("type") instanceof String) {
+                budgetdetailBean.setType((String) singleRecord.get("type"));
+            }
+            for (Map.Entry<String, Object> entry : singleRecord.entrySet()) {
+                if (StringUtil.equals(entry.getKey(), "type")
+                        || StringUtil.equals(entry.getKey(), "budget_total_product")
+                        || StringUtil.equals(entry.getKey(), "day_product")
+                        || StringUtil.equals(entry.getKey(), "FSrate")
+                        || StringUtil.equals(entry.getKey(), "AArate")
+                        || StringUtil.equals(entry.getKey(), "workshop")
+                        || StringUtil.equals(entry.getKey(), "yarnKind")
+                        || StringUtil.equals(entry.getKey(), "product")
+                        || StringUtil.equals(entry.getKey(), "company")
+                        || StringUtil.equals(entry.getKey(), "year")
+                        || StringUtil.equals(entry.getKey(), "month")
+                        || StringUtil.equals(entry.getKey(), "id")
+                        || StringUtil.equals(entry.getKey(), "month")
+                        ) {
+                    continue;
+                }
+                if (entry.getValue() instanceof Integer) {
+
+                    MaterialcostdetailsBean materialcostdetailsBean = financeDataMapper.selectcostdetailbyid((Integer) entry.getValue());
+                    if (entry.getKey().equals("mate_pta")){
+                        System.out.println(materialcostdetailsBean);
+                    }
+                    if (materialcostdetailsBean != null) {
+                        materialcostdetailsBean.setField(entry.getKey());
+                        budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(materialcostdetailsBean);
+                    }
+                }
+            }
+            Budgetdetaillist.add(budgetdetailBean);
+        }
+           for (BudgetdetailBean budgetdetailBean:Budgetdetaillist){
+            if (StringUtil.equals(budgetdetailBean.getType(),"实际")){
+                for (BudgetdetailBean budgetdetailBean1:Budgetdetaillist){
+                    if (StringUtil.equals(budgetdetailBean1.getType(),"预算")){
+
+
+
+
+                    }
+                }
+            }
+           }
+
+    }
 }
 
 

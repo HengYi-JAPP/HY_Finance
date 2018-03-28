@@ -122,7 +122,7 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
         </foreach>
         )
         VALUES (
-        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际',
+        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际',
         <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator="," >
             #{item.id}
         </foreach>
