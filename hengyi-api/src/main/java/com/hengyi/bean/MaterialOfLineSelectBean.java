@@ -48,25 +48,7 @@ public class MaterialOfLineSelectBean {
     public MaterialOfLineSelectBean() {
     }
 
-    public MaterialOfLineSelectBean(String company, BigDecimal year, BigDecimal month, String productName, String productSpecifications, String productLine, String state, String workShop, String costId, String costDescribe, String costMaterialId, String costMaterialDescribe, BigDecimal orderProductQuantity, BigDecimal money, BigDecimal costQuantity, String productGrade, String productYarn) {
-        this.company = company;
-        this.year = year;
-        this.month = month;
-        this.productName = productName;
-        this.productSpecifications = productSpecifications;
-        this.productLine = productLine;
-        this.state = state;
-        this.workShop = workShop;
-        this.costId = costId;
-        this.costDescribe = costDescribe;
-        this.costMaterialId = costMaterialId;
-        this.costMaterialDescribe = costMaterialDescribe;
-        this.orderProductQuantity = orderProductQuantity;
-        this.money = money;
-        this.costQuantity = costQuantity;
-        this.productGrade = productGrade;
-        this.productYarn = productYarn;
-    }
+
 
     public String getWorkShop() {
         return workShop;
@@ -178,6 +160,7 @@ public class MaterialOfLineSelectBean {
 
     public void setMoney(BigDecimal money) {
         this.money = money;
+        this.money.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getCostQuantity() {
@@ -186,6 +169,7 @@ public class MaterialOfLineSelectBean {
 
     public void setCostQuantity(BigDecimal costQuantity) {
         this.costQuantity = costQuantity;
+        this.costQuantity.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public String getProductGrade() {

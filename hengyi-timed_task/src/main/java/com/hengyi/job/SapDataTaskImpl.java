@@ -1,13 +1,11 @@
 package com.hengyi.job;
 
-import com.hengyi.bean.FinanceSapDataInsertBean;
-import com.hengyi.bean.ProductMatchBean;
-import com.hengyi.bean.SapDataBean;
-import com.hengyi.bean.SapDataMonthBean;
+import com.hengyi.bean.*;
 import com.hengyi.mapper.FinanceDataMapper;
 import com.hengyi.sapmapper.SapDataMapper;
 import com.hengyi.util.DateUtil;
 import com.hengyi.util.MathUtil;
+import com.hengyi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -41,42 +39,56 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-    @Scheduled(cron = "0 16 8 * * ?")
+    @Scheduled(cron = "10 12 12 * * ?")
     public void getsapdata() {
+        //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
-        financeDataMapper.deleteFinanceSapDatabymonth(sapDataMonthBean);//清空原有数据，重新同步
-        //查找公司并放入集合
+        //查找所有公司并放入集合
         companylist = financeDataMapper.selectallcompany();
+        //将生产线匹配关系放入集合
         productmatchlist = financeDataMapper.selectproductmatch();
+        ArrayList<MaterialPriceBean> priceBeanArrayList=financeDataMapper.selectpricelist();
+        //清空原有数据，重新同步
+        financeDataMapper.deleteFinanceSapDatabymonth(sapDataMonthBean);
         for (String company : companylist) {
             //对每个公司进行操作
             sapDataMonthBean.setCompany(company);
+            //根据公司搜索miniData 的数据
             datalist = sapDataMapper.selectsapdatabycompany(sapDataMonthBean);
+            //遍历搜索结果并每次遍历插入一条数据到Mysql的FinanceSapData表
             for (SapDataBean sapDataBean : datalist) {
-                String productName = "";//产品
+                String productName = "";//产品名称
                 String productSpecifications = "";//规格
                 String productBatchNumber = "";//批号
                 String productGrade = "";//等级
                 String productLine = "";//生产线
                 String productYarn = "";//纱种
                 String[] productMatch= new String[1]; //生产线实际匹配关系  例如C1/C2/C3/C4 存在List中为  C1 C2 C3 C4 4个元素
+
+                //如果SAP产品物料描述不为空，则用-分割物料描述得到  产品名、规格、批号、等级、生产线、纱种
                 if (sapDataBean.getSapMaterialDescribe() != null) {
                     String[] str = sapDataBean.getSapMaterialDescribe().split("-");
 
                     if (str.length >= 4) {
                         productName = str[0];
-                        productSpecifications = str[1];
+                        if(str[0].equals("切片")&&str[1].equals(" ")){
+                            productSpecifications="半消光";
+                        }
+                        else{
+                            productSpecifications = str[1];
+                        }
                         productBatchNumber = str[2];
                         productGrade = str[3];
                         if (str.length == 6) {
                             productYarn = str[5];
                         }
                     }else{
+                        //如果物料描述分割后长度小于4
                         continue;
                     }
                     for (ProductMatchBean productMatchBean : productmatchlist) {
                         if (productMatchBean.getProductMaterialMatch() == null || productMatchBean.getProductMaterialMatch().equals("")) {
-                            break;
+                           continue;
                         }
                         if(productMatchBean.getProductSpecificationsMatch()==null){
                             productMatchBean.setProductSpecificationsMatch("");
@@ -103,27 +115,47 @@ public class SapDataTaskImpl implements SapDataTask {
                             break;
                         }
                     }
+
+                    //如果属于工资、水电等费用，则将其的总耗设为他的总金额，令其单价固定为1
                     if (sapDataBean.getCostMaterialDescribe()==null&&sapDataBean.getCostId()!=null){
-                        sapDataBean.setCostQuantity(sapDataBean.getMoney());
+                        BigDecimal bigDecimal=sapDataBean.getMoney();     //将其设置为值传递而非引用传递
+                        sapDataBean.setCostQuantity(bigDecimal);
                     }else{
-                        if (sapDataBean.getCostMaterialDescribe()!=null&&sapDataBean.getCostMaterialDescribe().matches("\\S*单瓦\\S*")){
+                        //如果该成本项物料是单瓦的纸箱，则总耗除以2
+                        if (sapDataBean.getCostMaterialDescribe()!=null&&sapDataBean.getCostMaterialDescribe().replaceAll(" ", "").matches("\\S*单瓦\\S*")){
                             sapDataBean.setCostQuantity(MathUtil.divide(sapDataBean.getCostQuantity(),new BigDecimal(2)));
                         }
                     }
+                    //遍历单价表中的单价，如果有提供单价，根据单价与金额来计算总耗
+                    for (MaterialPriceBean materialPriceBean:priceBeanArrayList){
+                        if ((StringUtil.equals("00000000"+materialPriceBean.getMaterialId(),sapDataBean.getCostMaterialId())
+                                ||StringUtil.equals(materialPriceBean.getCostId(),sapDataBean.getCostId()))
+                                &&StringUtil.equals(sapDataBean.getCompany(),materialPriceBean.getCompany())
+                                ){
+                            if (materialPriceBean.getProduct() !=null) {
+                               if ( StringUtil.equals(productName,materialPriceBean.getProduct())) {
+                                   sapDataBean.setCostQuantity(MathUtil.divide(sapDataBean.getMoney(),materialPriceBean.getPrice()));
+                               }
+                            }else{
+                                sapDataBean.setCostQuantity(MathUtil.divide(sapDataBean.getMoney(),materialPriceBean.getPrice()));
+                            }
+                        }
+                    }
 
+                    //根据生产线匹配关系，分摊他的产量、金额、总耗 到4条生产线
                     sapDataBean.setOrderProductQuantity(MathUtil.divide(sapDataBean.getOrderProductQuantity(),new BigDecimal(productMatch.length)));
                     sapDataBean.setMoney(MathUtil.divide(sapDataBean.getMoney(),new BigDecimal(productMatch.length)));
                     sapDataBean.setCostQuantity(MathUtil.divide(sapDataBean.getCostQuantity(),new BigDecimal(productMatch.length)));
                     for (int i=0;i<productMatch.length;i++){
                         productLine=productMatch[i];
                         FinanceSapDataInsertBean financeSapDataInsertBean = new FinanceSapDataInsertBean(sapDataBean, productName, productSpecifications, productBatchNumber, productGrade, productLine, productYarn);
-                        financeDataMapper.insertsapdata(financeSapDataInsertBean);
+                    financeDataMapper.insertsapdata(financeSapDataInsertBean);
                     }
                 }
             }
         }
 
-        System.out.println("同步完成了现在时间是" + DateFormat.getTimeInstance().format(new Date()));
+
     }
 
 

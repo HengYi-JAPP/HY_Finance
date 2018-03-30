@@ -77,8 +77,8 @@ public class FinanceSapDataInsertBean {
         this.month=sapDataBean.getMonth();
         this.costQuantity=sapDataBean.getCostQuantity();
         this.sapMaterialId=sapDataBean.getSapMaterialId();
-        this.unitPrice= MathUtil.divide(money,MathUtil.divide(orderProductQuantity,new BigDecimal("1000")));
-        this.consumption=MathUtil.divide(costQuantity,MathUtil.divide(orderProductQuantity,new BigDecimal("1000")));
+        this.unitPrice= MathUtil.divide(money,MathUtil.divide(orderProductQuantity,new BigDecimal("1000"))).setScale(5,   BigDecimal.ROUND_HALF_UP);;
+        this.consumption=MathUtil.divide(costQuantity,MathUtil.divide(orderProductQuantity,new BigDecimal("1000"))).setScale(5,   BigDecimal.ROUND_HALF_UP);;
         this.productName=productName;
         this.productSpecifications=productSpecifications;
         this.productBatchNumber=productBatchNumber;

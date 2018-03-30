@@ -129,6 +129,7 @@ public class BudgetdetailBean {
 
     public void setBudgetTotalProduct(BigDecimal budgetTotalProduct) {
         this.budgetTotalProduct = budgetTotalProduct;
+        this.budgetTotalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public String getType() {
@@ -157,22 +158,7 @@ public class BudgetdetailBean {
     public BudgetdetailBean() {
     }
 
-    public BudgetdetailBean(BigDecimal id, String company, BigDecimal month, String product, String workshop, String line, String spec, String yarnkind, BigDecimal aarate, BigDecimal fsrate, BigDecimal dayProduct, BigDecimal budgetTotalProduct, String type, ArrayList<MaterialcostdetailsBean> materialcostdetailsBeanArrayList) {
-        this.id = id;
-        this.company = company;
-        this.month = month;
-        this.product = product;
-        this.workshop = workshop;
-        this.line = line;
-        this.spec = spec;
-        this.yarnkind = yarnkind;
-        this.aarate = aarate;
-        this.fsrate = fsrate;
-        this.dayProduct = dayProduct;
-        this.budgetTotalProduct = budgetTotalProduct;
-        this.type = type;
-        this.materialcostdetailsBeanArrayList = materialcostdetailsBeanArrayList;
-    }
+
 
     @Override
     public String toString() {

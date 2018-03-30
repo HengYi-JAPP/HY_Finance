@@ -14,9 +14,9 @@ import java.util.ArrayList;
 @Repository
 public interface SapDataMapper {
     /**
-     * 按公司获得18年以后的数据
+     * 按公司、月份、年份 获取SAP中关于预算的数据（仅2018年以后的数据）
      *
-     * @param id
+     * @param
      * @return
      */
     ArrayList<SapDataBean> selectsapdatabycompany(SapDataMonthBean sapDataMonthBean);

@@ -10,8 +10,6 @@ public class UnitPriceCompareBean {
 
     private BigDecimal month;
     private BigDecimal year;
-
-
     private String product;
 
     private String workshop;
@@ -22,7 +20,9 @@ public class UnitPriceCompareBean {
 
     private String yarnkind;
 
+    private BigDecimal totalProduct;
     private BigDecimal budgetTotalProduct;
+
 
     private BigDecimal productUnitPrice;
     private BigDecimal checkProductUnitPrice;
@@ -107,6 +107,7 @@ public class UnitPriceCompareBean {
 
     public void setBudgetTotalProduct(BigDecimal budgetTotalProduct) {
         this.budgetTotalProduct = budgetTotalProduct;
+        this.budgetTotalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getProductUnitPrice() {
@@ -115,6 +116,7 @@ public class UnitPriceCompareBean {
 
     public void setProductUnitPrice(BigDecimal productUnitPrice) {
         this.productUnitPrice = productUnitPrice;
+        this.productUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getCheckProductUnitPrice() {
@@ -123,6 +125,7 @@ public class UnitPriceCompareBean {
 
     public void setCheckProductUnitPrice(BigDecimal checkProductUnitPrice) {
         this.checkProductUnitPrice = checkProductUnitPrice;
+        this.checkProductUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getCheckBudgetUnitPrice() {
@@ -131,6 +134,7 @@ public class UnitPriceCompareBean {
 
     public void setCheckBudgetUnitPrice(BigDecimal checkBudgetUnitPrice) {
         this.checkBudgetUnitPrice = checkBudgetUnitPrice;
+        this.checkBudgetUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getBudgetUnitPrice() {
@@ -139,5 +143,15 @@ public class UnitPriceCompareBean {
 
     public void setBudgetUnitPrice(BigDecimal budgetUnitPrice) {
         BudgetUnitPrice = budgetUnitPrice;
+        BudgetUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
+    }
+
+    public BigDecimal getTotalProduct() {
+        return totalProduct;
+    }
+
+    public void setTotalProduct(BigDecimal totalProduct) {
+        this.totalProduct = totalProduct;
+        this.totalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 }

@@ -17,7 +17,7 @@
     <result column="PRODUCT" property="orderProductQuantity" jdbcType="DOUBLE" />
     <result column="PRUDUCT" property="orderProductQuantity" jdbcType="DOUBLE" />
     <result column="MONEY" property="money" jdbcType="DOUBLE" />
-    <result column="KWMENG" property="costQuantity" jdbcType="DOUBLE" />
+    <result column="KWMENG" property="costQuantity" jdbcType="DECIMAL" />
     <result column="NAME" property="workShop" jdbcType="NVARCHAR" />
   </resultMap>
 
@@ -41,9 +41,9 @@
           select a.*,c.miaoshu,e.kind,d.describe,g.matnr matnr_cp,g.maktx,g.wemng,decode(e.kind,null,d.describe,decode(e.kind,1,'聚酯阶段','纺丝阶段'))state from
           (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,sum(wkgbtr)sum_money,bukrs,sum(mbgbtr)sum_kwmeng from sap_coep
           where objnr like '%OR00000%'
-          and objnr not in ('OR000000020000','OR000000020001','OR000000020002','OR000000020003','OR000000020004','OR000000020005','OR000000020007',
-          'OR000000020008','OR000000020013','OR000000020040','OR000000020041','OR000000020060','OR000000020100','OR000000020120','OR000000020121'
-          )
+          --and objnr not in ('OR000000020000','OR000000020001','OR000000020002','OR000000020003','OR000000020004','OR000000020005','OR000000020007',
+          --'OR000000020008','OR000000020013','OR000000020040','OR000000020041','OR000000020060','OR000000020100','OR000000020120','OR000000020121'
+          --)
           --and perio=2
           and gjahr>=2018
           and substr(objnr,8,7)>1000000
@@ -71,7 +71,7 @@
           group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)g
           on substr(a.objnr,3)=g.aufnr
           and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
-          where a.kstar not in ('0050019901','0050010018','0050019998','0050010001','0050010002','0050010003','0050010004','0050010006','0050010033')
+          --where a.kstar not in ('0050019901','0050010018','0050019998','0050010001','0050010002','0050010003','0050010004','0050010006','0050010033')
           )a
           left join sap_makt e
           on a.matnr=e.matnr
@@ -125,7 +125,7 @@
           and gjahr>=2018
           and substr(objnr,8,7)>1000000
           and bukrs in ('3000')
-          and kstar in ('50010007','50010008','50010017','A101','A102' ,'A103','A104','A105','A108')
+          and kstar in ('0050010007','0050010008','0050010017','A101','A102' ,'A103','A104','A105','A108')
           group by objnr,perio,gjahr,bukrs)a
 
           left join
@@ -189,7 +189,7 @@
           on a.matnr_mx=e.matnr
           left join sap_makt f
           on a.matnr_mx=f.matnr
-          where a.kstar not in ('0050019901','0050010018','0050019998')
+          --where a.kstar not in ('0050019901','0050010018','0050019998')
           )main_b
           on main_a.objnr=substr(main_b.objnr,-4)
           --and main_a.kstar=main_b.kstar
@@ -199,6 +199,7 @@
           --and main_a.state=main_b.state
           )a
           left join
+          --车间匹配
           ( select distinct h.dispo,h.aufnr,kk.name from
           (select  distinct a.aufnr,a.bukrs,b.dispo from  YUSUAN_DATE_PRODUCT_ALL a
           left join sap_afko b
@@ -217,7 +218,7 @@
           --燃料费明细比例
           (SELECT AA.*,BB.NAME
           FROM
-          (select a.*,nvl(TO_CHAR(b.matnr_mx),'ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
+          (select a.*,nvl(TO_CHAR(b.matnr_mx),'00000000ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
           when a.bukrs='3000' and a.sum_money>b.smoney then b.money/a.sum_money
           else b.money/b.smoney end rate from
           --
@@ -318,7 +319,7 @@
           group by objnr,KSTAR,perio,gjahr,matnr,bukrs)a
           left join sap_makt b
           on a.matnr_mx=b.matnr
-          where matnr_mx !=' '
+          where matnr_mx != ' '
           )
           group by objnr,perio,gjahr,bukrs,matnr_mx,maktx)b
           on a.perio=b.perio
@@ -328,7 +329,7 @@
 
 
           UNION  all
-          select distinct a.*,'ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
+          select distinct a.*,'00000000ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
           from
           (
           select A.KSTAR,a.perio,a.gjahr,a.bukrs,a.id,a.miaoshu,a.sum_money+nvl(b.sum_money,0) sum_money from
@@ -455,14 +456,15 @@
           ON AA.ID=BB.ID AND AA.BUKRS=BB.BUKRS
           )Q
           ON P.NAME=Q.NAME AND P.KSTAR=Q.KSTAR AND P.PERIO=Q.PERIO AND P.GJAHR=Q.GJAHR
+          where p.kstar not in (
+          '0050010001','0050010002','0050010003','0050010004','0050010005','0050010006','0050010033','0050010009',
+          '0050010013','0050010014','0050010015','0050010016','0050010018','0050010031','0050010036','0050010037',
+          '0050010040','0050010041','0050010044','0050010045','0050010046','0050019901','0050019902','0050010023','0050019998')
 
-       ) WHERE PERIO=#{month} and   GJAHR=#{year}
+          ) WHERE PERIO=#{month} and   GJAHR=#{year}
       </if>
       <if test="company == '2000' ">
           SELECT * FROM(
-          -----聚合物2018年一月份实际成本明细数据
-          --控制参数perio(月)；gjahr(年)；a.date1(时间年月)
-          --字段解释：matnr_mx(明细物料号)；maktx_cp(产成品物料号)；product(产量)；money(金额)；kwmeng(数量)
           SELECT P.aufnr,P.kstar,P.perio,P.gjahr,NVL(Q.MATNR_MX,P.MATNR_MX)MATNR_MX,NVL(Q.MAKTX,P.MAKTX_MX)MAKTX_MX,P.state,P.leibie,P.miaoshu,
           P.bukrs,P.matnr_cp,P.maktx_cp,P.product,NVL(Q.RATE,1)*P.money money,NVL(Q.RATE,1)*P.kwmeng KWMENG,P.MEINb,P.NAME
           FROM
@@ -477,9 +479,9 @@
           select a.*,c.miaoshu,e.kind,d.describe,g.matnr matnr_cp,g.maktx,g.wemng,decode(e.kind,null,d.describe,decode(e.kind,1,'聚酯阶段','纺丝阶段'))state from
           (select kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,sum(wkgbtr)sum_money,bukrs,sum(mbgbtr)sum_kwmeng from sap_coep
           where objnr like '%OR00000%'
-          and objnr not in ('OR000000020000','OR000000020001','OR000000020002','OR000000020003','OR000000020004','OR000000020005','OR000000020007',
-          'OR000000020008','OR000000020013','OR000000020040','OR000000020041','OR000000020060','OR000000020100','OR000000020120','OR000000020121'
-          )
+          --and objnr not in ('OR000000020000','OR000000020001','OR000000020002','OR000000020003','OR000000020004','OR000000020005','OR000000020007',
+          --'OR000000020008','OR000000020013','OR000000020040','OR000000020041','OR000000020060','OR000000020100','OR000000020120','OR000000020121'
+          --)
           --and perio=2
           and gjahr>=2018
           and substr(objnr,8,7)>1000000
@@ -507,13 +509,16 @@
           group by a.aufnr,a.matnr,TO_char(date1,'yyyy-mm'),b.maktx,a.bukrs)g
           on substr(a.objnr,3)=g.aufnr
           and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
-          where a.kstar not in ('0050019901','0050010018','0050019998','0050010001','0050010002','0050010003','0050010004','0050010006','0050010033')
+          --where a.kstar not in ('0050019901','0050010018','0050019998','0050010001','0050010002','0050010003','0050010004','0050010006','0050010033')
           )a
           left join sap_makt e
           on a.matnr=e.matnr
-          where (a.maktx like '%dtex%' or a.maktx like '%切片%'  or a.maktx like '%雪尼尔%')
+          where (a.maktx like '%dtex%' or a.maktx like '%切片%' or a.maktx like '%雪尼尔%' )
           and a.bukrs in ('2000')
+
+
           union all
+
 
           select main_a.aufnr,main_b.kstar,main_b.perio,main_b.gjahr,main_b.matnr_mx,main_b.maktx_mx,
           case when  main_b.miaoshu in ('生产成本-一般贸易-纸管','生产成本-包装物') then '纺丝阶段' else
@@ -558,7 +563,7 @@
           and gjahr>=2018
           and substr(objnr,8,7)>1000000
           and bukrs in ('2000')
-          and kstar in ('50010007','50010008','50010017','A101','A102' ,'A103','A104','A105','A108')
+          and kstar in ('0050010007','0050010008','0050010017','A101','A102' ,'A103','A104','A105','A108')
           group by objnr,perio,gjahr,bukrs)a
 
           left join
@@ -573,7 +578,7 @@
           on substr(a.objnr,3)=g.aufnr
           and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
           )a
-          where (a.maktx like '%dtex%' or a.maktx like '%切片%' )
+          where (a.maktx like '%dtex%' or a.maktx like '%切片%' or a.maktx like '%雪尼尔%')
           and a.bukrs in ('2000')
 
           )b
@@ -622,7 +627,7 @@
           on a.matnr_mx=e.matnr
           left join sap_makt f
           on a.matnr_mx=f.matnr
-          where a.kstar not in ('0050019901','0050010018','0050019998')
+          --where a.kstar not in ('0050019901','0050010018','0050019998')
           )main_b
           on main_a.objnr=substr(main_b.objnr,-4)
           --and main_a.kstar=main_b.kstar
@@ -632,6 +637,7 @@
           --and main_a.state=main_b.state
           )a
           left join
+          --车间匹配
           ( select distinct h.dispo,h.aufnr,kk.name from
           (select  distinct a.aufnr,a.bukrs,b.dispo from  YUSUAN_DATE_PRODUCT_ALL a
           left join sap_afko b
@@ -650,8 +656,8 @@
           --燃料费明细比例
           (SELECT AA.*,BB.NAME
           FROM
-          (select a.*,nvl(TO_CHAR(b.matnr_mx),'ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
-          when a.bukrs='3000' and a.sum_money>b.smoney then b.money/a.sum_money
+          (select a.*,nvl(TO_CHAR(b.matnr_mx),'00000000ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
+          when a.bukrs='2000' and a.sum_money>b.smoney then b.money/a.sum_money
           else b.money/b.smoney end rate from
           --
           (
@@ -671,7 +677,7 @@
           --and perio=2
           and gjahr>=2018
           and substr(objnr,8,7)>1000000
-          --and bukrs in ('3000')
+          --and bukrs in ('2000')
           group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,bukrs)a
           left join cost_centre c
           on a.kstar=c.kstAR
@@ -681,7 +687,7 @@
           )a
           left join sap_makt e
           on a.matnr=e.matnr
-          --where a.bukrs in ('3000')
+          --where a.bukrs in ('2000')
           )A
           LEFT JOIN
           (select distinct h.dispo,h.aufnr,kk.name from
@@ -760,8 +766,9 @@
           and a.id=substr(b.objnr,-7)
 
 
+
           UNION  all
-          select distinct a.*,'ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
+          select distinct a.*,'00000000ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
           from
           (
           select A.KSTAR,a.perio,a.gjahr,a.bukrs,a.id,a.miaoshu,a.sum_money+nvl(b.sum_money,0) sum_money from
@@ -781,7 +788,7 @@
           --and perio=2
           and gjahr>=2018
           and substr(objnr,8,7)>1000000
-          --and bukrs in ('3000')
+          --and bukrs in ('2000')
           group by kokrs,objnr,KSTAR,perio,gjahr,matnr,MEINb,PAROB,bukrs)a
           left join cost_centre c
           on a.kstar=c.kstAR
@@ -791,7 +798,7 @@
           )a
           left join sap_makt e
           on a.matnr=e.matnr
-          --where a.bukrs in ('3000')
+          --where a.bukrs in ('2000')
           )A
           LEFT JOIN
           (select distinct h.dispo,h.aufnr,kk.name from
@@ -860,14 +867,14 @@
           group by objnr,KSTAR,perio,gjahr,matnr,bukrs)a
           left join sap_makt b
           on a.matnr_mx=b.matnr
-          where matnr_mx != ' '
+          where matnr_mx  != ' '
           )
           group by objnr,perio,gjahr,bukrs)b
           on a.perio=b.perio
           and a.gjahr=b.gjahr
           and a.bukrs=b.bukrs
           and a.id=substr(b.objnr,-7)
-          where a.bukrs='3000' and a.sum_money>b.money)AA
+          where a.bukrs='2000' and a.sum_money>b.money)AA
           LEFT JOIN
           (select a.*,b.id from
           (select distinct H.BUKRS,h.dispo,kk.name from
@@ -888,6 +895,10 @@
           ON AA.ID=BB.ID AND AA.BUKRS=BB.BUKRS
           )Q
           ON P.NAME=Q.NAME AND P.KSTAR=Q.KSTAR AND P.PERIO=Q.PERIO AND P.GJAHR=Q.GJAHR
+          where p.kstar not in (
+          '0050010001','0050010002','0050010003','0050010004','0050010005','0050010006','0050010033','0050010009',
+          '0050010013','0050010014','0050010015','0050010016','0050010018','0050010031','0050010036','0050010037',
+          '0050010040','0050010041','0050010044','0050010045','0050010046','0050019901','0050019902','0050010023','0050019998')
           ) WHERE PERIO=#{month} and GJAHR=#{year}
       </if>
       <if test="company == '1000' ">
@@ -924,8 +935,10 @@
           left join sap_makt b
           on a.matnr=b.matnr
           ))a
-          where kstar not in ('0050019901','0050010018','0050019902','0050010003')
-          and maktx_cp not like '%POY%'
+          where
+          --kstar not in ('0050010001','0050010002','0050010003','0050010004','0050010005','0050010006','0050010033','0050010009','0050010013','0050010014','0050010015','0050010016','0050010018','0050010031','0050010036','0050010037',
+          --'0050010040','0050010041','0050010044','0050010045','0050010046','0050019901','0050019902','0050010023')
+          maktx_cp not like '%POY%'
           and maktx_cp not like '%切片%'
           order by a.bukrs,objnr,kstar)a
           left join
@@ -943,6 +956,10 @@
           and h.bukrs=kk.burks
           where kk.name is not null )b
           on a.aufnr=b.aufnr
+          where a.kstar not in (
+          '0050010001','0050010002','0050010003','0050010004','0050010005','0050010006','0050010033','0050010009',
+          '0050010013','0050010014','0050010015','0050010016','0050010018','0050010031','0050010036','0050010037',
+          '0050010040','0050010041','0050010044','0050010045','0050010046','0050019901','0050019902','0050010023','0050019998')
           ) WHERE PERIO=#{month} and GJAHR=#{year}
       </if>
       <if test="company == '9300' ">
@@ -982,15 +999,18 @@
           )d
           on substr(a.objnr,3)=d.aufnr
           and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
-          where a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
-          and (d.maktx not like '%熔体%' or d.maktx is null)
+          where
+          --a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
+
+          (d.maktx not like '%熔体%' or d.maktx is null)
           --;--
           union all
           ---9100，9200，9300聚酯阶段成本
           select substr(a.objnr,3)aufnr,b.kstar kstar,a.perio,a.gjahr,b.matnr matnr_mx,b.maktx_mx,'聚酯阶段' state,'一般贸易'leibie
           ,b.miaoshu,a.bukrs,a.matnr_cp,a.maktx maktx_cp,a.product,
-          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money,2) money,
-          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_kwmeng,2) KWMENG,MEINb
+          b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money money,
+          b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money/
+          decode(b.matnr,' ',1,DECODE(b.kwmeng_jz,0,1,(b.money_jz/b.kwmeng_jz))) KWMENG,MEINb
 
           from
           --a选出订单中含有熔体的那一笔
@@ -1022,7 +1042,7 @@
           on substr(a.objnr,3)=d.aufnr
           and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
           where f.maktx like '%熔体%'
-          --and a.kstar not in ('0050019901','0050010018')
+          and a.kstar not in ('0050019901','0050010018')
           )a
           left join
           --b各工厂熔体各项制造费用
@@ -1049,7 +1069,7 @@
           and a.bukrs=b.bukrs
           and a.perio=b.perio
           and a.gjahr=b.gjahr
-          where a.kstar not in ('0050010001','0050010002')
+          --where a.kstar not in ('0050010001','0050010002')
           order by  aufnr,kstar
           )a
           left join
@@ -1071,7 +1091,7 @@
           --燃料费明细比例
           (SELECT AA.*,BB.NAME
           FROM
-          (select a.*,nvl(TO_CHAR(b.matnr_mx),'ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
+          (select a.*,nvl(TO_CHAR(b.matnr_mx),'00000000ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
           when a.bukrs='3000' and a.sum_money>b.smoney then b.money/a.sum_money
           else b.money/b.smoney end rate from
           --
@@ -1172,7 +1192,7 @@
           group by objnr,KSTAR,perio,gjahr,matnr,bukrs)a
           left join sap_makt b
           on a.matnr_mx=b.matnr
-          where matnr_mx !=' '
+          where matnr_mx  != ' '
           )
           group by objnr,perio,gjahr,bukrs,matnr_mx,maktx)b
           on a.perio=b.perio
@@ -1182,7 +1202,7 @@
 
 
           UNION  all
-          select distinct a.*,'ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
+          select distinct a.*,'00000000ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
           from
           (
           select A.KSTAR,a.perio,a.gjahr,a.bukrs,a.id,a.miaoshu,a.sum_money+nvl(b.sum_money,0) sum_money from
@@ -1281,7 +1301,7 @@
           group by objnr,KSTAR,perio,gjahr,matnr,bukrs)a
           left join sap_makt b
           on a.matnr_mx=b.matnr
-          where matnr_mx != ' '
+          where matnr_mx  != ' '
           )
           group by objnr,perio,gjahr,bukrs)b
           on a.perio=b.perio
@@ -1309,6 +1329,10 @@
           ON AA.ID=BB.ID AND AA.BUKRS=BB.BUKRS
           )Q
           ON P.NAME=Q.NAME AND P.KSTAR=Q.KSTAR AND P.PERIO=Q.PERIO AND P.GJAHR=Q.GJAHR
+          where p.kstar not in (
+          '0050010001','0050010002','0050010003','0050010004','0050010005','0050010006','0050010033','0050010009',
+          '0050010013','0050010014','0050010015','0050010016','0050010018','0050010031','0050010036','0050010037',
+          '0050010040','0050010041','0050010044','0050010045','0050010046','0050019901','0050019902','0050010023','0050019998')
 
           ) WHERE PERIO=#{month} and GJAHR=#{year}
       </if>
@@ -1354,15 +1378,17 @@
           )d
           on substr(a.objnr,3)=d.aufnr
           and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
-          where a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
-          and (d.maktx not like '%熔体%' or d.maktx is null)
+          where
+          --a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
+          (d.maktx not like '%熔体%' or d.maktx is null)
           --;--
           union all
           ---9100，9200，9300聚酯阶段成本
           select substr(a.objnr,3)aufnr,b.kstar kstar,a.perio,a.gjahr,b.matnr matnr_mx,b.maktx_mx,'聚酯阶段' state,'一般贸易'leibie
           ,b.miaoshu,a.bukrs,a.matnr_cp,a.maktx maktx_cp,a.product,
-          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money,2) money,
-          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_kwmeng,2) KWMENG,MEINb
+          b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money money,
+          b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money/
+          decode(b.matnr,' ',1,DECODE(b.kwmeng_jz,0,1,(b.money_jz/b.kwmeng_jz))) KWMENG,MEINb
 
           from
           --a选出订单中含有熔体的那一笔
@@ -1443,7 +1469,7 @@
           --燃料费明细比例
           (SELECT AA.*,BB.NAME
           FROM
-          (select a.*,nvl(TO_CHAR(b.matnr_mx),'ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
+          (select a.*,nvl(TO_CHAR(b.matnr_mx),'00000000ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
           when a.bukrs='3000' and a.sum_money>b.smoney then b.money/a.sum_money
           else b.money/b.smoney end rate from
           --
@@ -1544,7 +1570,7 @@
           group by objnr,KSTAR,perio,gjahr,matnr,bukrs)a
           left join sap_makt b
           on a.matnr_mx=b.matnr
-          where matnr_mx != ' '
+          where matnr_mx  != ' '
           )
           group by objnr,perio,gjahr,bukrs,matnr_mx,maktx)b
           on a.perio=b.perio
@@ -1554,7 +1580,7 @@
 
 
           UNION  all
-          select distinct a.*,'ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
+          select distinct a.*,'00000000ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
           from
           (
           select A.KSTAR,a.perio,a.gjahr,a.bukrs,a.id,a.miaoshu,a.sum_money+nvl(b.sum_money,0) sum_money from
@@ -1653,7 +1679,7 @@
           group by objnr,KSTAR,perio,gjahr,matnr,bukrs)a
           left join sap_makt b
           on a.matnr_mx=b.matnr
-          where matnr_mx != ' '
+          where matnr_mx  != ' '
           )
           group by objnr,perio,gjahr,bukrs)b
           on a.perio=b.perio
@@ -1681,7 +1707,10 @@
           ON AA.ID=BB.ID AND AA.BUKRS=BB.BUKRS
           )Q
           ON P.NAME=Q.NAME AND P.KSTAR=Q.KSTAR AND P.PERIO=Q.PERIO AND P.GJAHR=Q.GJAHR
-
+          where p.kstar not in (
+          '0050010001','0050010002','0050010003','0050010004','0050010005','0050010006','0050010033','0050010009',
+          '0050010013','0050010014','0050010015','0050010016','0050010018','0050010031','0050010036','0050010037',
+          '0050010040','0050010041','0050010044','0050010045','0050010046','0050019901','0050019902','0050010023','0050019998')
 
           ) WHERE PERIO=#{month} and GJAHR=#{year}
       </if>
@@ -1725,15 +1754,17 @@
           )d
           on substr(a.objnr,3)=d.aufnr
           and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
-          where a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
-          and (d.maktx not like '%熔体%' or d.maktx is null)
+          where
+          --a.kstar not in ('0050019901','0050010018','0050010003','0050010002','0050010001','0050010009','0050010006')
+          (d.maktx not like '%熔体%' or d.maktx is null)
           --;--
           union all
           ---9100，9200，9300聚酯阶段成本
           select substr(a.objnr,3)aufnr,b.kstar kstar,a.perio,a.gjahr,b.matnr matnr_mx,b.maktx_mx,'聚酯阶段' state
           ,'一般贸易' leibie,b.miaoshu,a.bukrs,a.matnr_cp,a.maktx maktx_cp,a.product,
-          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money,2) money,
-          ROUND(b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_kwmeng,2) KWMENG
+          b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money money,
+          b.money_jz/sum(b.money_jz)over(partition by a.objnr,a.perio,a.gjahr)*a.sum_money/
+          decode(b.matnr,' ',1,DECODE(b.kwmeng_jz,0,1,(b.money_jz/b.kwmeng_jz)))  KWMENG
           ,MEINb
           from
           --a选出订单中含有熔体的那一笔
@@ -1816,7 +1847,7 @@
           --燃料费明细比例
           (SELECT AA.*,BB.NAME
           FROM
-          (select a.*,nvl(TO_CHAR(b.matnr_mx),'ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
+          (select a.*,nvl(TO_CHAR(b.matnr_mx),'00000000ZQ')matnr_mx,nvl(TO_CHAR(b.maktx),'蒸气')maktx,case when b.maktx is null then 1
           when a.bukrs='3000' and a.sum_money>b.smoney then b.money/a.sum_money
           else b.money/b.smoney end rate from
           --
@@ -1927,7 +1958,7 @@
 
 
           UNION  all
-          select distinct a.*,'ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
+          select distinct a.*,'00000000ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
           from
           (
           select A.KSTAR,a.perio,a.gjahr,a.bukrs,a.id,a.miaoshu,a.sum_money+nvl(b.sum_money,0) sum_money from
@@ -2026,7 +2057,7 @@
           group by objnr,KSTAR,perio,gjahr,matnr,bukrs)a
           left join sap_makt b
           on a.matnr_mx=b.matnr
-          where matnr_mx != ' '
+          where matnr_mx  != ' '
           )
           group by objnr,perio,gjahr,bukrs)b
           on a.perio=b.perio
@@ -2054,7 +2085,10 @@
           ON AA.ID=BB.ID AND AA.BUKRS=BB.BUKRS
           )Q
           ON P.NAME=Q.NAME AND P.KSTAR=Q.KSTAR AND P.PERIO=Q.PERIO AND P.GJAHR=Q.GJAHR
-
+          where p.kstar not in (
+          '0050010001','0050010002','0050010003','0050010004','0050010005','0050010006','0050010033','0050010009',
+          '0050010013','0050010014','0050010015','0050010016','0050010018','0050010031','0050010036','0050010037',
+          '0050010040','0050010041','0050010044','0050010045','0050010046','0050019901','0050019902','0050010023','0050019998')
           ) WHERE PERIO=#{month} and GJAHR=#{year}
       </if>
   </select>

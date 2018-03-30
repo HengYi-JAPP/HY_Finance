@@ -39,6 +39,7 @@ public class MaterialcostdetailsBean {
 
     public void setConsumption(BigDecimal consumption) {
         this.consumption = consumption;
+        this.consumption.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getUnitPrice() {
@@ -47,6 +48,7 @@ public class MaterialcostdetailsBean {
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+        this.unitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public String getMaterialName() {
@@ -55,6 +57,7 @@ public class MaterialcostdetailsBean {
 
     public void setMaterialName(String materialName) {
         this.materialName = materialName;
+
     }
 
     public String getState() {
@@ -71,6 +74,7 @@ public class MaterialcostdetailsBean {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+        this.price.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     @Override

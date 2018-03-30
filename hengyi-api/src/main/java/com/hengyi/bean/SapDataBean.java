@@ -207,8 +207,11 @@ public class SapDataBean {
         this.company = company;
         this.sapMaterialDescribe = sapMaterialDescribe;
         this.orderProductQuantity = orderProductQuantity;
+        this.orderProductQuantity.setScale(5,   BigDecimal.ROUND_HALF_UP);
         this.money = money;
+        this.money.setScale(5,   BigDecimal.ROUND_HALF_UP);
         this.costQuantity = costQuantity;
+        this.costQuantity.setScale(5,   BigDecimal.ROUND_HALF_UP);
         this.workShop = workShop;
     }
 }

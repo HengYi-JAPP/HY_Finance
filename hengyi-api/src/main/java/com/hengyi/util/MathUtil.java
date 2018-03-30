@@ -5,11 +5,10 @@ import java.math.BigDecimal;
 public  class MathUtil {
     //保留二位小数除法，b1被除数 b2除数
     public static BigDecimal divide(BigDecimal b1,BigDecimal b2){
-    if (b1==null||b1.intValue()==0||b2==null||b2.intValue()==0){
+    if (b1==null||b1.doubleValue()==0||b2==null||b2.doubleValue()==0){
     return new BigDecimal(0);
     }
-        return  b1.divide(b2,2,BigDecimal.ROUND_HALF_UP);
-
+        return  b1.divide(b2,6,BigDecimal.ROUND_HALF_UP);
     }
     public static BigDecimal add(BigDecimal b1,BigDecimal b2){
         return b1.add(b2);
@@ -34,8 +33,14 @@ public  class MathUtil {
                 return false;
             }
         }
+
         return true;
     }
-
+public  static BigDecimal multiply(BigDecimal b1,BigDecimal b2){
+        if (b1 ==null ||b2==null){
+            return new BigDecimal(0);
+        }
+        return b1.multiply(b2).setScale(6,   BigDecimal.ROUND_HALF_UP);
+}
 
 }

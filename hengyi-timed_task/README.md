@@ -5,7 +5,7 @@
 
 ## 该模块文件结构概览
 com.hengyi.sapmapper—————————存放数据分析小组提供SAP Oracle数据库的mapper.xml
-com.hengyi.mapper——————————存放本项目Mysql数据库的mapper.xml
+com.hengyi.mapper ——————————存放本项目Mysql数据库的mapper.xml
 
 ``` bash
 # install dependencies
