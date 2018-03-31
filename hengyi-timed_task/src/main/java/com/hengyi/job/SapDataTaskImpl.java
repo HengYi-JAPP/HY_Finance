@@ -39,7 +39,7 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void getsapdata() {
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
@@ -47,6 +47,11 @@ public class SapDataTaskImpl implements SapDataTask {
         companylist = financeDataMapper.selectallcompany();
         //将生产线匹配关系放入集合
         productmatchlist = financeDataMapper.selectproductmatch();
+        //集合存放物料匹配关系
+        ArrayList<MaterialMatchBean> materialmatchlist = new ArrayList<MaterialMatchBean>();
+        //查询物料匹配关系放入集合
+        materialmatchlist = financeDataMapper.selectmaterialmatch();
+        //查询价格表所有数据放入集合
         ArrayList<MaterialPriceBean> priceBeanArrayList=financeDataMapper.selectpricelist();
         //清空原有数据，重新同步
         financeDataMapper.deleteFinanceSapDatabymonth(sapDataMonthBean);
@@ -115,7 +120,14 @@ public class SapDataTaskImpl implements SapDataTask {
                             break;
                         }
                     }
-
+                      //如果属于其他包装物或者纺丝其他辅料
+                    for (MaterialMatchBean materialMatchBean :materialmatchlist){
+                        if (StringUtil.equals(sapDataBean.getCostMaterialId(),"00000000"+materialMatchBean.getMaterialId())
+                                &&(StringUtil.equals(materialMatchBean.getMaterialName(),"其他包装物")||StringUtil.equals(materialMatchBean.getMaterialName(),"纺丝其他辅料"))){
+                            BigDecimal bigDecimal=sapDataBean.getMoney();     //将其设置为值传递而非引用传递
+                            sapDataBean.setCostQuantity(bigDecimal);
+                        }
+                    }
                     //如果属于工资、水电等费用，则将其的总耗设为他的总金额，令其单价固定为1
                     if (sapDataBean.getCostMaterialDescribe()==null&&sapDataBean.getCostId()!=null){
                         BigDecimal bigDecimal=sapDataBean.getMoney();     //将其设置为值传递而非引用传递
@@ -123,6 +135,9 @@ public class SapDataTaskImpl implements SapDataTask {
                     }else{
                         //如果该成本项物料是单瓦的纸箱，则总耗除以2
                         if (sapDataBean.getCostMaterialDescribe()!=null&&sapDataBean.getCostMaterialDescribe().replaceAll(" ", "").matches("\\S*单瓦\\S*")){
+                            sapDataBean.setCostQuantity(MathUtil.divide(sapDataBean.getCostQuantity(),new BigDecimal(2)));
+                        }
+                        if (sapDataBean.getCostMaterialDescribe()!=null&&sapDataBean.getCostMaterialDescribe().replaceAll(" ", "").matches("\\S*双瓦\\S*")){
                             sapDataBean.setCostQuantity(MathUtil.divide(sapDataBean.getCostQuantity(),new BigDecimal(2)));
                         }
                     }

@@ -8,6 +8,7 @@ import com.hengyi.util.StringUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,67 +18,65 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @author: HJS
+ * @Description:EXCEL导出导入功能
+ * @Date: 2017/10/31 10:15
+ */
+@Component
 public class ExcelTaskImpl implements ExcelTask{
     @Autowired
     private FinanceDataMapper financeDataMapper;
-    @Scheduled(cron = "0 18 15 * * ?")
+    @Scheduled(cron = "30 27 17 * * ?")
     public void importexcel() throws Exception {
+        System.out.println("开始了");
         File file = new File("C:\\Users\\38521\\Documents\\Tencent Files\\385213918\\FileRecv\\六家公司_预算单耗&单价.xlsx");
         // 创建文件流对象和工作簿对象
         FileInputStream in = new FileInputStream(file); // 文件流
-
         Workbook book = WorkbookFactory.create(in); //工作簿
-
         List<BudgetdetailBean> budgetdetailBeanList = new ArrayList<>();
-
         //j: sheet,  i: 行,  k: 列
-
         //遍历所有的sheet
-        for (int j = 0; j < book.getNumberOfSheets(); j++) {
+        for (int j = 11; j < book.getNumberOfSheets(); j++) {
             // 获取当前excel中sheet的下标：0开始
             Sheet sheet = book.getSheetAt(j);   // 遍历Sheet
             //遍历所有的行和列
             for (int i = 0; i < sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
-                if (row!=null){
+                if (row==null){
                     continue;
                 }
-
                 if (i >= 4&&row.getCell(0)!=null&&!ExcelUtil.changetostring(row.getCell(0)).equals("")) {
                     //一行数据作为一个对象插入
                     BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
                     for (int k = 0; k < sheet.getRow(0).getLastCellNum(); k++) {
 
-                        if (68> k&&k > 11) {
+                        if (k > 11&& row.getCell(k)!=null) {
                             //单耗
                             Cell cell = row.getCell(k);
                             //单价
                             Cell cell_price = sheet.getRow(0).getCell(k);
-
                             //列名
                             Cell cell_name = sheet.getRow(3).getCell(k);
-
                             //一列数据作为一个对象插入
                             MaterialcostdetailsBean mcdb = new MaterialcostdetailsBean();
-
                             //名称
                             mcdb.setMaterialName(ExcelUtil.changetostring(cell_name));
                             //单耗
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell))) {
-                                mcdb.setConsumption(new BigDecimal((ExcelUtil.changetostring(cell))));
+                                mcdb.setConsumption(new BigDecimal((ExcelUtil.changenumbertostring(cell))));
                             }else {
                                 continue;
                             }
                             //单价
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price))) {
-                                mcdb.setPrice(new BigDecimal(ExcelUtil.changetostring(cell_price)));
+                                mcdb.setPrice(new BigDecimal(ExcelUtil.changenumbertostring(cell_price)));
                             }else {
                                 continue;
                             }
                             //单位成本
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price)) && StringUtil.isNotEmpty(ExcelUtil.changetostring(cell))) {
-                                BigDecimal decimal = new BigDecimal(ExcelUtil.changetostring(cell)).multiply(new BigDecimal(ExcelUtil.changetostring(cell_price)));
+                                BigDecimal decimal = new BigDecimal(ExcelUtil.changenumbertostring(cell)).multiply(new BigDecimal(ExcelUtil.changenumbertostring(cell_price)));
                                 mcdb.setUnitPrice(decimal);
                             }else {
                                 continue;
@@ -91,7 +90,6 @@ public class ExcelTaskImpl implements ExcelTask{
                                 budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(mcdb);}
                         }
                     }
-
                     Cell cell_company = sheet.getRow(i).getCell(0);
                     Cell cell_month = sheet.getRow(i).getCell(1);
                     Cell cell_year = sheet.getRow(i).getCell(2);
@@ -115,44 +113,49 @@ public class ExcelTaskImpl implements ExcelTask{
                     }
                     budgetdetailBean.setProduct(ExcelUtil.changetostring(cell_product));
                     budgetdetailBean.setWorkshop(ExcelUtil.changetostring(cell_workshop));
-                    budgetdetailBean.setLine(ExcelUtil.changetostring(cell_line));
+                    budgetdetailBean.setLine(ExcelUtil.changeinttostring(cell_line));
                     budgetdetailBean.setSpec(ExcelUtil.changetostring(cell_spec));
                     budgetdetailBean.setYarnkind(ExcelUtil.changetostring(cell_yarnkind));
 
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_aarate))) {
-                        budgetdetailBean.setAarate(new BigDecimal(ExcelUtil.changetostring(cell_aarate)));
+                        budgetdetailBean.setAarate(new BigDecimal(ExcelUtil.changenumbertostring(cell_aarate)));
                     }
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_fsrate))) {
-                        budgetdetailBean.setFsrate(new BigDecimal(ExcelUtil.changetostring(cell_fsrate)));
+                        budgetdetailBean.setFsrate(new BigDecimal(ExcelUtil.changenumbertostring(cell_fsrate)));
                     }
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_dayProduct))) {
-                        budgetdetailBean.setDayProduct(new BigDecimal(ExcelUtil.changetostring(cell_dayProduct)));
+                        budgetdetailBean.setDayProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_dayProduct)));
                     }
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_budgetTotalProduct))) {
-                        budgetdetailBean.setBudgetTotalProduct(new BigDecimal(ExcelUtil.changetostring(cell_budgetTotalProduct)));
+                        budgetdetailBean.setBudgetTotalProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_budgetTotalProduct)));
                     }
                     //遍历一行中的所有的数据添加进budgetdetailBeanList集合
-
+                    for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
+                        financeDataMapper.insertmaterialcostdetails(materialcostdetailsBean);
+                    }
+                    financeDataMapper.insertdetail(budgetdetailBean);
+                    System.out.println(budgetdetailBeanList.size());
                     budgetdetailBeanList.add(budgetdetailBean);
                 }
             }
-            for (BudgetdetailBean budgetdetailBean : budgetdetailBeanList) {
-                for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
-                    financeDataMapper.insertmaterialcostdetails(materialcostdetailsBean);
-                }
-                financeDataMapper.insertdetail(budgetdetailBean);
-            }
         }
+//        for (BudgetdetailBean budgetdetailBean : budgetdetailBeanList) {
+//            for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
+//                financeDataMapper.insertmaterialcostdetails(materialcostdetailsBean);
+//            }
+//            financeDataMapper.insertdetail(budgetdetailBean);
+//        }
     }
 
 
 
     @Override
-    @Scheduled(cron = "0 0 5 * * ?")
+    @Scheduled(cron = "10 39 12 * * ?")
     public void exportexcel () throws Exception {
         ArrayList<Map<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
         ArrayList<BudgetdetailBean> Budgetdetaillist = new ArrayList<BudgetdetailBean>();
-        File file = new File("D:\\预算数据导出excel.xlsx");
+        String filepath="D:\\恒逸工作文档\\财务预算系统\\预算数据导出excel.xlsx";
+        File file = new File(filepath);
         if (!file.exists()){
             file.createNewFile();
         }
@@ -285,7 +288,7 @@ public class ExcelTaskImpl implements ExcelTask{
                     num3++;
                 }
             }
-            out = new FileOutputStream("D:\\恒逸工作文档\\财务预算系统\\预算数据导出excel.xlsx");
+            out = new FileOutputStream(filepath);
             book.write(out);
         } catch (Exception e) {
             e.printStackTrace();

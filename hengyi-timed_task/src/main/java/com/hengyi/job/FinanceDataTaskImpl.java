@@ -42,7 +42,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * 从SAP定期同步数据到本系统Mysql数据库,将物料描述分解成生产线、规格、产品等信息
      */
     @Override
-    @Scheduled(cron = "0 0 3 * * ?")
+    @Scheduled(cron = "0 10 3 * * ?")
     public void productlinedatatask() {
         //集合存放每条生产线的各个成本项数据
         ArrayList<MaterialOfLineSelectBean> materialoflinelist = new ArrayList<MaterialOfLineSelectBean>();
