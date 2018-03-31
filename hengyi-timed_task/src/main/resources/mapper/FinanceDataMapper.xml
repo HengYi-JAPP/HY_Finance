@@ -17,6 +17,8 @@
         <result column="unit_price" property="unitPrice" jdbcType="DOUBLE" />
         <result column="price" property="price" jdbcType="DOUBLE" />
         <result column="state" property="state" jdbcType="NVARCHAR" />
+        <result column="money" property="money" jdbcType="DOUBLE" />
+        <result column="kwmeng" property="kwmeng" jdbcType="DOUBLE" />
     </resultMap>
     <resultMap id="MaterialmatchResultMap" type="com.hengyi.bean.MaterialMatchBean" >
         <result column="material_name" property="materialName" jdbcType="NVARCHAR" />
@@ -142,7 +144,7 @@
 
 
     <select id="selectproductmatch" resultMap="ProductmatchResultMap">
-select product_material_match,product_match,product_line,product_material_yarn,product_specifications_match,product_specifications_yarn FROM  ProductLineMatch
+select product_material_match,product_match,product_line,product_material_yarn,product_specifications_match,product_specifications_yarn FROM  ProductLineMatch ORDER BY product_material_match DESC
     </select>
 
     <select id="selectallcompany" resultType="java.lang.String">
@@ -155,9 +157,23 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
 
     <insert id="insertmaterialcostdetails" parameterType="com.hengyi.bean.MaterialcostdetailsBean" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT  INTO MaterialCostDetails
-        (consumption,unit_price,material_name,state,price)
+        (consumption,unit_price,material_name,state,price
+        <if test="money != null">
+            ,money
+        </if>
+        <if test="money != null">
+            ,kwmeng
+        </if>
+        )
         VALUES
-        (#{consumption},#{unitPrice},#{materialName},#{state},#{price})
+        (#{consumption},#{unitPrice},#{materialName},#{state},#{price}
+        <if test="money != null">
+            ,#{money}
+        </if>
+        <if test="money != null">
+            ,#{kwmeng}
+        </if>
+   )
     </insert>
     <select id="selectfieldbymaterialname" parameterType="java.lang.String" resultType="java.lang.String">
         select field FROM MaterialMatch WHERE material_name=#{_parameter}
@@ -170,7 +186,7 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
     <select id="selectbudgetdatabymonth" resultType="java.util.Map"  parameterType="com.hengyi.bean.SapDataMonthBean">
         select * FROM Budgetdetail WHERE month =#{month} and year=#{year}
     </select>
-    <select id="selectproductbudgetdata" resultType="java.util.Map" >
+    <select id="selectproductbudgetdata" resultType="java.util.Map" parameterType="com.hengyi.bean.SapDataMonthBean">
         select * FROM Budgetdetail WHERE type='实际'
     </select>
     <select id="selectpricelist" resultMap="PriceResultMap" >
@@ -180,14 +196,14 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
         select * FROM Budgetdetail WHERE month =#{month} and year=#{year}
     </select>
     <select id="selectcostdetailbyid" parameterType="java.lang.Integer" resultMap="MaterialcostdetailResultMap">
-select id,consumption,unit_price,material_name,state,price FROM  MaterialCostDetails WHERE id=#{id}
+select id,consumption,unit_price,material_name,state,price,money,kwmeng FROM  MaterialCostDetails WHERE id=#{id}
     </select>
     <select id="selectsysdictbykey" parameterType="java.lang.String" resultMap="DictResultMap">
 select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
     </select>
 
     <select id="selectcostdetailbyidlist" resultMap="MaterialcostdetailResultMap" parameterType="java.util.List">
-        select id,consumption,unit_price,material_name,state,price FROM  MaterialCostDetails WHERE id  IN
+        select id,consumption,unit_price,material_name,state,price,money,kwmeng FROM  MaterialCostDetails WHERE id  IN
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
@@ -248,4 +264,32 @@ select DISTINCT order_id,order_product_quantity from FinanceSapData where
     <delete id="deleteunitpricecomparebymonth" parameterType="com.hengyi.bean.SapDataMonthBean">
         DELETE  FROM  UnitPriceCompare WHERE month =#{month} and year =#{year}
     </delete>
+    <select id="selectbudgetdatabybean" parameterType="com.hengyi.bean.BudgetdetailBean" resultType="java.lang.String">
+        SELECT company from Budgetdetail
+        <where>
+            <if test="company != null">
+                company=#{company} AND
+            </if>
+            <if test="product != null">
+                product=#{product} AND
+            </if>
+            <if test="month != null">
+                month=#{month} AND
+            </if>
+            <if test="year != null">
+                year=#{year} AND
+            </if>
+            <if test="line != null">
+                line=#{line} AND
+            </if>
+            <if test="spec != null">
+                spec=#{spec} AND
+            </if>
+            <if test="yarnkind != null">
+                yarnkind=#{yarnkind}
+            </if>
+
+
+        </where>
+    </select>
 </mapper>

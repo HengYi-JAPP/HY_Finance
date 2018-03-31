@@ -17,6 +17,26 @@ public class MaterialcostdetailsBean {
 
     private String field;
 
+    private BigDecimal money;
+
+    private  BigDecimal kwmeng;
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money.setScale(5,   BigDecimal.ROUND_HALF_UP);
+    }
+
+    public BigDecimal getKwmeng() {
+        return kwmeng;
+    }
+
+    public void setKwmeng(BigDecimal kwmeng) {
+        this.kwmeng = kwmeng.setScale(5,   BigDecimal.ROUND_HALF_UP);
+    }
+
     public String getField() {
         return field;
     }

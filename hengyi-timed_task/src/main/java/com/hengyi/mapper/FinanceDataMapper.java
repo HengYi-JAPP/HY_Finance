@@ -190,5 +190,6 @@ public interface FinanceDataMapper {
      * @return
      */
     public void deleteunitpricecomparebymonth(SapDataMonthBean sapDataMonthBean);
+    public  ArrayList<String> selectbudgetdatabybean(BudgetdetailBean budgetdetailBean);
 
 }

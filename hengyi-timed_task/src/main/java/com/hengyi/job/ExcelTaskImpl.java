@@ -2,8 +2,10 @@ package com.hengyi.job;
 
 import com.hengyi.bean.BudgetdetailBean;
 import com.hengyi.bean.MaterialcostdetailsBean;
+import com.hengyi.bean.ProductMatchBean;
 import com.hengyi.mapper.FinanceDataMapper;
 import com.hengyi.util.ExcelUtil;
+import com.hengyi.util.MathUtil;
 import com.hengyi.util.StringUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +29,20 @@ import java.util.Map;
 public class ExcelTaskImpl implements ExcelTask{
     @Autowired
     private FinanceDataMapper financeDataMapper;
-    @Scheduled(cron = "30 27 17 * * ?")
+    @Scheduled(cron = "30 15 7 * * ?")
     public void importexcel() throws Exception {
         System.out.println("开始了");
-        File file = new File("C:\\Users\\38521\\Documents\\Tencent Files\\385213918\\FileRecv\\六家公司_预算单耗&单价.xlsx");
+        File file = new File("C:\\Users\\38521\\Documents\\Tencent Files\\385213918\\FileRecv\\六家公司_预算单耗&单价（修改2018.04.01凌晨）.xlsx");
         // 创建文件流对象和工作簿对象
         FileInputStream in = new FileInputStream(file); // 文件流
         Workbook book = WorkbookFactory.create(in); //工作簿
         List<BudgetdetailBean> budgetdetailBeanList = new ArrayList<>();
+        //将生产线匹配关系放入集合
+        ArrayList<ProductMatchBean> productmatchlist = new ArrayList<>();
+        productmatchlist = financeDataMapper.selectproductmatch();
         //j: sheet,  i: 行,  k: 列
         //遍历所有的sheet
-        for (int j = 11; j < book.getNumberOfSheets(); j++) {
+        for (int j = 0; j < book.getNumberOfSheets(); j++) {
             // 获取当前excel中sheet的下标：0开始
             Sheet sheet = book.getSheetAt(j);   // 遍历Sheet
             //遍历所有的行和列
@@ -129,13 +134,27 @@ public class ExcelTaskImpl implements ExcelTask{
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_budgetTotalProduct))) {
                         budgetdetailBean.setBudgetTotalProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_budgetTotalProduct)));
                     }
+                    String[] lines=new String[1];
                     //遍历一行中的所有的数据添加进budgetdetailBeanList集合
-                    for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
-                        financeDataMapper.insertmaterialcostdetails(materialcostdetailsBean);
+                    for (ProductMatchBean productMatchBean :productmatchlist){
+                        if (StringUtil.equals(productMatchBean.getProductLine(),budgetdetailBean.getLine())){
+                            lines=productMatchBean.getProductMatch().split("/");
+                        break;
+                        }
                     }
-                    financeDataMapper.insertdetail(budgetdetailBean);
-                    System.out.println(budgetdetailBeanList.size());
-                    budgetdetailBeanList.add(budgetdetailBean);
+
+                    for (int k =0;k<lines.length;k++){
+                        budgetdetailBean.setLine(lines[k]);
+                      ArrayList<String>  result= financeDataMapper.selectbudgetdatabybean(budgetdetailBean);
+                      if (result.isEmpty()){
+                          for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
+                              financeDataMapper.insertmaterialcostdetails(materialcostdetailsBean);
+                          }
+                          financeDataMapper.insertdetail(budgetdetailBean);
+                          System.out.println(budgetdetailBeanList.size());
+                          budgetdetailBeanList.add(budgetdetailBean);
+                      }
+                    }
                 }
             }
         }
@@ -150,7 +169,7 @@ public class ExcelTaskImpl implements ExcelTask{
 
 
     @Override
-    @Scheduled(cron = "10 39 12 * * ?")
+    @Scheduled(cron = "0 0 12 * * ?")
     public void exportexcel () throws Exception {
         ArrayList<Map<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
         ArrayList<BudgetdetailBean> Budgetdetaillist = new ArrayList<BudgetdetailBean>();

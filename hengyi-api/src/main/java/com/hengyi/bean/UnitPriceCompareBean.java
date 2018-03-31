@@ -22,8 +22,6 @@ public class UnitPriceCompareBean {
 
     private BigDecimal totalProduct;
     private BigDecimal budgetTotalProduct;
-
-
     private BigDecimal productUnitPrice;
     private BigDecimal checkProductUnitPrice;
     private BigDecimal checkBudgetUnitPrice;
@@ -107,7 +105,10 @@ public class UnitPriceCompareBean {
 
     public void setBudgetTotalProduct(BigDecimal budgetTotalProduct) {
         this.budgetTotalProduct = budgetTotalProduct;
-        this.budgetTotalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        if (this.budgetTotalProduct!= null){
+            this.budgetTotalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        }
+
     }
 
     public BigDecimal getProductUnitPrice() {
@@ -116,7 +117,10 @@ public class UnitPriceCompareBean {
 
     public void setProductUnitPrice(BigDecimal productUnitPrice) {
         this.productUnitPrice = productUnitPrice;
-        this.productUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        if (this.productUnitPrice!= null){
+            this.productUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        }
+
     }
 
     public BigDecimal getCheckProductUnitPrice() {
@@ -152,6 +156,9 @@ public class UnitPriceCompareBean {
 
     public void setTotalProduct(BigDecimal totalProduct) {
         this.totalProduct = totalProduct;
-        this.totalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        if (this.totalProduct!= null){
+            this.totalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        }
+
     }
 }

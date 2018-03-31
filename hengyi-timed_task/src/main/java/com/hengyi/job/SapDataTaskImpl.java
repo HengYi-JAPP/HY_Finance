@@ -39,10 +39,11 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "40 20 7 * * ?")
     public void getsapdata() {
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
+        sapDataMonthBean.setMonth(new BigDecimal(2));
         //查找所有公司并放入集合
         companylist = financeDataMapper.selectallcompany();
         //将生产线匹配关系放入集合
@@ -91,7 +92,13 @@ public class SapDataTaskImpl implements SapDataTask {
                         //如果物料描述分割后长度小于4
                         continue;
                     }
+                    //对生产线进行匹配
+                    //针对    13\S*   与    13\S*B   等同为13开头的引入matched变量     根据他的长度来判断该条数据是属于哪个匹配关系的
+                    String matched=null;
                     for (ProductMatchBean productMatchBean : productmatchlist) {
+                        if (matched!=null&&matched.length()>productMatchBean.getProductMaterialMatch().replaceAll("×", "\\\\S*").length()){
+                            continue;
+                        }
                         if (productMatchBean.getProductMaterialMatch() == null || productMatchBean.getProductMaterialMatch().equals("")) {
                            continue;
                         }
@@ -117,7 +124,7 @@ public class SapDataTaskImpl implements SapDataTask {
                                 }
                             }
                             productMatch = productMatchBean.getProductMatch().split("/");
-                            break;
+                            matched=productMatchBean.getProductMaterialMatch();
                         }
                     }
                       //如果属于其他包装物或者纺丝其他辅料

@@ -42,7 +42,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * 从SAP定期同步数据到本系统Mysql数据库,将物料描述分解成生产线、规格、产品等信息
      */
     @Override
-    @Scheduled(cron = "0 10 3 * * ?")
+    @Scheduled(cron = "20 0 9 * * ?")
     public void productlinedatatask() {
         //集合存放每条生产线的各个成本项数据
         ArrayList<MaterialOfLineSelectBean> materialoflinelist = new ArrayList<MaterialOfLineSelectBean>();
@@ -88,10 +88,15 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                             boolean materialcostdetailsBeanexist = false;
                             for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
                                 if (StringUtil.equals(materialcostdetailsBean.getMaterialName(), materialMatchBean.getMaterialName())) {
-                                    materialcostdetailsBean.setConsumption(MathUtil.add(materialcostdetailsBean.getConsumption(), MathUtil.multiply(MathUtil.divide(materialOfLineSelectBean.getCostQuantity(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct()))));
                                     materialcostdetailsBean.setState(materialOfLineSelectBean.getState());
-                                    materialcostdetailsBean.setUnitPrice(MathUtil.add(materialcostdetailsBean.getUnitPrice(),MathUtil.multiply( MathUtil.divide(materialOfLineSelectBean.getMoney(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct()))));
-                                    materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getUnitPrice(),materialcostdetailsBean.getConsumption()));
+                                    materialcostdetailsBean.setMoney(MathUtil.add(materialcostdetailsBean.getMoney(),materialOfLineSelectBean.getMoney()));
+                                    materialcostdetailsBean.setKwmeng(MathUtil.add(materialcostdetailsBean.getKwmeng(),materialOfLineSelectBean.getCostQuantity()));
+                                    materialcostdetailsBean.setUnitPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),budgetdetailBean.getBudgetTotalProduct()));
+                                    materialcostdetailsBean.setConsumption(MathUtil.divide(materialcostdetailsBean.getKwmeng(),budgetdetailBean.getBudgetTotalProduct()));
+                                    materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),materialcostdetailsBean.getKwmeng()));
+//                                    materialcostdetailsBean.setConsumption(MathUtil.add(materialcostdetailsBean.getConsumption(), MathUtil.multiply(MathUtil.divide(materialOfLineSelectBean.getCostQuantity(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct()))));
+//                                    materialcostdetailsBean.setUnitPrice(MathUtil.add(materialcostdetailsBean.getUnitPrice(),MathUtil.multiply( MathUtil.divide(materialOfLineSelectBean.getMoney(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct()))));
+//                                    materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getUnitPrice(),materialcostdetailsBean.getConsumption()));
                                     materialcostdetailsBeanexist = true;
                                     break;
                                 }
@@ -99,11 +104,16 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                             if (!materialcostdetailsBeanexist) {
                                 MaterialcostdetailsBean materialcostdetailsBean = new MaterialcostdetailsBean();
                                 materialcostdetailsBean.setMaterialName(materialMatchBean.getMaterialName());
-                                materialcostdetailsBean.setConsumption(MathUtil.multiply(MathUtil.divide(materialOfLineSelectBean.getCostQuantity(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct())));
                                 materialcostdetailsBean.setState(materialOfLineSelectBean.getState());
-                                materialcostdetailsBean.setUnitPrice(MathUtil.multiply( MathUtil.divide(materialOfLineSelectBean.getMoney(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct())));
                                 materialcostdetailsBean.setField(materialMatchBean.getField());
-                                materialcostdetailsBean.setPrice(MathUtil.divide(materialOfLineSelectBean.getMoney(), materialOfLineSelectBean.getCostQuantity()));
+                                materialcostdetailsBean.setMoney(materialOfLineSelectBean.getMoney());
+                                materialcostdetailsBean.setKwmeng(materialOfLineSelectBean.getCostQuantity());
+                                materialcostdetailsBean.setUnitPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),budgetdetailBean.getBudgetTotalProduct()));
+                                materialcostdetailsBean.setConsumption(MathUtil.divide(materialcostdetailsBean.getKwmeng(),budgetdetailBean.getBudgetTotalProduct()));
+                                materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),materialcostdetailsBean.getKwmeng()));
+//                                materialcostdetailsBean.setConsumption(MathUtil.multiply(MathUtil.divide(materialOfLineSelectBean.getCostQuantity(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct())));
+//                                materialcostdetailsBean.setUnitPrice(MathUtil.multiply( MathUtil.divide(materialOfLineSelectBean.getMoney(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct())));
+//                                materialcostdetailsBean.setPrice(MathUtil.divide(materialOfLineSelectBean.getMoney(), materialOfLineSelectBean.getCostQuantity()));
                                 budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(materialcostdetailsBean);
                             }
                             budgetdetailBeanexist = true;
@@ -127,10 +137,15 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                         budgetdetailBean.setYarnkind(materialOfLineSelectBean.getProductYarn());
                         MaterialcostdetailsBean materialcostdetailsBean = new MaterialcostdetailsBean();
                         materialcostdetailsBean.setMaterialName(materialMatchBean.getMaterialName());
-                        materialcostdetailsBean.setConsumption(MathUtil.multiply( MathUtil.divide(materialOfLineSelectBean.getCostQuantity(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct())));
                         materialcostdetailsBean.setState(materialOfLineSelectBean.getState());
-                        materialcostdetailsBean.setUnitPrice(MathUtil.multiply( MathUtil.divide(materialOfLineSelectBean.getMoney(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct())));
-                        materialcostdetailsBean.setPrice(MathUtil.divide(materialOfLineSelectBean.getMoney(), materialOfLineSelectBean.getCostQuantity()));
+                        materialcostdetailsBean.setMoney(materialOfLineSelectBean.getMoney());
+                        materialcostdetailsBean.setKwmeng(materialOfLineSelectBean.getCostQuantity());
+                        materialcostdetailsBean.setUnitPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),budgetdetailBean.getBudgetTotalProduct()));
+                        materialcostdetailsBean.setConsumption(MathUtil.divide(materialcostdetailsBean.getKwmeng(),budgetdetailBean.getBudgetTotalProduct()));
+                        materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),materialcostdetailsBean.getKwmeng()));
+//                        materialcostdetailsBean.setConsumption(MathUtil.multiply( MathUtil.divide(materialOfLineSelectBean.getCostQuantity(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct())));
+//                        materialcostdetailsBean.setUnitPrice(MathUtil.multiply( MathUtil.divide(materialOfLineSelectBean.getMoney(), MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(), new BigDecimal("1000"))),MathUtil.divide(MathUtil.divide(materialOfLineSelectBean.getOrderProductQuantity(),new BigDecimal(1000)),budgetdetailBean.getBudgetTotalProduct())));
+//                        materialcostdetailsBean.setPrice(MathUtil.divide(materialOfLineSelectBean.getMoney(), materialOfLineSelectBean.getCostQuantity()));
                         materialcostdetailsBean.setField(materialMatchBean.getField());
                         budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(materialcostdetailsBean);
                         budgetdetailBeanlist.add(budgetdetailBean);
@@ -161,7 +176,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * @Transactional(rollbackFor = Exception.class)
      * 计算生产线、规格、纱种维度的单位成本并放入UnitpPriceComparetask表中
      */
-    @Scheduled(cron = "0 0 5 * * ?")
+    @Scheduled(cron = "0 0 10 * * ?")
     public void unitpricecomparetask ()  {
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
@@ -235,7 +250,12 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                     continue;
                 }
                 if (entry.getValue() instanceof Integer) {
-                    materialdetailidlist.add((Integer)entry.getValue());
+                    if (!(StringUtil.equals(entry.getKey(),"mate_pta")
+                        ||StringUtil.equals(entry.getKey(),"mate_meg")
+                        ||StringUtil.equals(entry.getKey(),"mate_poy")
+                        ||StringUtil.equals(entry.getKey(),"mate_slice"))){
+                        materialdetailidlist.add((Integer)entry.getValue());
+                    }
                 }
             }
             if (materialdetailidlist.size()>0){
@@ -265,26 +285,27 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                 }
                 unitPriceCompareBean.setProductUnitPrice(productunitprice);
                 for (BudgetdetailBean budgetdetailBean1:Budgetdetaillist){
-                    if (    StringUtil.equals(budgetdetailBean.getCompany(), budgetdetailBean1.getCompany())
+                    if ( StringUtil.equals(budgetdetailBean.getCompany(), budgetdetailBean1.getCompany())
                             && StringUtil.equals(budgetdetailBean.getProduct(), budgetdetailBean1.getProduct())
-                            && StringUtil.equals(budgetdetailBean.getLine(), budgetdetailBean1.getLine())
-                            && StringUtil.equals(budgetdetailBean.getSpec(), budgetdetailBean1.getSpec())
-                            && StringUtil.equals(budgetdetailBean.getYarnkind(), budgetdetailBean1.getYarnkind())
-                            && MathUtil.bigdecimalequals(budgetdetailBean.getMonth(), budgetdetailBean1.getMonth())
+                                          && MathUtil.bigdecimalequals(budgetdetailBean.getMonth(), budgetdetailBean1.getMonth())
                             && MathUtil.bigdecimalequals(budgetdetailBean.getYear(), budgetdetailBean1.getYear())
-                            && StringUtil.equals(budgetdetailBean1.getType(), "预算")
+                            && StringUtil.equals(budgetdetailBean1.getType(), "预算")) {
+                        if (StringUtil.equals(budgetdetailBean.getLine(), budgetdetailBean1.getLine())
+                                && StringUtil.equals(budgetdetailBean.getSpec(), budgetdetailBean1.getSpec())
+                                && StringUtil.equals(budgetdetailBean.getYarnkind(), budgetdetailBean1.getYarnkind())
                            ){
-                        unitPriceCompareBean.setBudgetTotalProduct(budgetdetailBean1.getBudgetTotalProduct());
-                        for (MaterialcostdetailsBean materialcostdetailsBean:budgetdetailBean.getMaterialcostdetailsBeanArrayList()){
-                            for (MaterialcostdetailsBean materialcostdetailsBean1 :budgetdetailBean1.getMaterialcostdetailsBeanArrayList()){
-                                if (StringUtil.equals(materialcostdetailsBean.getMaterialName(),materialcostdetailsBean1.getMaterialName())){
-                                    unitPriceCompareBean.setCheckProductUnitPrice(unitPriceCompareBean.getCheckProductUnitPrice().add(MathUtil.multiply(materialcostdetailsBean.getConsumption(),materialcostdetailsBean1.getPrice())));
-                                    unitPriceCompareBean.setCheckBudgetUnitPrice(unitPriceCompareBean.getCheckBudgetUnitPrice().add(MathUtil.multiply(materialcostdetailsBean.getPrice(),materialcostdetailsBean1.getConsumption())));
-                                    unitPriceCompareBean.setBudgetUnitPrice(unitPriceCompareBean.getBudgetUnitPrice().add(materialcostdetailsBean1.getUnitPrice()));
+                            unitPriceCompareBean.setBudgetTotalProduct(budgetdetailBean1.getBudgetTotalProduct());
+                            for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
+                                for (MaterialcostdetailsBean materialcostdetailsBean1 : budgetdetailBean1.getMaterialcostdetailsBeanArrayList()) {
+                                    if (StringUtil.equals(materialcostdetailsBean.getMaterialName(), materialcostdetailsBean1.getMaterialName())) {
+                                        unitPriceCompareBean.setCheckProductUnitPrice(unitPriceCompareBean.getCheckProductUnitPrice().add(MathUtil.multiply(materialcostdetailsBean.getConsumption(), materialcostdetailsBean1.getPrice())));
+                                        unitPriceCompareBean.setCheckBudgetUnitPrice(unitPriceCompareBean.getCheckBudgetUnitPrice().add(MathUtil.multiply(materialcostdetailsBean.getPrice(), materialcostdetailsBean1.getConsumption())));
+                                        unitPriceCompareBean.setBudgetUnitPrice(unitPriceCompareBean.getBudgetUnitPrice().add(materialcostdetailsBean1.getUnitPrice()));
+                                    }
                                 }
                             }
+                            break;
                         }
-                      break;
                     }
                 }
               financeDataMapper.insertunitpricecomparedata(unitPriceCompareBean);
