@@ -39,11 +39,10 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-    @Scheduled(cron = "40 20 7 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void getsapdata() {
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
-        sapDataMonthBean.setMonth(new BigDecimal(2));
         //查找所有公司并放入集合
         companylist = financeDataMapper.selectallcompany();
         //将生产线匹配关系放入集合
@@ -54,6 +53,7 @@ public class SapDataTaskImpl implements SapDataTask {
         materialmatchlist = financeDataMapper.selectmaterialmatch();
         //查询价格表所有数据放入集合
         ArrayList<MaterialPriceBean> priceBeanArrayList=financeDataMapper.selectpricelist();
+
         //清空原有数据，重新同步
         financeDataMapper.deleteFinanceSapDatabymonth(sapDataMonthBean);
         for (String company : companylist) {
@@ -70,11 +70,9 @@ public class SapDataTaskImpl implements SapDataTask {
                 String productLine = "";//生产线
                 String productYarn = "";//纱种
                 String[] productMatch= new String[1]; //生产线实际匹配关系  例如C1/C2/C3/C4 存在List中为  C1 C2 C3 C4 4个元素
-
                 //如果SAP产品物料描述不为空，则用-分割物料描述得到  产品名、规格、批号、等级、生产线、纱种
                 if (sapDataBean.getSapMaterialDescribe() != null) {
                     String[] str = sapDataBean.getSapMaterialDescribe().split("-");
-
                     if (str.length >= 4) {
                         productName = str[0];
                         if(str[0].equals("切片")&&str[1].equals(" ")){
@@ -176,8 +174,6 @@ public class SapDataTaskImpl implements SapDataTask {
                 }
             }
         }
-
-
     }
 
 

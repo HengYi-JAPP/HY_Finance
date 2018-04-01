@@ -29,7 +29,7 @@ import java.util.Map;
 public class ExcelTaskImpl implements ExcelTask{
     @Autowired
     private FinanceDataMapper financeDataMapper;
-    @Scheduled(cron = "30 15 7 * * ?")
+//    @Scheduled(cron = "30 45 17 * * ?")
     public void importexcel() throws Exception {
         System.out.println("开始了");
         File file = new File("C:\\Users\\38521\\Documents\\Tencent Files\\385213918\\FileRecv\\六家公司_预算单耗&单价（修改2018.04.01凌晨）.xlsx");
@@ -54,6 +54,7 @@ public class ExcelTaskImpl implements ExcelTask{
                 if (i >= 4&&row.getCell(0)!=null&&!ExcelUtil.changetostring(row.getCell(0)).equals("")) {
                     //一行数据作为一个对象插入
                     BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
+                    budgetdetailBean.setType("预算");
                     for (int k = 0; k < sheet.getRow(0).getLastCellNum(); k++) {
 
                         if (k > 11&& row.getCell(k)!=null) {
@@ -169,7 +170,7 @@ public class ExcelTaskImpl implements ExcelTask{
 
 
     @Override
-    @Scheduled(cron = "0 0 12 * * ?")
+//    @Scheduled(cron = "0 0 12 * * ?")
     public void exportexcel () throws Exception {
         ArrayList<Map<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
         ArrayList<BudgetdetailBean> Budgetdetaillist = new ArrayList<BudgetdetailBean>();

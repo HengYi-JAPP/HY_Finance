@@ -190,6 +190,12 @@ public interface FinanceDataMapper {
      * @return
      */
     public void deleteunitpricecomparebymonth(SapDataMonthBean sapDataMonthBean);
+    /**
+     * 插入预算数据时，先搜索判断该数据是否已插入
+     *
+     * @param
+     * @return
+     */
     public  ArrayList<String> selectbudgetdatabybean(BudgetdetailBean budgetdetailBean);
 
 }
