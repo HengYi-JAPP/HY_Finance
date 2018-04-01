@@ -7,6 +7,50 @@
     <result column="dict_key" property="dictKey" jdbcType="VARCHAR"/>
     <result column="dict_value" property="dictValue" jdbcType="VARCHAR"/>
   </resultMap>
+  <resultMap id="resultMap" type="com.hengyi.domain.ResultDomain">
+    <!--<id column="id" property="id" jdbcType="INTEGER"></id>-->
+    <result column="company" property="company" jdbcType="VARCHAR"></result>
+    <result column="product" property="product" jdbcType="VARCHAR"></result>
+    <result column="line" property="line" jdbcType="VARCHAR"></result>
+    <result column="spec" property="spec" jdbcType="VARCHAR"></result>
+    <result column="budget_total_product" property="budgetTotalProduct" jdbcType="VARCHAR"></result>
+    <result column="total_product" property="totalProduct" jdbcType="VARCHAR"></result>
+    <result column="product_unit_price" property="productUnitPrice" jdbcType="VARCHAR"></result>
+    <result column="check_product_unit_price" property="checkProductUnitPrice" jdbcType="VARCHAR"></result>
+    <result column="check_budget_unit_price" property="checkBudgetUnitPrice" jdbcType="VARCHAR"></result>
+    <result column="budget_unit_price" property="budgetUnitPrice" jdbcType="VARCHAR"></result>
+    <!--<result column="month" property="month" jdbcType="INTEGER"></result>-->
+    <!--<result column="year" property="year" jdbcType="INTEGER"></result>-->
+    <!--<result column="workshop" property="workshop" jdbcType="VARCHAR"></result>-->
+    <!--<result column="yarnKind" property="yarnKind" jdbcType="VARCHAR"></result>-->
+  </resultMap>
+  <resultMap id="allCompanyResultMap" type="com.hengyi.vo.AllCompanyResultVo">
+    <result column="company" property="company" jdbcType="VARCHAR"></result>
+    <result column="product" property="product" jdbcType="VARCHAR"></result>
+    <result column="budget_total_product" property="budgetTotalProduct" jdbcType="VARCHAR"></result>
+    <result column="total_product" property="totalProduct" jdbcType="VARCHAR"></result>
+    <result column="product_unit_price" property="productUnitPrice" jdbcType="VARCHAR"></result>
+    <result column="check_product_unit_price" property="checkProductUnitPrice" jdbcType="VARCHAR"></result>
+    <result column="check_budget_unit_price" property="checkBudgetUnitPrice" jdbcType="VARCHAR"></result>
+    <result column="budget_unit_price" property="budgetUnitPrice" jdbcType="VARCHAR"></result>
+  </resultMap>
+    <sql id="Base_Column_List" >
+        b.id id1, b.type type1, b.company company1, b.month month1, b.year year1, b.product product1, b.workshop workshop1,b.line line1, b.spec spec1,
+        b.yarnKind yarnKind1, b.AArate AArate1,b.FSrate FSrate1, b.day_product day_product1, b.budget_total_product budget_total_product1, b.mate_pta mate_pta1,
+        b.mate_meg mate_meg1, b.mate_poy mate_poy1, b.mate_slice mate_slice1,b.poly_aux_yect poly_aux_yect1, b.poly_aux_egc poly_aux_egc1, b.poly_aux_eyht poly_aux_eyht1,
+        b.poly_aux_jwsc poly_aux_jwsc1, b.poly_salary poly_salary1, b.poly_dep poly_dep1,b.poly_hdl poly_hdl1, b.ploy_hsl ploy_hsl1, b.poly_mac poly_mac1,
+        b.poly_fuel_biomass poly_fuel_biomass1, b.poly_fuel_heavyoil poly_fuel_heavyoil1, b.poly_fuel_smj poly_fuel_smj1,b.poly_fuel_diesel poly_fuel_diesel1,
+        b.poly_fuel_steam poly_fuel_steam1, b.poly_fuel_coal poly_fuel_coal1, b.poly_fuel_else poly_fuel_else1, b.spin_aux_oil spin_aux_oil1,
+        b.spin_aux_shortSF220 spin_aux_shortSF2201, b.spin_aux_shortSF2180 spin_aux_shortSF21801, b.delionNW2641TS delionNW2641TS1, b.delionNW2642 delionNW26421,
+        b.delion6329TS delion6329TS1,b.delionTSC900 delionTSC9001, b.delionTSC502 delionTSC5021, b.spin_aux_agent spin_aux_agent1, b.spin_aux_silicone spin_aux_silicone1,
+        b.spin_aux_hml spin_aux_hml1, b.spin_aux_lml spin_aux_lml1,b.spin_aux_bml spin_aux_bml1, b.spin_aux_else spin_aux_else1,
+        b.spin_pack_slice spin_pack_slice1, b.spin_pack_weaving spin_pack_weaving1, b.spin_pack_packaging spin_pack_packaging1,
+        b.spin_pack_cartons spin_pack_cartons1, b.spin_pack_wooden spin_pack_wooden1, b.spin_pack_foamboard spin_pack_foamboard1,
+        b.spin_pack_else spin_pack_else1, b.spin_paper spin_paper1,b.spin_melt spin_melt1, b.spin_salary spin_salary1, b.spin_dep spin_dep1,
+        b.spin_water spin_water1, b.spin_elect spin_elect1, b.spin_mac spin_mac1, b.spin_repair spin_repair1,b.spin_biomass spin_biomass1, b.spin_heavyoil spin_heavyoil1,
+        b.spin_smj spin_smj1, b.spin_diesel spin_diesel1, b.spin_steam spin_steam1, b.spin_coal spin_coal1, b.spin_fuel spin_fuel1,
+        b.spin_else spin_else1
+    </sql>
   <sql id="page">
     <if test="limit != null">
       <if test="offset != null">
@@ -17,14 +61,232 @@
       </if>
     </if>
   </sql>
+  <sql id="condition">
+        <if test="year != null">
+            AND `year` = #{year}
+        </if>
+        <if test="month != null">
+            AND `month` = #{month}
+        </if>
+        <if test="company != null">
+            AND company = #{company,jdbcType=VARCHAR}
+        </if>
+        <if test="product != null">
+            AND product = #{product,jdbcType=VARCHAR}
+        </if>
+        <if test="workshop != null">
+            AND workshop = #{workshop,jdbcType=VARCHAR}
+        </if>
+        <if test="productLine != null">
+            AND line = #{productLine,jdbcType=VARCHAR}
+        </if>
+        <if test="spec != null">
+            AND spec = #{spec,jdbcType=VARCHAR}
+        </if>
+        <if test="type != null and type != ''">
+            AND type = #{type,jdbcType=VARCHAR}
+        </if>
+    </sql>
   <!--获取详情数据-->
   <select id="getDetailData" parameterType="com.hengyi.vo.ConditionVo" resultType="java.util.LinkedHashMap">
-    SELECT * FROM Budgetdetail WHERE 1=1
+      <if test="type == '实际' or type == '预算'">
+          SELECT * FROM Budgetdetail WHERE 1=1
+          <if test="year != null">
+          AND `year` = #{year}
+          </if>
+          <if test="month != null">
+          AND `month` = #{month}
+          </if>
+          <if test="company != null">
+          AND company = #{company,jdbcType=VARCHAR}
+          </if>
+          <if test="product != null">
+          AND product = #{product,jdbcType=VARCHAR}
+          </if>
+          <if test="workshop != null">
+          AND workshop = #{workshop,jdbcType=VARCHAR}
+          </if>
+          <if test="productLine != null">
+          AND line = #{productLine,jdbcType=VARCHAR}
+          </if>
+          <if test="spec != null">
+          AND spec = #{spec,jdbcType=VARCHAR}
+          </if>
+          <if test="type != null and type != ''">
+          AND type = #{type,jdbcType=VARCHAR}
+          </if>
+          ORDER BY `year`,`month`,company,product,spec,yarnKind
+      </if>
+      <if test="type ==null or type == ''">
+          SELECT a.*,<include refid="Base_Column_List"/> FROM (SELECT * FROM Budgetdetail WHERE type = '实际'
+          <if test="year != null">
+              AND `year` = #{year}
+          </if>
+          <if test="month != null">
+              AND `month` = #{month}
+          </if>
+          <if test="company != null">
+              AND company = #{company,jdbcType=VARCHAR}
+          </if>
+          <if test="product != null">
+              AND product = #{product,jdbcType=VARCHAR}
+          </if>
+          <if test="workshop != null">
+              AND workshop = #{workshop,jdbcType=VARCHAR}
+          </if>
+          <if test="productLine != null">
+              AND line = #{productLine,jdbcType=VARCHAR}
+          </if>
+          <if test="spec != null">
+              AND spec = #{spec,jdbcType=VARCHAR}
+          </if>
+          <if test="type != null and type != ''">
+              AND type = #{type,jdbcType=VARCHAR}
+          </if>
+          ) AS a
+          LEFT JOIN (SELECT * FROM Budgetdetail WHERE type = '预算'
+          <if test="year != null">
+              AND `year` = #{year}
+          </if>
+          <if test="month != null">
+              AND `month` = #{month}
+          </if>
+          <if test="company != null">
+              AND company = #{company,jdbcType=VARCHAR}
+          </if>
+          <if test="product != null">
+              AND product = #{product,jdbcType=VARCHAR}
+          </if>
+          <if test="workshop != null">
+              AND workshop = #{workshop,jdbcType=VARCHAR}
+          </if>
+          <if test="productLine != null">
+              AND line = #{productLine,jdbcType=VARCHAR}
+          </if>
+          <if test="spec != null">
+              AND spec = #{spec,jdbcType=VARCHAR}
+          </if>
+          <if test="type != null and type != ''">
+              AND type = #{type,jdbcType=VARCHAR}
+          </if>) AS b
+          ON a.company=b.company AND a.year = b.year AND a.month=b.month AND a.product=b.product
+          AND a.workshop=b.workshop AND a.line=b.line AND a.spec=b.spec AND a.yarnKind=b.yarnKind
+          UNION
+          SELECT a.*,<include refid="Base_Column_List"/> FROM (SELECT * FROM Budgetdetail WHERE type = '实际'
+          <if test="year != null">
+              AND `year` = #{year}
+          </if>
+          <if test="month != null">
+              AND `month` = #{month}
+          </if>
+          <if test="company != null">
+              AND company = #{company,jdbcType=VARCHAR}
+          </if>
+          <if test="product != null">
+              AND product = #{product,jdbcType=VARCHAR}
+          </if>
+          <if test="workshop != null">
+              AND workshop = #{workshop,jdbcType=VARCHAR}
+          </if>
+          <if test="productLine != null">
+              AND line = #{productLine,jdbcType=VARCHAR}
+          </if>
+          <if test="spec != null">
+              AND spec = #{spec,jdbcType=VARCHAR}
+          </if>
+          <if test="type != null and type != ''">
+              AND type = #{type,jdbcType=VARCHAR}
+          </if>) AS a
+          RIGHT JOIN (SELECT * FROM Budgetdetail WHERE type = '预算'
+          <if test="year != null">
+              AND `year` = #{year}
+          </if>
+          <if test="month != null">
+              AND `month` = #{month}
+          </if>
+          <if test="company != null">
+              AND company = #{company,jdbcType=VARCHAR}
+          </if>
+          <if test="product != null">
+              AND product = #{product,jdbcType=VARCHAR}
+          </if>
+          <if test="workshop != null">
+              AND workshop = #{workshop,jdbcType=VARCHAR}
+          </if>
+          <if test="productLine != null">
+              AND line = #{productLine,jdbcType=VARCHAR}
+          </if>
+          <if test="spec != null">
+              AND spec = #{spec,jdbcType=VARCHAR}
+          </if>
+          <if test="type != null and type != ''">
+              AND type = #{type,jdbcType=VARCHAR}
+          </if>) AS b
+          ON a.company=b.company AND a.year = b.year AND a.month=b.month AND a.product=b.product
+          AND a.workshop=b.workshop AND a.line=b.line AND a.spec=b.spec AND a.yarnKind=b.yarnKind
+      </if>
+      <include refid="page" />
+      <!--(SELECT a.*,<include refid="Base_Column_List"/> FROM (SELECT * FROM Budgetdetail WHERE type = '实际') AS a LEFT JOIN (SELECT * FROM Budgetdetail WHERE type = '预算') AS b-->
+      <!--ON a.company=b.company AND a.year = b.year AND a.month=b.month AND a.product=b.product-->
+      <!--AND a.workshop=b.workshop AND a.line=b.line AND a.spec=b.spec AND a.yarnKind=b.yarnKind) UNION-->
+      <!--(SELECT a.*,<include refid="Base_Column_List"/> FROM (SELECT * FROM Budgetdetail WHERE type = '实际') AS a RIGHT JOIN (SELECT * FROM Budgetdetail WHERE type = '预算') AS b-->
+      <!--ON a.company=b.company AND a.year = b.year AND a.month=b.month AND a.product=b.product-->
+      <!--AND a.workshop=b.workshop AND a.line=b.line AND a.spec=b.spec AND a.yarnKind=b.yarnKind)-->
+  </select>
+  <!--获取字典表数据-->
+  <select id="getDictionary" resultMap="dictionaryMap">
+    SELECT * FROM SysDict
+  </select>
+  <!--获取详情数据总记录数-->
+  <select id="getTotalCount" resultType="java.lang.Long" parameterType="com.hengyi.vo.ConditionVo">
+      <if test="type == '' or type == null">
+          SELECT 3*COUNT(*) FROM (SELECT * FROM Budgetdetail where 1=1 <include refid="condition"/>
+          GROUP BY company,`year`,`month`,product,workshop,line,spec,yarnKind) AS a
+      </if>
+      <if test="type == '预算'">
+          SELECT COUNT(*) FROM  Budgetdetail WHERE 1=1 <include refid="condition"/>
+      </if>
+      <if test="type == '实际'">
+          SELECT COUNT(*) FROM Budgetdetail WHERE 1=1 <include refid="condition"/>
+      </if>
+    <!--SELECT COUNT(*) FROM Budgetdetail WHERE 1=1-->
+    <!--<if test="year != null">-->
+      <!--AND `year` = #{year}-->
+    <!--</if>-->
+    <!--<if test="month != null">-->
+      <!--AND `month` = #{month}-->
+    <!--</if>-->
+    <!--<if test="company != null">-->
+      <!--AND company = #{company,jdbcType=VARCHAR}-->
+    <!--</if>-->
+    <!--<if test="product != null">-->
+      <!--AND product = #{product,jdbcType=VARCHAR}-->
+    <!--</if>-->
+    <!--<if test="workshop != null">-->
+      <!--AND workshop = #{workshop,jdbcType=VARCHAR}-->
+    <!--</if>-->
+    <!--<if test="productLine != null">-->
+      <!--AND line = #{productLine,jdbcType=VARCHAR}-->
+    <!--</if>-->
+    <!--<if test="spec != null">-->
+      <!--AND spec = #{spec,jdbcType=VARCHAR}-->
+    <!--</if>-->
+    <!--<if test="type != null and type != ''">-->
+      <!--AND type = #{type,jdbcType=VARCHAR}-->
+    <!--</if>-->
+  </select>
+  <!--获取物料详情值-->
+  <select id="getCostDetail" resultType="com.hengyi.bean.MaterialcostdetailsBean" parameterType="java.lang.Integer">
+    SELECT id id,consumption consumption,unit_price unitPrice,material_name materialName,state state,price price FROM MaterialCostDetails WHERE id = #{id,jdbcType=INTEGER}
+  </select>
+  <!--获取结果数据-->
+  <select id="getResult" resultMap="resultMap" parameterType="com.hengyi.vo.ConditionVo">
+    SELECT * FROM UnitPriceCompare WHERE 1=1
     <if test="year != null">
       AND `year` = #{year}
     </if>
     <!--<if test="year == null">-->
-      <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
+    <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
     <!--</if>-->
     <if test="month != null">
       AND `month` = #{month}
@@ -47,13 +309,9 @@
     ORDER BY `year`,`month`,company,product,spec,yarnKind
     <include refid="page" />
   </select>
-  <!--获取字典表数据-->
-  <select id="getDictionary" resultMap="dictionaryMap">
-    SELECT * FROM SysDict
-  </select>
-  <!--获取总记录数-->
-  <select id="getTotalCount" resultType="java.lang.Long" parameterType="com.hengyi.vo.ConditionVo">
-    SELECT COUNT(*) FROM Budgetdetail WHERE 1=1
+    <!--获取结果总记录数-->
+  <select id="getResultCount" resultType="java.lang.Long" parameterType="com.hengyi.vo.ConditionVo">
+    SELECT COUNT(*) FROM UnitPriceCompare WHERE 1=1
     <if test="year != null">
       AND `year` = #{year}
     </if>
@@ -79,8 +337,99 @@
       AND spec = #{spec,jdbcType=VARCHAR}
     </if>
   </select>
-  <!--获取物料详情值-->
-  <select id="getCostDetail" resultType="com.hengyi.bean.MaterialcostdetailsBean" parameterType="java.lang.Integer">
-    SELECT id id,consumption consumption,unit_price unitPrice,material_name materialName,state state,price price FROM MaterialCostDetails WHERE id = #{id,jdbcType=INTEGER}
+  <!--获取公司维度的数据-->
+  <select id="getAllCompanyData" resultMap="allCompanyResultMap" parameterType="com.hengyi.vo.ConditionVo">
+      SELECT company,product,
+      (CASE WHEN SUM(budget_total_product) IS NULL THEN 0 ELSE SUM(budget_total_product) END ) budget_total_product,
+      (CASE WHEN SUM(total_product) IS NULL THEN 0 ELSE SUM(total_product) END) total_product,
+      (CASE WHEN TRUNCATE(SUM(product_unit_price*total_product)/SUM(total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(product_unit_price*total_product)/SUM(total_product),2) END ) product_unit_price,
+      (CASE WHEN TRUNCATE(SUM(check_product_unit_price*total_product)/SUM(total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(check_product_unit_price*total_product)/SUM(total_product),2) END) check_product_unit_price,
+      (CASE WHEN TRUNCATE(SUM(check_budget_unit_price*total_product)/SUM(total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(check_budget_unit_price*total_product)/SUM(total_product),2) END) check_budget_unit_price,
+      (CASE WHEN TRUNCATE(SUM(budget_unit_price*budget_total_product)/SUM(budget_total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(budget_unit_price*budget_total_product)/SUM(budget_total_product),2) END) budget_unit_price
+      FROM UnitPriceCompare WHERE 1=1
+    <if test="year != null">
+      AND `year` = #{year}
+    </if>
+    <!--<if test="year == null">-->
+    <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
+    <!--</if>-->
+    <if test="month != null">
+      AND `month` = #{month}
+    </if>
+    <if test="company != null">
+      AND company = #{company,jdbcType=VARCHAR}
+    </if>
+    <if test="product != null">
+      AND product = #{product,jdbcType=VARCHAR}
+    </if>
+    <if test="workshop != null">
+      AND workshop = #{workshop,jdbcType=VARCHAR}
+    </if>
+    <if test="productLine != null">
+      AND line = #{productLine,jdbcType=VARCHAR}
+    </if>
+    <if test="spec != null">
+      AND spec = #{spec,jdbcType=VARCHAR}
+    </if>
+    GROUP BY company, product
+    <include refid="page" />
   </select>
+  <!--获取所有公司维度的记录数-->
+  <select id="getAllCompanyDataCount" resultType="java.lang.Long" parameterType="com.hengyi.vo.ConditionVo">
+    SELECT COUNT(*)
+    FROM (SELECT company,product,
+    SUM(budget_total_product),
+    SUM(total_product),
+    SUM(product_unit_price) productUnitPrice,
+    SUM(check_product_unit_price) checkProductUnitPrice,
+    SUM(check_budget_unit_price) checkBudgetUnitPrice,
+    SUM(budget_unit_price) budgetUnitPrice
+    FROM UnitPriceCompare WHERE 1=1
+    <if test="year != null">
+      AND `year` = #{year}
+    </if>
+    <!--<if test="year == null">-->
+    <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
+    <!--</if>-->
+    <if test="month != null">
+      AND `month` = #{month}
+    </if>
+    <if test="company != null">
+      AND company = #{company,jdbcType=VARCHAR}
+    </if>
+    <if test="product != null">
+      AND product = #{product,jdbcType=VARCHAR}
+    </if>
+    <if test="workshop != null">
+      AND workshop = #{workshop,jdbcType=VARCHAR}
+    </if>
+    <if test="productLine != null">
+      AND line = #{productLine,jdbcType=VARCHAR}
+    </if>
+    <if test="spec != null">
+      AND spec = #{spec,jdbcType=VARCHAR}
+    </if>
+    GROUP BY company, product ) sums
+  </select>
+    <!--导入数据所用到的插入语句-->
+    <insert id="insertmaterialcostdetails" parameterType="com.hengyi.bean.MaterialcostdetailsBean" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT  INTO MaterialCostDetails
+        (consumption,unit_price,material_name,state,price)
+        VALUES
+        (#{consumption},#{unitPrice},#{materialName},#{state},#{price})
+    </insert>
+    <insert id="insertdetail" parameterType="com.hengyi.bean.BudgetdetailBean">
+        INSERT  INTO Budgetdetail (
+        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type,
+        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator="," >
+            ${item.field}
+        </foreach>
+        )
+        VALUES (
+        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'预算',
+        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator="," >
+            #{item.id}
+        </foreach>
+        )
+    </insert>
 </mapper>

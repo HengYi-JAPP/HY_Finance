@@ -17,18 +17,12 @@
       <ng-template #nzFixedHeader>
         <thead nz-thead>
         <tr>
-          <th nz-th nzCheckbox nzWidth="100px" rowspan="2">
+          <!--<th nz-th nzCheckbox nzWidth="100px" rowspan="2">-->
             <!--<label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 10px">-->
             <!--</label>-->
-            <button nz-button [nzType]="'primary'" (click)="goBack()">
-              <i class=" anticon anticon-left"></i>
-              <span>返回</span>
-            </button>
-          </th>
+          <!--</th>-->
           <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>公司</span></th>
           <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>产品</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>生产线</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>规格</span></th>
           <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>预算产量</span></th>
           <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>实际产量</span></th>
           <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>实际单位成本①</span></th>
@@ -54,16 +48,22 @@
           <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->
           <!--</label>-->
         <!--</td>-->
-        <td></td>
-        <td nz-td style="text-align: center;line-height: 10px" *ngFor="let key of getkeys(data)">{{data[key]}}</td>
+        <td nz-td style="text-align: center;line-height: 10px" *ngFor="let key of getkeys(data)">
+          <span [routerLink]="['/OneCompany']" [queryParams]="data" routerLinkActive="active" *ngIf="key === 'company'" style="background-color: yellow">
+            {{data[key]}}
+          </span>
+          <span *ngIf="key !== 'company'">
+            {{data[key]}}
+          </span>
+        </td>
       </tr>
-      <tr nz-tbody-tr>
-        <td nz-td style="text-align: center"><el-button type="primary" size="mini">均值</el-button></td>
-        <td *ngFor="let sum of sums" style="text-align: center">{{sum}}</td>
-      </tr>
+      <!--<tr nz-tbody-tr>-->
+        <!--<td nz-td style="text-align: center"><el-button type="primary" size="mini">合计</el-button></td>-->
+        <!--<td *ngFor="let sum of sums" style="text-align: center">{{sum}}</td>-->
+      <!--</tr>-->
       </tbody>
     </nz-table>
   </div>
-    <!--<h3 style="text-align: center;">2018年度高新FDY成本对比分析</h3>-->
+  <!--<h3 style="text-align: center;">2018年度高新FDY成本对比分析</h3>-->
   <!--</div>-->
 </div>

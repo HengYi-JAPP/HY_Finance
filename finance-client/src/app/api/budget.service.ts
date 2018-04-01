@@ -15,5 +15,13 @@ export class BudgetService {
   getDictionary(): Observable<any> {
     return this.response.appGet( url + '/getDictionary');
   }
+  /* 从后台获取详细比对结果 */
+  getResultData(param): Observable<any> {
+    return this.response.appPost(param, url + '/getResultData');
+  }
+  /* 获取公司维度的对比结果*/
+  getAllCompanyData(param): Observable<any> {
+    return this.response.appPost(param, url + '/getAllCompanyData');
+  }
 
 }

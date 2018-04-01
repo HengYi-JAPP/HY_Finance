@@ -2,8 +2,11 @@ package com.hengyi.service;
 
 import com.hengyi.bean.BudgetdetailBean;
 import com.hengyi.bean.MaterialcostdetailsBean;
+import com.hengyi.domain.ResultDomain;
 import com.hengyi.mapper.FinanceBudgetMapper;
+import com.hengyi.util.Page;
 import com.hengyi.util.StringUtil;
+import com.hengyi.vo.AllCompanyResultVo;
 import com.hengyi.vo.ConditionVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +71,29 @@ public class FinanceBudgetServiceImplTest {
 //            }
 //        }
 
+    }
+    @Test
+    public void getResult() {
+        ConditionVo conditionVo=new ConditionVo();
+        List<ResultDomain> list = financeBudgetMapper.getResult(conditionVo);
+        for (ResultDomain result:list) {
+            System.out.println(result.getBudgetUnitPrice());
+        }
+    }
+    @Test
+    public void getResult2() {
+        ConditionVo conditionVo=new ConditionVo();
+        conditionVo.setPriceOrconsumer("price");
+        conditionVo.setLimit(10);
+        conditionVo.setOffset(10);
+        conditionVo.setPageIndex(2);
+        conditionVo.setPageCount(10);
+        List<Map<String, Object>> list = financeBudgetMapper.getDetailData(conditionVo);
+//        for (Map<String,Object> map:list) {
+            for (String key: list.get(0).keySet()) {
+                System.out.println("key:" + key);
+            }
+//        }
     }
 
 }

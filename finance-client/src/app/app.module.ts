@@ -21,7 +21,7 @@ import {TableComponent} from './component/shared-component/table/table.component
 import {BudgetService} from './api/budget.service';
 import {OverviewService} from './api/overview.service';
 import {ResultService} from './api/result.service';
-import { AllCompanyComponent } from './component/unit-cost/result/all-company/all-company/all-company.component';
+import { AllCompanyComponent } from './component/unit-cost/result/all-company/all-company.component';
 import {GetResponseService} from './api/getResponse.service';
 @NgModule({
   declarations: [

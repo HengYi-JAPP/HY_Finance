@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {BudgetService} from '../../../../api/budget.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
 
 @Component({
-  selector: 'app-result',
-  templateUrl: './result.component.html',
-  styleUrls: ['./result.component.css']
+  selector: 'app-all-company',
+  templateUrl: './all-company.component.html',
+  styleUrls: ['./all-company.component.css']
 })
-export class UnitResultComponent {
+export class AllCompanyComponent {
   tableData: any[] = [];
-  sums: any[] = [];
+  // sums: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   _loading = true;
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
@@ -21,22 +20,8 @@ export class UnitResultComponent {
   _workshop = '';
   _productLine = '';
   _spec = '';
-  constructor(private budgetService: BudgetService, private route: ActivatedRoute, private router: Router) {
-    this.route.queryParams.subscribe((params: Params) => {
-      this.findList({
-        company: params['company'],
-        product: params['product']
-      });
-      let array:  any[];
-      array = Object.keys(params);
-      array.forEach((item, i) => {
-        this.sums.push(params[item]);
-        if (item === 'product') {
-          this.sums.push('全部生产线');
-          this.sums.push('全部规格');
-        }
-      });
-    });
+  constructor(private budgetService: BudgetService) {
+    this.findList({});
   }
   _allChecked = false;
   _indeterminate = false;
@@ -83,9 +68,9 @@ export class UnitResultComponent {
       month: param.month,
       company: param.company,
       product: param.product,
-      workshop: param.workshop,
-      productLine: param.productLine,
-      spec: param.spec,
+      // workshop: param.workshop,
+      // productLine: param.productLine,
+      // spec: param.spec,
     };
     this._year = param.year;
     this._month = param.month;
@@ -94,7 +79,7 @@ export class UnitResultComponent {
     this._workshop = param.workshop;
     this._productLine = param.productLine;
     this._spec = param.spec;
-    this.budgetService.getResultData(params).subscribe(
+    this.budgetService.getAllCompanyData(params).subscribe(
       data => {
         this._total = data.page.total;
         this.tableData = data.data;
@@ -102,7 +87,6 @@ export class UnitResultComponent {
       }
     );
   }
-  // 改变列表
   changeList() {
     this._loading = true;
     const params = {
@@ -124,9 +108,5 @@ export class UnitResultComponent {
         this._loading = false;
       }
     );
-  }
-  // 返回
-  goBack() {
-    this.router.navigate(['/UnitCostResult']);
   }
 }

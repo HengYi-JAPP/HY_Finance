@@ -24,6 +24,8 @@ public class ConditionVo extends QueryDtoBase{
     String spec;
     //成本类型
     String priceOrconsumer;
+    //类型：实际或者预算
+    String type;
 
     public Integer getYear() {
         return year;
@@ -87,5 +89,13 @@ public class ConditionVo extends QueryDtoBase{
 
     public void setPriceOrconsumer(String priceOrconsumer) {
         this.priceOrconsumer = priceOrconsumer;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

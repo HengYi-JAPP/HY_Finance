@@ -24,9 +24,9 @@ export class SelectComponent {
     ];
   companys: any[] = [];
   products: any[] = [];
-  productLines: any[] = [{value: '1', label: '纺丝一线'}, {value: '2', label: '纺丝二线'}];
+  productLines: any[] = [];
   workshops: any[] = [];
-  specs: any[] = [{value: '192dtex/66f', label: '192dtex/66f'}, {value: '200dtex/44f', label: '200dtex/44f'}];
+  specs: any[] = [];
   year: number;
   month: number;
   company: string;

@@ -1157,4 +1157,26 @@ public class StringUtil extends StringUtils {
 		}
 		return result;
 	}
+
+	/***
+	 *
+	 * @param str1
+	 * @param str2
+	 * @return
+	 */
+	public static boolean equals(String str1, String str2){
+		return  (str1+"").equals((str2+""));
+	}
+
+	/***
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNotEmpty(String str) {
+		if (str == null || "".equals(str.trim())) {
+			return false;
+		}
+		return true;
+	}
 }

@@ -26,7 +26,7 @@
             <label>实际</label>
           </div>
           <div nz-form-control>
-            <nz-switch [(ngModel)]="_fact" [ngModelOptions]="{standalone: true}"></nz-switch>
+            <nz-switch [(ngModel)]="_fact" [ngModelOptions]="{standalone: true}" (ngModelChange)="changeList()"></nz-switch>
           </div>
         </div>
         <div nz-row nz-form-item>
@@ -34,7 +34,17 @@
             <label>预算</label>
           </div>
           <div nz-form-control>
-            <nz-switch [(ngModel)]="_budget" [ngModelOptions]="{standalone: true}"></nz-switch>
+            <nz-switch [(ngModel)]="_budget" [ngModelOptions]="{standalone: true}" (ngModelChange)="changeList()"></nz-switch>
+          </div>
+        </div>
+        <div nz-row nz-form-item>
+          <div nz-form-control>
+            <nz-upload
+              [nzAction]="uploadUrl">
+              <button nz-button>
+                <i class="anticon anticon-upload"></i><span>导入预算数据</span>
+              </button>
+            </nz-upload>
           </div>
         </div>
       </form>
@@ -55,10 +65,11 @@
       <ng-template #nzFixedHeader>
         <thead nz-thead>
         <tr style="line-height: 5px">
-          <th nz-th nzCheckbox nzWidth="100px" rowspan="3">
-            <label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 50px">
-            </label>
-          </th>
+          <!--<th nz-th nzCheckbox nzWidth="100px" rowspan="3">-->
+            <!--<label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 50px">-->
+            <!--</label>-->
+          <!--</th>-->
+          <th nz-th nzWidth="100px" rowspan="3"></th>
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>预算or实际</span></th>
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>公司</span></th>
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>月份</span></th>
@@ -146,10 +157,11 @@
       </ng-template>
       <tbody nz-tbody>
       <tr nz-tbody-tr *ngFor="let data of tableData" [ngStyle]="getTrStyle(data)" style="line-height: 5px">
-        <td nz-td nzCheckbox>
-          <label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">
-          </label>
-        </td>
+        <!--<td nz-td nzCheckbox>-->
+          <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->
+          <!--</label>-->
+        <!--</td>-->
+        <td></td>
         <td nz-td style="text-align: center;line-height: 10px" *ngFor="let key of getkeys(data)">{{data[key]}}</td>
       </tr>
       <!--<tr nz-tbody-tr>-->
