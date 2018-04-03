@@ -21,5 +21,5 @@ public interface FinanceDataTask {
      * @return
      * 生产线-规格-差异化维度     单位成本计算定时任务
      */
-    public void unitpricecomparetask ();
+    public void unitpricecomparetask();
 }

@@ -2,7 +2,7 @@ package com.hengyi.bean;
 
 import java.math.BigDecimal;
 
-public class    MaterialcostdetailsBean {
+public class MaterialcostdetailsBean {
     private Integer id;
 
     private BigDecimal consumption;
@@ -16,6 +16,26 @@ public class    MaterialcostdetailsBean {
     private BigDecimal price;
 
     private String field;
+
+    private BigDecimal money;
+
+    private  BigDecimal kwmeng;
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money.setScale(5,   BigDecimal.ROUND_HALF_UP);
+    }
+
+    public BigDecimal getKwmeng() {
+        return kwmeng;
+    }
+
+    public void setKwmeng(BigDecimal kwmeng) {
+        this.kwmeng = kwmeng.setScale(5,   BigDecimal.ROUND_HALF_UP);
+    }
 
     public String getField() {
         return field;
@@ -39,6 +59,7 @@ public class    MaterialcostdetailsBean {
 
     public void setConsumption(BigDecimal consumption) {
         this.consumption = consumption;
+        this.consumption.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getUnitPrice() {
@@ -47,6 +68,7 @@ public class    MaterialcostdetailsBean {
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+        this.unitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public String getMaterialName() {
@@ -55,6 +77,7 @@ public class    MaterialcostdetailsBean {
 
     public void setMaterialName(String materialName) {
         this.materialName = materialName;
+
     }
 
     public String getState() {
@@ -71,5 +94,19 @@ public class    MaterialcostdetailsBean {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+        this.price.setScale(5,   BigDecimal.ROUND_HALF_UP);
+    }
+
+    @Override
+    public String toString() {
+        return "MaterialcostdetailsBean{" +
+                "id=" + id +
+                ", consumption=" + consumption +
+                ", unitPrice=" + unitPrice +
+                ", materialName='" + materialName + '\'' +
+                ", state='" + state + '\'' +
+                ", price=" + price +
+                ", field='" + field + '\'' +
+                '}';
     }
 }

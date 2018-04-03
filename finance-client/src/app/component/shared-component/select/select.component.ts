@@ -45,7 +45,7 @@ export class SelectComponent {
     this.budgetService.getDictionary().subscribe(
       data => {
         console.log(data);
-        data.data.forEach((item, index) => {
+        data.data[0].forEach((item, index) => {
           if (item.dictType === '公司') {
             const obj = {value: '', label: ''};
             obj.value = item.dictKey;
@@ -59,6 +59,14 @@ export class SelectComponent {
             this.products.push(obj);
           }
         });
+        if (data.data[1] !== null) {
+           data.data[1].forEach((item, index) => {
+            const obj = {value: '', label: ''};
+            obj.value = item.workshop;
+            obj.label = item.workshop;
+            this.workshops.push(obj);
+           });
+        }
       }
     );
   }

@@ -11,6 +11,10 @@ export class UnitBudgetComponent {
   tableData: any[] = [];
   priceORconsumer = 'price';
   sums: any[] = [];
+  // // 预算
+  // sums2: any[] = [];
+  // // 差异
+  // sums3: any[] = [];
   uploadUrl: string;
   _allChecked = false;
   _indeterminate = false;
@@ -29,7 +33,7 @@ export class UnitBudgetComponent {
   _productLine = '';
   _spec = '';
   constructor(private budgetService: BudgetService) {
-    this.uploadUrl = global.baseUrl + '';
+    this.uploadUrl = global.baseUrl + '/FinanceBudgetController/importBudgetData';
     this.findList({});
   }
   _displayDataChange($event) {
@@ -92,7 +96,8 @@ export class UnitBudgetComponent {
       data => {
       console.log(data.data );
         this._total = data.page.total;
-        this.tableData = data.data;
+        this.tableData = data.data[0];
+        this.sums = data.data[1];
         this._loading = false;
       }
     );
@@ -123,7 +128,7 @@ export class UnitBudgetComponent {
     this.budgetService.getDetailData(params).subscribe(
       data => {
         this._total = data.page.total;
-        this.tableData = data.data;
+        this.tableData = data.data[0];
         this._loading = false;
       }
     );

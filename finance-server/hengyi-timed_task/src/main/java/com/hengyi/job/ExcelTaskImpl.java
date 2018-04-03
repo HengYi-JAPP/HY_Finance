@@ -30,6 +30,7 @@ public class ExcelTaskImpl implements ExcelTask{
     @Autowired
     private FinanceDataMapper financeDataMapper;
 //    @Scheduled(cron = "30 45 17 * * ?")
+    @Override
     public void importexcel() throws Exception {
         System.out.println("开始了");
         File file = new File("C:\\Users\\38521\\Documents\\Tencent Files\\385213918\\FileRecv\\六家公司_预算单耗&单价（修改2018.04.01凌晨）.xlsx");

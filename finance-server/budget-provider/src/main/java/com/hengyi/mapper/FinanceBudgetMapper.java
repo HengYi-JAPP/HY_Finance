@@ -2,6 +2,7 @@ package com.hengyi.mapper;
 
 import com.hengyi.bean.BudgetdetailBean;
 import com.hengyi.bean.MaterialcostdetailsBean;
+import com.hengyi.bean.ProductMatchBean;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.vo.AllCompanyResultVo;
@@ -28,10 +29,31 @@ public interface FinanceBudgetMapper {
     List<Map<String, Object>> getDetailData(ConditionVo conditionVo);
 
     /***
-     * 获取字典表数据
+     * 获取字典表数据（公司列表和产品规格）
      * @return
      */
     List<DictionaryDomain> getDictionary();
+
+    /***
+     * 获取车间列表
+     * @param conditionVo
+     * @return
+     */
+    List<Map<String,String>> getWorkshop(ConditionVo conditionVo);
+
+    /***
+     * 获取生产线列表
+     * @param conditionVo
+     * @return
+     */
+    List<Map<String,String>> getLine(ConditionVo conditionVo);
+
+    /***
+     * 获取规格列表
+     * @param conditionVo
+     * @return
+     */
+    List<Map<String,String>> getSpec(ConditionVo conditionVo);
 
     /***
      * 获取总记录数
@@ -61,7 +83,7 @@ public interface FinanceBudgetMapper {
     Long getResultCount(ConditionVo conditionVo);
 
     /***
-     * 获取所有公司粗略的均值
+     * 获取公司维度均值
      * @param conditionVo
      * @return
      */
@@ -77,6 +99,26 @@ public interface FinanceBudgetMapper {
     ArrayList<String> selectfieldbymaterialname(String materialName);
 
     void insertmaterialcostdetails(MaterialcostdetailsBean materialcostdetailsBean);
-
+    /**
+     * 插入一条预算的详情数据到BudgetDetail表中
+     *
+     * @param
+     * @return
+     */
     void insertdetail(@Param("bdb") BudgetdetailBean budgetdetailBean);
+
+    /**
+     * 查找生产线匹配关系
+     *
+     * @param
+     * @return
+     */
+    public ArrayList<ProductMatchBean>  selectproductmatch();
+    /**
+     * 插入预算数据时，先搜索判断该数据是否已插入
+     *
+     * @param
+     * @return
+     */
+    public  ArrayList<String> selectbudgetdatabybean(BudgetdetailBean budgetdetailBean);
 }

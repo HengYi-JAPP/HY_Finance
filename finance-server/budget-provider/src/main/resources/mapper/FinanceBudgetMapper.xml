@@ -34,6 +34,14 @@
     <result column="check_budget_unit_price" property="checkBudgetUnitPrice" jdbcType="VARCHAR"></result>
     <result column="budget_unit_price" property="budgetUnitPrice" jdbcType="VARCHAR"></result>
   </resultMap>
+  <resultMap id="ProductmatchResultMap" type="com.hengyi.bean.ProductMatchBean">
+        <result column="product_line" property="productLine" jdbcType="NVARCHAR"/>
+        <result column="product_match" property="productMatch" jdbcType="NVARCHAR"/>
+        <result column="product_material_match" property="productMaterialMatch" jdbcType="NVARCHAR"/>
+        <result column="product_material_yarn" property="productMaterialYarn" jdbcType="NVARCHAR"/>
+        <result column="product_specifications_match" property="productSpecificationsMatch" jdbcType="NVARCHAR"/>
+        <result column="product_specifications_yarn" property="productSpecificationsYarn" jdbcType="NVARCHAR"/>
+    </resultMap>
     <sql id="Base_Column_List" >
         b.id id1, b.type type1, b.company company1, b.month month1, b.year year1, b.product product1, b.workshop workshop1,b.line line1, b.spec spec1,
         b.yarnKind yarnKind1, b.AArate AArate1,b.FSrate FSrate1, b.day_product day_product1, b.budget_total_product budget_total_product1, b.mate_pta mate_pta1,
@@ -226,21 +234,81 @@
           AND a.workshop=b.workshop AND a.line=b.line AND a.spec=b.spec AND a.yarnKind=b.yarnKind
       </if>
       <include refid="page" />
-      <!--(SELECT a.*,<include refid="Base_Column_List"/> FROM (SELECT * FROM Budgetdetail WHERE type = '实际') AS a LEFT JOIN (SELECT * FROM Budgetdetail WHERE type = '预算') AS b-->
-      <!--ON a.company=b.company AND a.year = b.year AND a.month=b.month AND a.product=b.product-->
-      <!--AND a.workshop=b.workshop AND a.line=b.line AND a.spec=b.spec AND a.yarnKind=b.yarnKind) UNION-->
-      <!--(SELECT a.*,<include refid="Base_Column_List"/> FROM (SELECT * FROM Budgetdetail WHERE type = '实际') AS a RIGHT JOIN (SELECT * FROM Budgetdetail WHERE type = '预算') AS b-->
-      <!--ON a.company=b.company AND a.year = b.year AND a.month=b.month AND a.product=b.product-->
-      <!--AND a.workshop=b.workshop AND a.line=b.line AND a.spec=b.spec AND a.yarnKind=b.yarnKind)-->
   </select>
   <!--获取字典表数据-->
   <select id="getDictionary" resultMap="dictionaryMap">
     SELECT * FROM SysDict
   </select>
+    <!--获取车间列表-->
+    <select id="getWorkshop" parameterType="com.hengyi.vo.ConditionVo" resultType="java.util.HashMap">
+        SELECT DISTINCT(workshop) FROM Budgetdetail WHERE 1=1
+        <if test="year != null">
+            AND `year` = #{year}
+        </if>
+        <if test="month != null">
+            AND `month` = #{month}
+        </if>
+        <if test="company != null">
+            AND company = #{company}
+        </if>
+        <if test="product != null">
+            AND product = #{product}
+        </if>
+        <if test="type != null">
+            AND type =#{type}
+        </if>
+    </select>
+    <!--获取生产线-->
+    <select id="getLine" parameterType="com.hengyi.vo.ConditionVo">
+        SELECT DISTINCT(line) FROM Budgetdetail WHERE 1=1
+        <if test="year != null">
+            AND `year` = #{year}
+        </if>
+        <if test="month != null">
+            AND `month` = #{month}
+        </if>
+        <if test="company != null">
+            AND company = #{company}
+        </if>
+        <if test="product != null">
+            AND product = #{product}
+        </if>
+        <if test="workshop != null">
+            AND workshop = #{workshop}
+        </if>
+        <if test="type != null">
+            AND type =#{type}
+        </if>
+    </select>
+    <!--获取规格列表-->
+    <select id="getSpec" parameterType="com.hengyi.vo.ConditionVo">
+        SELECT DISTINCT(spec) FROM Budgetdetail WHERE 1=1
+        <if test="year != null">
+            AND `year` = #{year}
+        </if>
+        <if test="month != null">
+            AND `month` = #{month}
+        </if>
+        <if test="company != null">
+            AND company = #{company}
+        </if>
+        <if test="product != null">
+            AND product = #{product}
+        </if>
+        <if test="workshop != null">
+            AND workshop = #{workshop}
+        </if>
+        <if test="line != null">
+            AND line = #{line}
+        </if>
+        <if test="type != null">
+            AND type =#{type}
+        </if>
+    </select>
   <!--获取详情数据总记录数-->
   <select id="getTotalCount" resultType="java.lang.Long" parameterType="com.hengyi.vo.ConditionVo">
       <if test="type == '' or type == null">
-          SELECT 3*COUNT(*) FROM (SELECT * FROM Budgetdetail where 1=1 <include refid="condition"/>
+          SELECT COUNT(*) FROM (SELECT * FROM Budgetdetail where 1=1 <include refid="condition"/>
           GROUP BY company,`year`,`month`,product,workshop,line,spec,yarnKind) AS a
       </if>
       <if test="type == '预算'">
@@ -249,31 +317,6 @@
       <if test="type == '实际'">
           SELECT COUNT(*) FROM Budgetdetail WHERE 1=1 <include refid="condition"/>
       </if>
-    <!--SELECT COUNT(*) FROM Budgetdetail WHERE 1=1-->
-    <!--<if test="year != null">-->
-      <!--AND `year` = #{year}-->
-    <!--</if>-->
-    <!--<if test="month != null">-->
-      <!--AND `month` = #{month}-->
-    <!--</if>-->
-    <!--<if test="company != null">-->
-      <!--AND company = #{company,jdbcType=VARCHAR}-->
-    <!--</if>-->
-    <!--<if test="product != null">-->
-      <!--AND product = #{product,jdbcType=VARCHAR}-->
-    <!--</if>-->
-    <!--<if test="workshop != null">-->
-      <!--AND workshop = #{workshop,jdbcType=VARCHAR}-->
-    <!--</if>-->
-    <!--<if test="productLine != null">-->
-      <!--AND line = #{productLine,jdbcType=VARCHAR}-->
-    <!--</if>-->
-    <!--<if test="spec != null">-->
-      <!--AND spec = #{spec,jdbcType=VARCHAR}-->
-    <!--</if>-->
-    <!--<if test="type != null and type != ''">-->
-      <!--AND type = #{type,jdbcType=VARCHAR}-->
-    <!--</if>-->
   </select>
   <!--获取物料详情值-->
   <select id="getCostDetail" resultType="com.hengyi.bean.MaterialcostdetailsBean" parameterType="java.lang.Integer">
@@ -285,9 +328,6 @@
     <if test="year != null">
       AND `year` = #{year}
     </if>
-    <!--<if test="year == null">-->
-    <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
-    <!--</if>-->
     <if test="month != null">
       AND `month` = #{month}
     </if>
@@ -315,9 +355,6 @@
     <if test="year != null">
       AND `year` = #{year}
     </if>
-    <!--<if test="year == null">-->
-    <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
-    <!--</if>-->
     <if test="month != null">
       AND `month` = #{month}
     </if>
@@ -350,9 +387,6 @@
     <if test="year != null">
       AND `year` = #{year}
     </if>
-    <!--<if test="year == null">-->
-    <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
-    <!--</if>-->
     <if test="month != null">
       AND `month` = #{month}
     </if>
@@ -388,9 +422,6 @@
     <if test="year != null">
       AND `year` = #{year}
     </if>
-    <!--<if test="year == null">-->
-    <!--AND "year" = DATE_FORMAT(NOW(), '%Y')-->
-    <!--</if>-->
     <if test="month != null">
       AND `month` = #{month}
     </if>
@@ -411,7 +442,7 @@
     </if>
     GROUP BY company, product ) sums
   </select>
-    <!--导入数据所用到的插入语句-->
+    <!--导入数据所用到的插入语句和查询语句-->
     <insert id="insertmaterialcostdetails" parameterType="com.hengyi.bean.MaterialcostdetailsBean" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT  INTO MaterialCostDetails
         (consumption,unit_price,material_name,state,price)
@@ -432,4 +463,41 @@
         </foreach>
         )
     </insert>
+    <select id="selectproductmatch" resultMap="ProductmatchResultMap">
+        select product_material_match,product_match,product_line,product_material_yarn,product_specifications_match,product_specifications_yarn FROM  ProductLineMatch ORDER BY product_material_match DESC
+    </select>
+    <select id="selectbudgetdatabybean" parameterType="com.hengyi.bean.BudgetdetailBean" resultType="java.lang.String">
+        SELECT company from Budgetdetail
+        <where>
+            1=1
+            <if test="company != null">
+                AND company=#{company}
+            </if>
+            <if test="product != null">
+                AND product=#{product}
+            </if>
+            <if test="month != null">
+                AND month=#{month}
+            </if>
+            <if test="year != null">
+                AND year=#{year}
+            </if>
+            <if test="line != null">
+                AND line=#{line}
+            </if>
+            <if test="spec != null">
+                AND spec=#{spec}
+            </if>
+            <if test="yarnkind != null">
+                AND yarnkind=#{yarnkind}
+            </if>
+            <if test="type != null">
+                AND type=#{type}
+            </if>
+
+        </where>
+    </select>
+    <select id="selectfieldbymaterialname" parameterType="java.lang.String" resultType="java.lang.String">
+        select field FROM MaterialMatch WHERE material_name=#{_parameter}
+    </select>
 </mapper>

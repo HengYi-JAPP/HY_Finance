@@ -3,12 +3,11 @@ package com.hengyi.controller;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.service.FinanceBudgetService;
-import com.hengyi.util.Const;
-import com.hengyi.util.InputSteamToJSON;
-import com.hengyi.util.Page;
-import com.hengyi.util.ServerResponse;
+import com.hengyi.util.*;
 import com.hengyi.vo.AllCompanyResultVo;
 import com.hengyi.vo.ConditionVo;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import jdk.internal.util.xml.impl.Input;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,24 +38,6 @@ public class FinanceBudgetController {
     }
     @Resource
     private FinanceBudgetService financeBudgetService;
-    /***
-     * 获取对比结果数据
-     * @param request
-     * @param response
-     * @return
-     */
-//    @RequestMapping(value = "/getResultData")
-//    @ResponseBody
-//    public ServerResponse<TestDomain> getResultData(HttpServletRequest request, HttpServletResponse response){
-//        try {
-//            System.out.println(request.getInputStream());
-//            TestDomain testDomain = InputSteamToJSON.getParams(request.getInputStream(),TestDomain.class);
-//           return ServerResponse.createBySuccess(Const.SUCCESS_MSG, testDomain);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return ServerResponse.createByError(Const.FAIL_MSG);
-//    }
 
     /***
      * 获取详细数据（预算和实际数据都有）
@@ -66,7 +47,7 @@ public class FinanceBudgetController {
      */
     @RequestMapping(value = "/getDetailData",method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<List<Map<String,Object>>> getDetailData(HttpServletRequest request,HttpServletResponse response){
+    public ServerResponse<List<Map<String,Object>> []> getDetailData(HttpServletRequest request,HttpServletResponse response){
         try {
             ConditionVo conditionVo = InputSteamToJSON.getParams(request.getInputStream(),ConditionVo.class);
             Long total= financeBudgetService.getTotalCount(conditionVo);
@@ -74,13 +55,15 @@ public class FinanceBudgetController {
             conditionVo.setOffset(page.getOffset());
             conditionVo.setLimit(page.getPageSize());
             List<Map<String,Object>> list=financeBudgetService.getDetailData(conditionVo);
-            return ServerResponse.createBySuccess(Const.SUCCESS_MSG, list,page);
+            List<Map<String,Object>> [] result=new List[2];
+            result[0]=list;
+//            result[1]=financeBudgetService.getSumDetail(conditionVo);
+            return ServerResponse.createBySuccess(Const.SUCCESS_MSG, result,page);
         }catch (Exception e){
             e.printStackTrace();
         }
         return  ServerResponse.createByError(Const.FAIL_MSG);
     }
-
     /***
      * 获取字典数据
      * @param request
@@ -89,10 +72,28 @@ public class FinanceBudgetController {
      */
     @RequestMapping(value = "/getDictionary",method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<List<DictionaryDomain>> getDictionary(HttpServletRequest request,HttpServletResponse response){
+    public ServerResponse<List []> getDictionary(HttpServletRequest request,HttpServletResponse response){
         try {
+            ConditionVo conditionVo=InputSteamToJSON.getParams(request.getInputStream(),ConditionVo.class);
             List<DictionaryDomain> list=financeBudgetService.getDictionary();
-            return  ServerResponse.createBySuccess(Const.SUCCESS_MSG,list);
+            List<Map<String,String>> workshopList = null;
+            List<Map<String,String>> lineList=null;
+            List<Map<String,String>> specList=null;
+            if (!StringUtil.isEmpty(conditionVo.getCompany())&& !StringUtil.isEmpty(conditionVo.getProduct())){
+                workshopList=financeBudgetService.getWorkshop(conditionVo);
+            }
+            if (!StringUtil.isEmpty(conditionVo.getWorkshop())){
+                lineList=financeBudgetService.getLine(conditionVo);
+            }
+            if (!StringUtil.isEmpty(conditionVo.getProductLine())){
+                specList=financeBudgetService.getSpec(conditionVo);
+            }
+            List [] array =new List[4];
+            array[0]=list;
+            array[1]=workshopList;
+            array[2]=lineList;
+            array[3]=specList;
+            return  ServerResponse.createBySuccess(Const.SUCCESS_MSG,array);
         }catch (Exception e){
             e.printStackTrace();
         }

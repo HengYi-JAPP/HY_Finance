@@ -62,6 +62,7 @@
         <module>budget-provider</module>
         <module>hengyi-api</module>
         <module>hengyi-controller</module>
+        <module>hengyi-timed_task</module>
     </modules>
     <dependencies>
         <!--SAP中间件jar包-->

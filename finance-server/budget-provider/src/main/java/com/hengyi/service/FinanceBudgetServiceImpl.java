@@ -2,6 +2,7 @@ package com.hengyi.service;
 
 import com.hengyi.bean.BudgetdetailBean;
 import com.hengyi.bean.MaterialcostdetailsBean;
+import com.hengyi.bean.ProductMatchBean;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.mapper.FinanceBudgetMapper;
@@ -38,7 +39,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
     public List<Map<String, Object>> getDetailData(ConditionVo conditionVo) {
         List<Map<String, Object>> list = financeBudgetMapper.getDetailData(conditionVo);
         List<Map<String, Object>> mapList;
-        if ("实际".equals(conditionVo.getType()) | "预算".equals(conditionVo.getType())) {
+        if ("实际".equals(conditionVo.getType()) || "预算".equals(conditionVo.getType())) {
             mapList = getOneTypeList(list, conditionVo);
             return mapList;
         }
@@ -47,12 +48,156 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
     }
 
     /***
+     * 获取详情合计的均值
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getSumDetail(ConditionVo conditionVo) {
+        //将分页去除查询出所有数据都查出来
+        conditionVo.setOffset(null);
+        conditionVo.setLimit(null);
+        //存储实际均值
+        HashMap<String,Object> fact=new LinkedHashMap<>();
+        //存储预算均值
+        HashMap<String,Object> budget=new LinkedHashMap<>();
+        //存储差异均值
+        HashMap<String,Object> difference=new LinkedHashMap<>();
+        //存放均值结果（共三个map）
+        List<Map<String,Object>> resultList=new ArrayList<Map<String, Object>>();
+        //获取所有详情记录
+        List<Map<String,Object>> list= financeBudgetMapper.getDetailData(conditionVo);
+        //将详情记录id转化为相应值并按实际，预算，差异的顺序查找出来
+        List<Map<String,Object>> mapList=getList(list,conditionVo);
+        BigDecimal sumFactProduct=new BigDecimal(0);
+        String [] array=new String[]{"id","type","company","month","year","product","workshop","line","spec","yarnKind","AArate","FSrate","day_product","budget_total_product"};
+        for (int i = 0; i < array.length; i++) {
+            fact.put(array[i],mapList.get(0).get(array[i]));
+            budget.put(array[i],mapList.get(0).get(array[i]));
+            difference.put(array[i],mapList.get(0).get(array[i]));
+        }
+        //对实际进行求和
+        for (String key:mapList.get(0).keySet()) {
+            BigDecimal sumFact= new BigDecimal(0);
+            BigDecimal sumBudget=new BigDecimal(0);
+            if ("id".equals(key)||"id1".equals(key)||"type".equals(key)||"type1".equals(key)||"company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                    "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                    || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) ||
+                    "FSrate".equals(key) || "day_product".equals(key)||"company1".equals(key) ||
+                    "month1".equals(key) || "year1".equals(key) ||
+                    "product1".equals(key) || "workshop1".equals(key) || "line1".equals(key)
+                    || "spec1".equals(key) || "yarnKind1".equals(key) || "AArate1".equals(key) ||
+                    "FSrate1".equals(key) || "day_product1".equals(key)) {
+                continue;
+            }else {
+                for (int i = 0; i < mapList.size() ; i++) {
+                    if (i%3 ==0){
+                    }else {
+                        //对实际进行求和
+                        if (i%2 == 0){
+                            sumFact=sumFact.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i).get("budget_total_product").toString())));
+                            sumFactProduct=sumFactProduct.add(new BigDecimal(mapList.get(i).get("budget_total_product").toString()));
+                        }else if (i%2 ==1){//对预算进行求和
+                            sumBudget=sumBudget.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i-1).get("budget_total_product").toString())));
+                        }
+                    }
+                }
+                fact.put(key,sumFact.divide(sumFactProduct));
+                budget.put(key,sumBudget.divide(sumFactProduct));
+            }
+        }
+        resultList.add(fact);
+        resultList.add(budget);
+        return resultList;
+//        // 获取所有实际的数据
+//        conditionVo.setType("实际");
+//        mapList = getOneTypeList(list, conditionVo);
+//        //累计所有实际记录的总产量(由于无论预算还是实际计算均值都是用实际的总产量)
+//        BigDecimal sumFactProduct=new BigDecimal(0);
+//        for (Map map:mapList) {
+//            if ((StringUtil.isEmpty(map.get("budget_total_product")))) {
+//                sumFactProduct = sumFactProduct.add(new BigDecimal(map.get("budget_total_product").toString()));
+//            } else {
+//                continue;
+//            }
+//        }
+//        resultList.add(getSum(mapList,sumFactProduct,fact));
+//
+//        //获取所有预算的数据
+//        conditionVo.setType("预算");
+//        mapList = getOneTypeList(list, conditionVo);
+//        resultList.add(getSum(mapList,sumFactProduct,budget));
+//        return mapList;
+    }
+
+//    /***
+//     * 获取预算或实际总和均值
+//     * @param mapList
+//     * @param sumFactProduct
+//     * @param resultMap
+//     * @return
+//     */
+//    private HashMap<String,Object> getSum(List<Map<String,Object>> mapList,BigDecimal sumFactProduct,HashMap<String,Object> resultMap){
+//        //剔除map非计算字段
+//        String [] array=new String[]{"id","type","company","month","year","product","workshop","line","spec","yarnKind","AArate","FSrate","day_product","budget_total_product"};
+//        for (int i = 0; i < array.length; i++) {
+//            resultMap.put(array[i],mapList.get(0).get(array[i]));
+//            mapList.get(0).remove(array[i]);
+//        }
+//        //对所有需要计算的字段进行遍历相加
+//        for (String key: mapList.get(0).keySet()) {
+//            //初始化一个合计标记
+//            BigDecimal sum=new BigDecimal(0);
+//            //对每个需要计算字段的值进行遍历相加
+//            for (Map map:mapList) {
+//                if (!StringUtil.isEmpty(map.get(key))){
+//                    sum=sum.add(new BigDecimal(map.get(key).toString()).multiply(new BigDecimal(map.get("budget_total_product").toString())));
+//                }else{
+//                    continue;
+//                }
+//            }
+//            resultMap.put(key,sum.subtract(sumFactProduct));
+//        }
+//        return resultMap;
+//    }
+
+    /***
      * 获取字典表数据
      * @return
      */
     @Override
     public List<DictionaryDomain> getDictionary() {
         return financeBudgetMapper.getDictionary();
+    }
+
+    /***
+     * 获取车间列表
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public List<Map<String, String>> getWorkshop(ConditionVo conditionVo) {
+        return financeBudgetMapper.getWorkshop(conditionVo);
+    }
+
+    /***
+     * 获取生产线列表
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public List<Map<String, String>> getLine(ConditionVo conditionVo) {
+        return financeBudgetMapper.getLine(conditionVo);
+    }
+
+    /***
+     * 获取规格列表
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public List<Map<String, String>> getSpec(ConditionVo conditionVo) {
+        return financeBudgetMapper.getSpec(conditionVo);
     }
 
     /***
@@ -78,11 +223,6 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
             resultDomain.setConsumerEffect(resultDomain.getCheckProductUnitPrice().subtract(resultDomain.getCheckBudgetUnitPrice()));
             resultDomain.setStructureEffect(resultDomain.getCheckBudgetUnitPrice().subtract(resultDomain.getBudgetUnitPrice()));
             resultDomain.setTotalDifference(resultDomain.getProductUnitPrice().subtract(resultDomain.getBudgetUnitPrice()));
-
-//            resultDomain.setPriceEffect(resultDomain.getCheckProductUnitPrice().subtract(resultDomain.getProductUnitPrice()));
-//            resultDomain.setConsumerEffect(resultDomain.getCheckBudgetUnitPrice().subtract(resultDomain.getCheckProductUnitPrice()));
-//            resultDomain.setStructureEffect(resultDomain.getBudgetUnitPrice().subtract(resultDomain.getCheckBudgetUnitPrice()));
-//            resultDomain.setTotalDifference(resultDomain.getBudgetUnitPrice().subtract(resultDomain.getProductUnitPrice()));
         }
         return list;
     }
@@ -110,11 +250,6 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
             vo.setConsumerEffect(vo.getCheckProductUnitPrice().subtract(vo.getCheckBudgetUnitPrice()));
             vo.setStructureEffect(vo.getCheckBudgetUnitPrice().subtract(vo.getBudgetUnitPrice()));
             vo.setTotalDifference(vo.getProductUnitPrice().subtract(vo.getBudgetUnitPrice()));
-
-//            vo.setPriceEffect(vo.getCheckBudgetUnitPrice().subtract(vo.getProductUnitPrice()));
-//            vo.setConsumerEffect(vo.getCheckBudgetUnitPrice().subtract(vo.getCheckProductUnitPrice()));
-//            vo.setStructureEffect(vo.getBudgetUnitPrice().subtract(vo.getCheckBudgetUnitPrice()));
-//            vo.setTotalDifference(vo.getBudgetUnitPrice().subtract(vo.getProductUnitPrice()));
         }
         return list;
     }
@@ -137,13 +272,15 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
      */
     @Override
     public void importBudgetData(File file) throws IOException, InvalidFormatException {
-        System.out.println("excel");
+        System.out.println("开始了");
+//        File file = new File("C:\\Users\\38521\\Documents\\Tencent Files\\385213918\\FileRecv\\六家公司_预算单耗&单价（修改2018.04.01凌晨）.xlsx");
         // 创建文件流对象和工作簿对象
-        // 文件流
-        FileInputStream in = new FileInputStream(file);
-        //工作簿
-        Workbook book = WorkbookFactory.create(in);
+        FileInputStream in = new FileInputStream(file); // 文件流
+        Workbook book = WorkbookFactory.create(in); //工作簿
         List<BudgetdetailBean> budgetdetailBeanList = new ArrayList<>();
+        //将生产线匹配关系放入集合
+        ArrayList<ProductMatchBean> productmatchlist = new ArrayList<>();
+        productmatchlist = financeBudgetMapper.selectproductmatch();
         //j: sheet,  i: 行,  k: 列
         //遍历所有的sheet
         for (int j = 0; j < book.getNumberOfSheets(); j++) {
@@ -152,58 +289,54 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
             //遍历所有的行和列
             for (int i = 0; i < sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
-                if (row != null) {
+                if (row==null){
                     continue;
                 }
-                if (i >= 4 && row.getCell(0) != null && !ExcelUtil.changetostring(row.getCell(0)).equals("")) {
+                if (i >= 4&&row.getCell(0)!=null&&!ExcelUtil.changetostring(row.getCell(0)).equals("")) {
                     //一行数据作为一个对象插入
                     BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
+                    budgetdetailBean.setType("预算");
                     for (int k = 0; k < sheet.getRow(0).getLastCellNum(); k++) {
 
-                        if (68 > k && k > 11) {
+                        if (k > 11&& row.getCell(k)!=null) {
                             //单耗
                             Cell cell = row.getCell(k);
                             //单价
                             Cell cell_price = sheet.getRow(0).getCell(k);
-
                             //列名
                             Cell cell_name = sheet.getRow(3).getCell(k);
-
                             //一列数据作为一个对象插入
                             MaterialcostdetailsBean mcdb = new MaterialcostdetailsBean();
-
                             //名称
                             mcdb.setMaterialName(ExcelUtil.changetostring(cell_name));
                             //单耗
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell))) {
-                                mcdb.setConsumption(new BigDecimal((ExcelUtil.changetostring(cell))));
-                            } else {
+                                mcdb.setConsumption(new BigDecimal((ExcelUtil.changenumbertostring(cell))));
+                            }else {
                                 continue;
                             }
                             //单价
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price))) {
-                                mcdb.setPrice(new BigDecimal(ExcelUtil.changetostring(cell_price)));
-                            } else {
+                                mcdb.setPrice(new BigDecimal(ExcelUtil.changenumbertostring(cell_price)));
+                            }else {
                                 continue;
                             }
                             //单位成本
                             if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price)) && StringUtil.isNotEmpty(ExcelUtil.changetostring(cell))) {
-                                BigDecimal decimal = new BigDecimal(ExcelUtil.changetostring(cell)).multiply(new BigDecimal(ExcelUtil.changetostring(cell_price)));
+                                BigDecimal decimal = new BigDecimal(ExcelUtil.changenumbertostring(cell)).multiply(new BigDecimal(ExcelUtil.changenumbertostring(cell_price)));
                                 mcdb.setUnitPrice(decimal);
-                            } else {
+                            }else {
                                 continue;
                             }
                             //聚酯or纺丝
                             //   mcdb.setField(sheet.getRow(4).getCell(k).getStringCellValue());
                             //将该列数据添加进mcdbList集合
-                            ArrayList<String> fields = financeBudgetMapper.selectfieldbymaterialname(mcdb.getMaterialName());
-                            if (fields.size() > 0) {
+                            ArrayList<String> fields=financeBudgetMapper.selectfieldbymaterialname(mcdb.getMaterialName());
+                            if (fields.size()>0){
                                 mcdb.setField(fields.get(0));
-                                budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(mcdb);
-                            }
+                                budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(mcdb);}
                         }
                     }
-
                     Cell cell_company = sheet.getRow(i).getCell(0);
                     Cell cell_month = sheet.getRow(i).getCell(1);
                     Cell cell_year = sheet.getRow(i).getCell(2);
@@ -227,31 +360,44 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                     }
                     budgetdetailBean.setProduct(ExcelUtil.changetostring(cell_product));
                     budgetdetailBean.setWorkshop(ExcelUtil.changetostring(cell_workshop));
-                    budgetdetailBean.setLine(ExcelUtil.changetostring(cell_line));
+                    budgetdetailBean.setLine(ExcelUtil.changeinttostring(cell_line));
                     budgetdetailBean.setSpec(ExcelUtil.changetostring(cell_spec));
                     budgetdetailBean.setYarnkind(ExcelUtil.changetostring(cell_yarnkind));
 
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_aarate))) {
-                        budgetdetailBean.setAarate(new BigDecimal(ExcelUtil.changetostring(cell_aarate)));
+                        budgetdetailBean.setAarate(new BigDecimal(ExcelUtil.changenumbertostring(cell_aarate)));
                     }
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_fsrate))) {
-                        budgetdetailBean.setFsrate(new BigDecimal(ExcelUtil.changetostring(cell_fsrate)));
+                        budgetdetailBean.setFsrate(new BigDecimal(ExcelUtil.changenumbertostring(cell_fsrate)));
                     }
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_dayProduct))) {
-                        budgetdetailBean.setDayProduct(new BigDecimal(ExcelUtil.changetostring(cell_dayProduct)));
+                        budgetdetailBean.setDayProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_dayProduct)));
                     }
                     if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_budgetTotalProduct))) {
-                        budgetdetailBean.setBudgetTotalProduct(new BigDecimal(ExcelUtil.changetostring(cell_budgetTotalProduct)));
+                        budgetdetailBean.setBudgetTotalProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_budgetTotalProduct)));
                     }
+                    String[] lines=new String[1];
                     //遍历一行中的所有的数据添加进budgetdetailBeanList集合
-                    budgetdetailBeanList.add(budgetdetailBean);
+                    for (ProductMatchBean productMatchBean :productmatchlist){
+                        if (StringUtil.equals(productMatchBean.getProductLine(),budgetdetailBean.getLine())){
+                            lines=productMatchBean.getProductMatch().split("/");
+                            break;
+                        }
+                    }
+
+                    for (int k =0;k<lines.length;k++){
+                        budgetdetailBean.setLine(lines[k]);
+                        ArrayList<String>  result= financeBudgetMapper.selectbudgetdatabybean(budgetdetailBean);
+                        if (result.isEmpty()){
+                            for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
+                                financeBudgetMapper.insertmaterialcostdetails(materialcostdetailsBean);
+                            }
+                            financeBudgetMapper.insertdetail(budgetdetailBean);
+                            System.out.println(budgetdetailBeanList.size());
+                            budgetdetailBeanList.add(budgetdetailBean);
+                        }
+                    }
                 }
-            }
-            for (BudgetdetailBean budgetdetailBean : budgetdetailBeanList) {
-                for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
-                    financeBudgetMapper.insertmaterialcostdetails(materialcostdetailsBean);
-                }
-                financeBudgetMapper.insertdetail(budgetdetailBean);
             }
         }
     }
@@ -295,29 +441,37 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
             //用于存放实际与预算的差异（实际-预算）
             Map<String, Object> hashMapDifference = new LinkedHashMap<String, Object>();
             for (String key : map.keySet()) {
-                if ("id".equals(key) | "id1".equals(key)) {
+                if ("id".equals(key) || "id1".equals(key)) {
                 } else if ("type".equals(key)) {
                     hashMapFact.put(key, "实际");
                     hashMapDifference.put(key, "差异");
                 } else if ("type1".equals(key)) {
                     hashMapBudget.put(key, "预算");
                 } else if ("budget_total_product".equals(key)) {
-                    hashMapFact.put(key,map.get(key));
+                    if (StringUtil.isEmpty(map.get(key))){
+                        hashMapFact.put(key,0);
+                    }else {
+                        hashMapFact.put(key,map.get(key));
+                    }
                 } else if ("budget_total_product1".equals(key)) {
-                    hashMapBudget.put(key,map.get(key));
+                    if (StringUtil.isEmpty(map.get(key))){
+                        hashMapBudget.put(key,0);
+                    }else {
+                        hashMapBudget.put(key,map.get(key));
+                    }
                     StringBuilder sb=new StringBuilder(key);
-                    hashMapDifference.put(key,null);
-//                    hashMapDifference.put(key,new BigDecimal(hashMapFact.get(sb.deleteCharAt(sb.length()-1).toString()).toString()).subtract(new BigDecimal(hashMapBudget.get(key).toString())));
-                } else if ("company".equals(key) | "month".equals(key) | "year".equals(key) |
-                        "product".equals(key) | "workshop".equals(key) | "line".equals(key)
-                        | "spec".equals(key) | "yarnKind".equals(key) | "AArate".equals(key) |
-                        "FSrate".equals(key) | "day_product".equals(key)) {
+//                    hashMapDifference.put(key,null);
+                    hashMapDifference.put(key,new BigDecimal(hashMapFact.get(sb.deleteCharAt(sb.length()-1).toString()).toString()).subtract(new BigDecimal(hashMapBudget.get(key).toString())));
+                } else if ("company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                        || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) ||
+                        "FSrate".equals(key) || "day_product".equals(key)) {
                     hashMapFact.put(key, map.get(key));
                     hashMapDifference.put(key, null);
-                } else if ("company1".equals(key) | "month1".equals(key) | "year1".equals(key) |
-                        "product1".equals(key) | "workshop1".equals(key) | "line1".equals(key)
-                        | "spec1".equals(key) | "yarnKind1".equals(key) | "AArate1".equals(key) |
-                        "FSrate1".equals(key) | "day_product1".equals(key)) {
+                } else if ("company1".equals(key) || "month1".equals(key) || "year1".equals(key) ||
+                        "product1".equals(key) || "workshop1".equals(key) || "line1".equals(key)
+                        || "spec1".equals(key) || "yarnKind1".equals(key) || "AArate1".equals(key) ||
+                        "FSrate1".equals(key) || "day_product1".equals(key)) {
                     hashMapBudget.put(key, map.get(key));
                 } else {
                     String key1 = key;
@@ -348,10 +502,10 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         for (Map<String, Object> map : list) {
             Map<String, Object> hashMap = new LinkedHashMap<String, Object>();
             for (String key : map.keySet()) {
-                if ("id".equals(key) | "id1".equals(key)) {
-                } else if ("type".equals(key) | "company".equals(key) | "month".equals(key) | "year".equals(key) |
-                        "product".equals(key) | "workshop".equals(key) | "line".equals(key)
-                        | "spec".equals(key) | "yarnKind".equals(key) | "AArate".equals(key) | "FSrate".equals(key) | "day_product".equals(key) | "budget_total_product".equals(key)) {
+                if ("id".equals(key)) {
+                } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                        || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
                     hashMap.put(key, map.get(key));
                 } else {
                     hashMap = getValue(hashMap, key, conditionVo, map);

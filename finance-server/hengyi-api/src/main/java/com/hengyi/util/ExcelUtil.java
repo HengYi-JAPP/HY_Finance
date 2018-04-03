@@ -40,6 +40,28 @@ public class ExcelUtil {
         }
     }
 
+
+
+    public static String changenumbertostring(Cell cell) {
+        String strCell = "";
+        if (cell != null) {
+            switch (cell.getCellType()) {
+                case HSSFCell.CELL_TYPE_NUMERIC:
+                    strCell = String.valueOf( cell.getNumericCellValue());
+                    break;
+                default:
+                    strCell = "0";
+                    break;
+            }
+            return strCell;
+        } else {
+            return "";
+        }
+    }
+
+
+
+
     public static String changeinttostring(Cell cell) {
         String strCell = "";
         if (cell != null) {

@@ -7,7 +7,6 @@ import com.hengyi.vo.ConditionVo;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +20,31 @@ public interface FinanceBudgetService {
     // 获取详情表数据
     List<Map<String, Object>> getDetailData(ConditionVo conditionVo);
 
+    // 获取详情合计的均值
+    List<Map<String,Object>> getSumDetail(ConditionVo conditionVo);
+
     //获取字典表数据
     List<DictionaryDomain> getDictionary();
+    /***
+     * 获取车间列表
+     * @param conditionVo
+     * @return
+     */
+    List<Map<String,String>> getWorkshop(ConditionVo conditionVo);
+
+    /***
+     * 获取生产线列表
+     * @param conditionVo
+     * @return
+     */
+    List<Map<String,String>> getLine(ConditionVo conditionVo);
+
+    /***
+     * 获取规格列表
+     * @param conditionVo
+     * @return
+     */
+    List<Map<String,String>> getSpec(ConditionVo conditionVo);
 
     // 获取总记录数
     Long getTotalCount(ConditionVo conditionVo);
@@ -39,5 +61,6 @@ public interface FinanceBudgetService {
     // 获取公司维度均值记录数
     Long getAllCompanyDataCount(ConditionVo conditionVo);
 
+    //导入预算数据
     void importBudgetData(File file) throws IOException, InvalidFormatException;
 }

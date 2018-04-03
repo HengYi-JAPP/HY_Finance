@@ -22,8 +22,6 @@ public class UnitPriceCompareBean {
 
     private BigDecimal totalProduct;
     private BigDecimal budgetTotalProduct;
-
-
     private BigDecimal productUnitPrice;
     private BigDecimal checkProductUnitPrice;
     private BigDecimal checkBudgetUnitPrice;
@@ -107,6 +105,10 @@ public class UnitPriceCompareBean {
 
     public void setBudgetTotalProduct(BigDecimal budgetTotalProduct) {
         this.budgetTotalProduct = budgetTotalProduct;
+        if (this.budgetTotalProduct!= null){
+            this.budgetTotalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        }
+
     }
 
     public BigDecimal getProductUnitPrice() {
@@ -115,6 +117,10 @@ public class UnitPriceCompareBean {
 
     public void setProductUnitPrice(BigDecimal productUnitPrice) {
         this.productUnitPrice = productUnitPrice;
+        if (this.productUnitPrice!= null){
+            this.productUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        }
+
     }
 
     public BigDecimal getCheckProductUnitPrice() {
@@ -123,6 +129,7 @@ public class UnitPriceCompareBean {
 
     public void setCheckProductUnitPrice(BigDecimal checkProductUnitPrice) {
         this.checkProductUnitPrice = checkProductUnitPrice;
+        this.checkProductUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getCheckBudgetUnitPrice() {
@@ -131,6 +138,7 @@ public class UnitPriceCompareBean {
 
     public void setCheckBudgetUnitPrice(BigDecimal checkBudgetUnitPrice) {
         this.checkBudgetUnitPrice = checkBudgetUnitPrice;
+        this.checkBudgetUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getBudgetUnitPrice() {
@@ -139,6 +147,7 @@ public class UnitPriceCompareBean {
 
     public void setBudgetUnitPrice(BigDecimal budgetUnitPrice) {
         BudgetUnitPrice = budgetUnitPrice;
+        BudgetUnitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getTotalProduct() {
@@ -147,5 +156,9 @@ public class UnitPriceCompareBean {
 
     public void setTotalProduct(BigDecimal totalProduct) {
         this.totalProduct = totalProduct;
+        if (this.totalProduct!= null){
+            this.totalProduct.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        }
+
     }
 }

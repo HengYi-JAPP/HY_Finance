@@ -1,4 +1,4 @@
-<div class="box" style="overflow-x: hidden">
+<div class="box" style="overflow-x: hidden;height: auto">
   <app-select (FindList)="findList($event)"></app-select>
   <div style="margin-top: 20px;">
     <div class="components-table-demo-control-bar">
@@ -61,7 +61,7 @@
               (nzPageSizeChange)="_refreshStatus()"
               nzBordered
               [nzIsPagination]="true"
-              [nzScroll]="{ x: 5120, y: 300 }">
+              [nzScroll]="{ x: 5120, y: 370 }">
       <ng-template #nzFixedHeader>
         <thead nz-thead>
         <tr style="line-height: 5px">
@@ -70,88 +70,88 @@
             <!--</label>-->
           <!--</th>-->
           <th nz-th nzWidth="100px" rowspan="3"></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>预算or实际</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>公司</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>月份</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>年份</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>产品</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>车间</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>生产线</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>规格</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>纱种</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>AA率</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>废丝率</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>单位日产量</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="3"><span>预算总产量</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2" colspan="4"><span>原料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1" colspan="16"><span>聚酯阶段</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1" colspan="37"><span>纺丝阶段</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>预算or实际</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>公司</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>月份</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>年份</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>产品</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>车间</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>生产线</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>规格</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>纱种</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>AA率</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>废丝率</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>单位日产量</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>预算总产量</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" colspan="4"><span>原料</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="16"><span>聚酯阶段</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="37"><span>纺丝阶段</span></th>
         </tr>
         <tr style="line-height: 5px">
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1" colspan="4"><span>原料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>聚酯工资</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>聚酯折旧</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>聚酯耗电</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>聚酯耗水</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>聚酯机配件</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1" colspan="6"><span>聚酯燃料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>聚酯其他</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1" colspan="14"><span>纺丝辅料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1" colspan="7"><span>包装费</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>纸管</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>聚酯熔体</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>纺丝工资</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>纺丝折旧</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>纺丝耗水</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>纺丝耗电</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>纺丝机配件</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>纺丝维修费</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1" colspan="7"><span>纺丝燃料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="2"><span>纺丝其他</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="4"><span>原料</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>聚酯工资</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>聚酯折旧</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>聚酯耗电</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>聚酯耗水</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>聚酯机配件</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="6"><span>聚酯燃料</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>聚酯其他</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="14"><span>纺丝辅料</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="7"><span>包装费</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纸管</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>聚酯熔体</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纺丝工资</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纺丝折旧</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纺丝耗水</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纺丝耗电</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纺丝机配件</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纺丝维修费</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="7"><span>纺丝燃料</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纺丝其他</span></th>
         </tr>
         <tr style="line-height: 5px">
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>PTA</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>MEG</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>POY</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>切片</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>乙二醇锑</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>二甘醇 </span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>二氧化钛</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>季戊四醇</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>聚酯生物质</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>聚酯重油</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>聚酯水煤浆</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>聚酯柴油</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>聚酯蒸汽</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>聚酯煤</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>加弹油</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>短纤油剂SF220</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>短纤油剂SF2180</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>DELION NW-2641-TS</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>DELION  NW-2642</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>DELION 6329-TS</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>DELION TSC-900</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>DELION TSC-502</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>油剂</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>硅油</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>黑母粒</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>蓝母粒</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>白母粒</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纺丝其他辅料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>切片袋</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>编织袋</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>打包带</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纸箱</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>木架</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>泡沫板</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>其他包装物</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纺丝生物质</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纺丝重油</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纺丝水煤浆</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纺丝柴油</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纺丝蒸汽</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纺丝煤</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px" rowspan="1"><span>纺丝其他燃料</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>PTA</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>MEG</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>POY</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>切片</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>乙二醇锑</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>二甘醇 </span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>二氧化钛</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>季戊四醇</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯生物质</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯重油</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯水煤浆</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯柴油</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯蒸汽</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯煤</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>加弹油</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>短纤油剂SF220</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>短纤油剂SF2180</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>DELION NW-2641-TS</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>DELION  NW-2642</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>DELION 6329-TS</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>DELION TSC-900</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>DELION TSC-502</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>油剂</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>硅油</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>黑母粒</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>蓝母粒</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>白母粒</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝其他辅料</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>切片袋</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>编织袋</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>打包带</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纸箱</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>木架</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>泡沫板</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>其他包装物</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝生物质</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝重油</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝水煤浆</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝柴油</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝蒸汽</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝煤</span></th>
+          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝其他燃料</span></th>
         </tr>
         </thead>
       </ng-template>
@@ -162,13 +162,29 @@
           <!--</label>-->
         <!--</td>-->
         <td></td>
-        <td nz-td style="text-align: center;line-height: 10px" *ngFor="let key of getkeys(data)">{{data[key]}}</td>
+        <td nz-td style="text-align: center;line-height: 10px;padding: 5px" *ngFor="let key of getkeys(data)">{{data[key]}}</td>
       </tr>
       <!--<tr nz-tbody-tr>-->
-        <!--<td nz-td style="text-align: center;line-height: 10px"><el-button type="primary" size="mini">合计</el-button></td>-->
-        <!--<td *ngFor="let sum of sums" style="text-align: center;line-height: 10px">{{sum}}</td>-->
+        <!--<td nz-td style="text-align: center;line-height: 10px;padding: 5px"><el-button type="primary" size="mini">合计</el-button></td>-->
+        <!--<td *ngFor="let sum of sums" style="text-align: center;line-height: 10px;padding: 5px">{{sum}}</td>-->
+      <!--</tr>-->
+      <tr nz-tbody-tr style="background-color: red" *ngFor="let sum of sums">
+        <td>均值</td>
+        <td nz-td *ngFor="let key of getkeys(sum)" style="line-height: 10px;padding: 5px">{{sum[key]}}</td>
+      </tr>
+      <!--<tr nz-tbody-tr style="background-color: red" *ngFor="let sums of sums2">-->
+        <!--<td nz-td *ngFor="let key of getkeys(sums)" style="line-height: 10px;padding: 5px">{{sums[key]}}</td>-->
+      <!--</tr>-->
+      <!--<tr nz-tbody-tr style="background-color: red" *ngFor="let sums of sums3">-->
+        <!--<td nz-td *ngFor="let key of getkeys(sums)" style="line-height: 10px;padding: 5px">{{sums[key]}}</td>-->
       <!--</tr>-->
       </tbody>
+      <!--<thead nz-table-footer>-->
+      <!--<tr nz-tbody-tr>-->
+        <!--<th nz-th>均值</th>-->
+        <!--<th nz-th *ngFor="let sum of sums">{{sum}}</th>-->
+      <!--</tr>-->
+      <!--</thead>-->
     </nz-table>
   </div>
 </div>
