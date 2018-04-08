@@ -29,7 +29,7 @@
       </el-select>
     </div>
     <div el-col span="3">
-      <el-select title="产品" placeholder="请选择车间" [(model)]="workshop" [clearable]="true" (modelChange)="changeProduct()">
+      <el-select title="产品" placeholder="请选择车间" [(model)]="workshop" [clearable]="true" (modelChange)="changeWorkshop()">
         <el-option *ngFor="let item of workshops" [label]="item.label" [value]="item.value" ></el-option>
       </el-select>
     </div>
@@ -39,7 +39,7 @@
       </el-select>
     </div>
     <div el-col span="3">
-      <el-select title="规格" placeholder="请选择规格" [(model)]="spec" [clearable]="true" (modelChange)="changeSpec()">
+      <el-select title="规格" placeholder="请选择规格" [(model)]="spec" [clearable]="true">
         <el-option *ngFor="let item of specs" [label]="item.label" [value]="item.value" ></el-option>
       </el-select>
     </div>

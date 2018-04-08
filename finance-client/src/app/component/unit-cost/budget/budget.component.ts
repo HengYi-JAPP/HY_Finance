@@ -34,7 +34,7 @@ export class UnitBudgetComponent {
   _spec = '';
   constructor(private budgetService: BudgetService) {
     this.uploadUrl = global.baseUrl + '/FinanceBudgetController/importBudgetData';
-    this.findList({});
+    // this.findList({});
   }
   _displayDataChange($event) {
     this._displayData = $event;
@@ -94,13 +94,13 @@ export class UnitBudgetComponent {
     this.tableData.splice(0, this.tableData.length);
     this.budgetService.getDetailData(params).subscribe(
       data => {
-      console.log(data.data );
         this._total = data.page.total;
         this.tableData = data.data[0];
         this.sums = data.data[1];
         this._loading = false;
       }
     );
+    this._loading = false;
   }
   // 添加style
   getTrStyle(data) {
@@ -132,6 +132,16 @@ export class UnitBudgetComponent {
         this._loading = false;
       }
     );
+    this._loading = false;
+  }
+  // 导出Excel方法
+  exportExcel() {
+    window.open(global.baseUrl + '/FinanceBudgetController/exportExcel');
+    // const param = {};
+    // this.budgetService.exportExcel(param).subscribe(
+    //   data => {
+    //   }
+    // );
   }
 
 }

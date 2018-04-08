@@ -12,8 +12,8 @@ export class BudgetService {
     return this.response.appPost(param, url + '/getDetailData');
   }
   /* 从后台获取*/
-  getDictionary(): Observable<any> {
-    return this.response.appGet( url + '/getDictionary');
+  getDictionary(param): Observable<any> {
+    return this.response.appPost( param, url + '/getDictionary');
   }
   /* 从后台获取详细比对结果 */
   getResultData(param): Observable<any> {
@@ -23,5 +23,8 @@ export class BudgetService {
   getAllCompanyData(param): Observable<any> {
     return this.response.appPost(param, url + '/getAllCompanyData');
   }
-
+  /* 导出Excel */
+  exportExcel(param): Observable<any> {
+    return this.response.appPost2(param, url + '/exportExcel');
+  }
 }

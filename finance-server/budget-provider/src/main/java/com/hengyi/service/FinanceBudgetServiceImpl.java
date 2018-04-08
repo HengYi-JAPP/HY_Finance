@@ -10,6 +10,8 @@ import com.hengyi.util.ExcelUtil;
 import com.hengyi.util.StringUtil;
 import com.hengyi.vo.AllCompanyResultVo;
 import com.hengyi.vo.ConditionVo;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,19 +93,24 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                 continue;
             }else {
                 for (int i = 0; i < mapList.size() ; i++) {
-                    if (i%3 ==0){
+                    if ((i+1)%3 ==0){
                     }else {
                         //对实际进行求和
-                        if (i%2 == 0){
+                        if (i%3 == 0){
                             sumFact=sumFact.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i).get("budget_total_product").toString())));
                             sumFactProduct=sumFactProduct.add(new BigDecimal(mapList.get(i).get("budget_total_product").toString()));
-                        }else if (i%2 ==1){//对预算进行求和
-                            sumBudget=sumBudget.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i-1).get("budget_total_product").toString())));
+                        }else{//对预算进行求和
+                            sumBudget=sumBudget.add(new BigDecimal(mapList.get(i).get(key+"1").toString()).multiply(new BigDecimal(mapList.get(i-1).get("budget_total_product").toString())));
                         }
                     }
                 }
-                fact.put(key,sumFact.divide(sumFactProduct));
-                budget.put(key,sumBudget.divide(sumFactProduct));
+                if (sumFactProduct.compareTo(new BigDecimal(0))==0){
+                    fact.put(key,0);
+                    budget.put(key,0);
+                }else {
+                   fact.put(key,sumFact.divide(sumFactProduct));
+                   budget.put(key,sumBudget.divide(sumFactProduct));
+                }
             }
         }
         resultList.add(fact);
@@ -516,4 +523,11 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         return mapList;
     }
 
+    /***
+     * 导出Excel
+     */
+    @Override
+    public void exportExcel() {
+
+    }
 }

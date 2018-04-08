@@ -63,4 +63,6 @@ public interface FinanceBudgetService {
 
     //导入预算数据
     void importBudgetData(File file) throws IOException, InvalidFormatException;
+    //导出实际数据
+     void exportExcel();
 }

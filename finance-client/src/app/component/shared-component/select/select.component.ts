@@ -42,9 +42,8 @@ export class SelectComponent {
       const obj = {value: i, label: i + '年'};
       this.years.push(obj);
     }
-    this.budgetService.getDictionary().subscribe(
+    this.budgetService.getDictionary({}).subscribe(
       data => {
-        console.log(data);
         data.data[0].forEach((item, index) => {
           if (item.dictType === '公司') {
             const obj = {value: '', label: ''};
@@ -59,14 +58,6 @@ export class SelectComponent {
             this.products.push(obj);
           }
         });
-        if (data.data[1] !== null) {
-           data.data[1].forEach((item, index) => {
-            const obj = {value: '', label: ''};
-            obj.value = item.workshop;
-            obj.label = item.workshop;
-            this.workshops.push(obj);
-           });
-        }
       }
     );
   }
@@ -74,9 +65,75 @@ export class SelectComponent {
   handle(time: number): void {
   }
   changeCompany() {}
-  changeProduct() {}
-  changeProductLine() {}
-  changeSpec() {}
+  changeProduct() {
+    this.workshops = [];
+    this.productLines = [];
+    this.specs = [];
+    const param = {
+      year: this.year,
+      month: this.month,
+      company: this.company,
+      product: this.product
+    };
+    this.budgetService.getDictionary(param).subscribe(
+      data => {
+        if (data.data[1] !== null) {
+          data.data[1].forEach((item, index) => {
+            const obj = {value: '', label: ''};
+            obj.value = item.workshop;
+            obj.label = item.workshop;
+            this.workshops.push(obj);
+          });
+        }
+      }
+    );
+  }
+  changeWorkshop() {
+    this.productLines = [];
+    this.specs = [];
+    const param = {
+      year: this.year,
+      month: this.month,
+      company: this.company,
+      product: this.product,
+      workshop: this.workshop
+    };
+    this.budgetService.getDictionary(param).subscribe(
+      data => {
+        if (data.data[2] !== null) {
+          data.data[2].forEach((item, index) => {
+            const obj = {value: '', label: ''};
+            obj.value = item.line;
+            obj.label = item.line;
+            this.productLines.push(obj);
+          });
+        }
+      }
+    );
+  }
+  changeProductLine() {
+    this.specs = [];
+    const param = {
+      year: this.year,
+      month: this.month,
+      company: this.company,
+      product: this.product,
+      workshop: this.workshop,
+      productLine: this.productLine
+    };
+    this.budgetService.getDictionary(param).subscribe(
+      data => {
+        if (data.data[3] !== null) {
+          data.data[3].forEach((item, index) => {
+            const obj = {value: '', label: ''};
+            obj.value = item.spec;
+            obj.label = item.spec;
+            this.specs.push(obj);
+          });
+        }
+      }
+    );
+  }
   findList() {
     const obj = {
       year: this.year,

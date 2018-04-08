@@ -259,7 +259,7 @@
         </if>
     </select>
     <!--获取生产线-->
-    <select id="getLine" parameterType="com.hengyi.vo.ConditionVo">
+    <select id="getLine" parameterType="com.hengyi.vo.ConditionVo" resultType="java.util.HashMap">
         SELECT DISTINCT(line) FROM Budgetdetail WHERE 1=1
         <if test="year != null">
             AND `year` = #{year}
@@ -281,7 +281,7 @@
         </if>
     </select>
     <!--获取规格列表-->
-    <select id="getSpec" parameterType="com.hengyi.vo.ConditionVo">
+    <select id="getSpec" parameterType="com.hengyi.vo.ConditionVo" resultType="java.util.HashMap">
         SELECT DISTINCT(spec) FROM Budgetdetail WHERE 1=1
         <if test="year != null">
             AND `year` = #{year}
@@ -298,8 +298,8 @@
         <if test="workshop != null">
             AND workshop = #{workshop}
         </if>
-        <if test="line != null">
-            AND line = #{line}
+        <if test="productLine != null">
+            AND line = #{productLine}
         </if>
         <if test="type != null">
             AND type =#{type}
@@ -380,8 +380,8 @@
       (CASE WHEN SUM(budget_total_product) IS NULL THEN 0 ELSE SUM(budget_total_product) END ) budget_total_product,
       (CASE WHEN SUM(total_product) IS NULL THEN 0 ELSE SUM(total_product) END) total_product,
       (CASE WHEN TRUNCATE(SUM(product_unit_price*total_product)/SUM(total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(product_unit_price*total_product)/SUM(total_product),2) END ) product_unit_price,
-      (CASE WHEN TRUNCATE(SUM(check_product_unit_price*total_product)/SUM(total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(check_product_unit_price*total_product)/SUM(total_product),2) END) check_product_unit_price,
-      (CASE WHEN TRUNCATE(SUM(check_budget_unit_price*total_product)/SUM(total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(check_budget_unit_price*total_product)/SUM(total_product),2) END) check_budget_unit_price,
+      (CASE WHEN TRUNCATE(SUM(check_product_unit_price*(CASE WHEN budget_unit_price != 0 THEN total_product ELSE 0 END ))/SUM((CASE WHEN budget_unit_price != 0 THEN total_product ELSE 0 END )),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(check_product_unit_price*(CASE WHEN budget_unit_price != 0 THEN total_product ELSE 0 END ))/SUM((CASE WHEN budget_unit_price != 0 THEN total_product ELSE 0 END )),2) END) check_product_unit_price,
+      (CASE WHEN TRUNCATE(SUM(budget_unit_price*(CASE WHEN budget_unit_price != 0 THEN total_product ELSE 0 END ))/SUM((CASE WHEN budget_unit_price != 0 THEN total_product ELSE 0 END )),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(budget_unit_price*(CASE WHEN budget_unit_price != 0 THEN total_product ELSE 0 END ))/SUM((CASE WHEN budget_unit_price != 0 THEN total_product ELSE 0 END )),2) END) check_budget_unit_price,
       (CASE WHEN TRUNCATE(SUM(budget_unit_price*budget_total_product)/SUM(budget_total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(budget_unit_price*budget_total_product)/SUM(budget_total_product),2) END) budget_unit_price
       FROM UnitPriceCompare WHERE 1=1
     <if test="year != null">

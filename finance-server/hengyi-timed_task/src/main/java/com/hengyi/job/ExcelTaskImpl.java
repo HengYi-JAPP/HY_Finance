@@ -5,7 +5,6 @@ import com.hengyi.bean.MaterialcostdetailsBean;
 import com.hengyi.bean.ProductMatchBean;
 import com.hengyi.mapper.FinanceDataMapper;
 import com.hengyi.util.ExcelUtil;
-import com.hengyi.util.MathUtil;
 import com.hengyi.util.StringUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +28,13 @@ import java.util.Map;
 public class ExcelTaskImpl implements ExcelTask{
     @Autowired
     private FinanceDataMapper financeDataMapper;
-//    @Scheduled(cron = "30 45 17 * * ?")
+    @Scheduled(cron = "00 00 05 * * ?")
     @Override
     public void importexcel() throws Exception {
         System.out.println("开始了");
-        File file = new File("C:\\Users\\38521\\Documents\\Tencent Files\\385213918\\FileRecv\\六家公司_预算单耗&单价（修改2018.04.01凌晨）.xlsx");
+//        File file = new File("D:\\work\\预算数据整理\\六家公司_预算单耗&单价_20180404中午.xlsx");
+        File file = new File("E:\\六家公司_预算单耗&单价_20180401.xlsx");
+        System.out.println("表格读取成功");
         // 创建文件流对象和工作簿对象
         FileInputStream in = new FileInputStream(file); // 文件流
         Workbook book = WorkbookFactory.create(in); //工作簿
@@ -47,7 +48,7 @@ public class ExcelTaskImpl implements ExcelTask{
             // 获取当前excel中sheet的下标：0开始
             Sheet sheet = book.getSheetAt(j);   // 遍历Sheet
             //遍历所有的行和列
-            for (int i = 0; i < sheet.getLastRowNum(); i++) {
+            for (int i = 0; i < sheet.getLastRowNum()+1; i++) {
                 Row row = sheet.getRow(i);
                 if (row==null){
                     continue;
@@ -160,6 +161,7 @@ public class ExcelTaskImpl implements ExcelTask{
                 }
             }
         }
+        System.out.println("执行结束");
 //        for (BudgetdetailBean budgetdetailBean : budgetdetailBeanList) {
 //            for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
 //                financeDataMapper.insertmaterialcostdetails(materialcostdetailsBean);
@@ -171,15 +173,12 @@ public class ExcelTaskImpl implements ExcelTask{
 
 
     @Override
-//    @Scheduled(cron = "0 0 12 * * ?")
+//    @Scheduled(cron = "00 24 10 * * ?")
     public void exportexcel () throws Exception {
         ArrayList<Map<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
         ArrayList<BudgetdetailBean> Budgetdetaillist = new ArrayList<BudgetdetailBean>();
-        String filepath="D:\\恒逸工作文档\\财务预算系统\\预算数据导出excel.xlsx";
+        String filepath="D:\\测试导出.xlsx";
         File file = new File(filepath);
-        if (!file.exists()){
-            file.createNewFile();
-        }
         FileInputStream in = new FileInputStream(file);
         Workbook book = WorkbookFactory.create(in); //工作簿
         FileOutputStream out=null;

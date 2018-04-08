@@ -47,6 +47,11 @@
             </nz-upload>
           </div>
         </div>
+        <div nz-row nz-form-item>
+          <div nz-form-control>
+            <button nz-button (click)="exportExcel()">导出数据</button>
+          </div>
+        </div>
       </form>
   </div>
     <nz-table #groupingTable
@@ -169,7 +174,7 @@
         <!--<td *ngFor="let sum of sums" style="text-align: center;line-height: 10px;padding: 5px">{{sum}}</td>-->
       <!--</tr>-->
       <tr nz-tbody-tr style="background-color: red" *ngFor="let sum of sums">
-        <td>均值</td>
+        <!--<td>均值</td>-->
         <td nz-td *ngFor="let key of getkeys(sum)" style="line-height: 10px;padding: 5px">{{sum[key]}}</td>
       </tr>
       <!--<tr nz-tbody-tr style="background-color: red" *ngFor="let sums of sums2">-->

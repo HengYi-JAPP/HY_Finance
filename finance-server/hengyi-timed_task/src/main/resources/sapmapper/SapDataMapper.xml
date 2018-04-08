@@ -75,7 +75,7 @@
           )a
           left join sap_makt e
           on a.matnr=e.matnr
-          where (a.maktx like '%dtex%' or a.maktx like '%切片%' )
+          where (a.maktx like '%dtex%' or a.maktx like '%切片%' or a.maktx like '%短纤%')
           and a.bukrs in ('3000')
 
 
@@ -140,7 +140,7 @@
           on substr(a.objnr,3)=g.aufnr
           and to_char(TO_DATE(a.gjahr||a.perio,'yyyymm'),'YYYY-MM')=year
           )a
-          where (a.maktx like '%dtex%' or a.maktx like '%切片%' )
+          where (a.maktx like '%dtex%' or a.maktx like '%切片%' or a.maktx like '%短纤%')
           and a.bukrs in ('3000')
 
           )b
@@ -460,7 +460,6 @@
           '0050010001','0050010002','0050010003','0050010004','0050010005','0050010006','0050010033','0050010009',
           '0050010013','0050010014','0050010015','0050010016','0050010018','0050010031','0050010036','0050010037',
           '0050010040','0050010041','0050010044','0050010045','0050010046','0050019901','0050019902','0050010023','0050019998')
-
           ) WHERE PERIO=#{month} and   GJAHR=#{year}
       </if>
       <if test="company == '2000' ">
@@ -766,7 +765,6 @@
           and a.id=substr(b.objnr,-7)
 
 
-
           UNION  all
           select distinct a.*,'00000000ZQ' MATNR_MX,'蒸气' maktx,(sum_money-money)/sum_money rate
           from
@@ -867,7 +865,7 @@
           group by objnr,KSTAR,perio,gjahr,matnr,bukrs)a
           left join sap_makt b
           on a.matnr_mx=b.matnr
-          where matnr_mx  != ' '
+          where matnr_mx !=' '
           )
           group by objnr,perio,gjahr,bukrs)b
           on a.perio=b.perio

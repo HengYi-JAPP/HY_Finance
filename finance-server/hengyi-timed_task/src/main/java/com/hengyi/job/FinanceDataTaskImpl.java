@@ -42,8 +42,9 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * 从SAP定期同步数据到本系统Mysql数据库,将物料描述分解成生产线、规格、产品等信息
      */
     @Override
-    @Scheduled(cron = "0 0 3 * * ?")
+    @Scheduled(cron = "0 30 07 * * ?")
     public void productlinedatatask() {
+        System.out.println("开始存放");
         //集合存放每条生产线的各个成本项数据
         ArrayList<MaterialOfLineSelectBean> materialoflinelist = new ArrayList<MaterialOfLineSelectBean>();
         //集合存放将要插入Budgetdetail表的对象
@@ -52,6 +53,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
         ArrayList<MaterialMatchBean> materialmatchlist = new ArrayList<MaterialMatchBean>();
         //获得当前当前时间的年份与上个月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
+//        sapDataMonthBean.setMonth(new BigDecimal(2));
         //清空原有表中的上个月份实际生产数据以便重新导入
         financeDataMapper.deletebudgetbymonth(sapDataMonthBean);
         //查询物料匹配关系
@@ -68,6 +70,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
             //设置budgetdetailBeanlist中未存在该生产线、规格、纱种（差异化）维度的对象
             boolean budgetdetailBeanexist = false;
             //遍历物料匹配关系，匹配本次搜索记录的成本项
+
             for (MaterialMatchBean materialMatchBean : materialmatchlist) {
                 //如果本条记录匹配成功，说明该生产记录是财务预算分析所需要的数据
                 if ((materialMatchBean.getMaterialId() != null && StringUtil.equals(materialOfLineSelectBean.getCostMaterialId(), "00000000" + materialMatchBean.getMaterialId())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))
@@ -145,7 +148,6 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                 }
             }
         }
-
         //将得到的budgetdetailBeanlist对象遍历插入到BudgetDetail表中，获得实际生产数据 生产线、规格、纱种（差异化）维度的数据
         for (BudgetdetailBean budgetdetailBean : budgetdetailBeanlist) {
             for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
@@ -153,7 +155,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
             }
             financeDataMapper.insertbudgetdetail(budgetdetailBean);
         }
-        System.out.println("结束了");
+        System.out.println("结束存放");
     }
 
 
@@ -167,12 +169,14 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * @Transactional(rollbackFor = Exception.class)
      * 计算生产线、规格、纱种维度的单位成本并放入UnitpPriceComparetask表中
      */
-    @Scheduled(cron = "0 0 4 * * ?")
+    @Scheduled(cron = "00 00 08 * * ?")
     public void unitpricecomparetask ()  {
+        System.out.println("开始计算");
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
+//        sapDataMonthBean.setMonth(new BigDecimal(2));
         //每次更新之前清空相应数据
-        financeDataMapper.deleteunitpricecomparebymonth(sapDataMonthBean);
+     financeDataMapper.deleteunitpricecomparebymonth(sapDataMonthBean);
         //查询上月的所有详情数据，包含实际与预算
         ArrayList<Map<String, Object>> budgetresult = financeDataMapper.selectbudgetdatabydate(sapDataMonthBean);
         //Budgetdetaillist 存放搜索结果转换后的实体类BudgetdetailBean  ，代表Budgetdetail中的一行数据
@@ -301,6 +305,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
               financeDataMapper.insertunitpricecomparedata(unitPriceCompareBean);
             }
            }
+        System.out.println("计算结束");
     }
 }
 

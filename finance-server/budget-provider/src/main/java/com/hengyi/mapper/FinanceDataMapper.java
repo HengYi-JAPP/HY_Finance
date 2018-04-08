@@ -4,7 +4,6 @@ import com.hengyi.bean.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -47,7 +46,7 @@ public interface FinanceDataMapper {
      * @param
      * @return
      */
-    public ArrayList<MaterialPriceBean> selectpricelist ();
+    public ArrayList<MaterialPriceBean> selectpricelist();
 
     /**
      * 根据key查询业务字典
@@ -95,7 +94,7 @@ public interface FinanceDataMapper {
      * @param
      * @return
      */
-   public int insertmaterialcostdetails( MaterialcostdetailsBean materialcostdetailsBean);
+   public int insertmaterialcostdetails(MaterialcostdetailsBean materialcostdetailsBean);
 
     /**
      * 通过物料匹配关系表的materialName 来寻找详情表的字段名
@@ -135,7 +134,7 @@ public interface FinanceDataMapper {
      * @param
      * @return
      */
-   public ArrayList<Map<String,Object>> selectproductbudgetdata();
+   public ArrayList<LinkedHashMap<String,Object>> selectproductbudgetdata();
 
     /**
      * 根据年、月查询详情表数据

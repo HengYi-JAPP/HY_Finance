@@ -13,6 +13,14 @@ const  httpOptions = {
     'Authorization': 'my-auth-token'
   })
 };
+// 导出Excel的请求头
+const httpOptions2 = {
+  headers: new HttpHeaders({
+    'Content-Type':  'multipart/form-data',
+    'Authorization': 'my-auth-token',
+    'responseType': 'blob'
+  })
+};
 export interface Config {
   heroesUrl: string;
   textfile: string;
@@ -45,6 +53,13 @@ export class GetResponseService {
   // 发送delete请求
   appUpdate (param: any, url: string): Observable<any> {
     return this.http.put<any>(url, param, httpOptions).pipe(
+      retry(1),
+      catchError(this.handleError)
+    );
+  }
+
+  appPost2 (param: any, url: string): Observable<any> {
+    return this.http.post<any>(url, param, httpOptions2).pipe(
       retry(1),
       catchError(this.handleError)
     );

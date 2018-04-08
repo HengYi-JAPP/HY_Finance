@@ -23,7 +23,8 @@ const appRoutes: Routes = [
   imports: [
     RouterModule.forRoot(
       appRoutes,
-      { enableTracing: true } // 只在调试时使用
+      {useHash: true}
+      // { enableTracing: true } // 只在调试时使用
     )
   ],
   exports: [

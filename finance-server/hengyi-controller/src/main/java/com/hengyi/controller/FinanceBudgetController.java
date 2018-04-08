@@ -6,8 +6,11 @@ import com.hengyi.service.FinanceBudgetService;
 import com.hengyi.util.*;
 import com.hengyi.vo.AllCompanyResultVo;
 import com.hengyi.vo.ConditionVo;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import jdk.internal.util.xml.impl.Input;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +22,10 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -70,7 +76,7 @@ public class FinanceBudgetController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/getDictionary",method = RequestMethod.GET)
+    @RequestMapping(value = "/getDictionary",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<List []> getDictionary(HttpServletRequest request,HttpServletResponse response){
         try {
@@ -194,5 +200,39 @@ public class FinanceBudgetController {
             e.printStackTrace();
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
+    }
+
+    /***
+     * 导出Excel的方法
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/exportExcel")
+    @ResponseBody
+    public String exportExcel(HttpServletRequest request,HttpServletResponse response){
+        try {
+            //定义文件名称
+            String fileName="导出数据";
+//            File file = new File("d:\\导出数据.xlsx");
+//            if (!file.exists()){
+//                file.createNewFile();
+//            }
+//            FileInputStream in = new FileInputStream(file);
+            //创建工作簿工厂
+            Workbook book =new XSSFWorkbook();
+            request.setCharacterEncoding("utf-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.addHeader("Content-Disposition", "attachment;filename=" + new String((fileName + ".xlsx").getBytes(), "utf-8"));
+            OutputStream os = response.getOutputStream();
+            book.write(os);
+//            in.close();
+            os.close();
+            financeBudgetService.exportExcel();
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

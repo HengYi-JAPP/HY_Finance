@@ -39,10 +39,12 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 30 06 * * ?")
     public void getsapdata() {
+        System.out.println("同步开始");
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
+//        sapDataMonthBean.setMonth(new BigDecimal(2));
         //查找所有公司并放入集合
         companylist = financeDataMapper.selectallcompany();
         //将生产线匹配关系放入集合
@@ -174,6 +176,7 @@ public class SapDataTaskImpl implements SapDataTask {
                 }
             }
         }
+        System.out.println("同步结束");
     }
 
 
