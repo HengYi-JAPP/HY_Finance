@@ -12,7 +12,7 @@ export class AllCompanyComponent {
   _loading = true;
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
-  _pageSize = 10; // 默认每页显示10条记录
+  _pageSize = 50; // 默认每页显示10条记录
   _year: '';
   _month: '';
   _company = '';
@@ -21,7 +21,10 @@ export class AllCompanyComponent {
   _productLine = '';
   _spec = '';
   constructor(private budgetService: BudgetService) {
-    this.findList({});
+    this.findList({
+      year: this.getYear(),
+      month: this.getMonth(),
+    });
   }
   _allChecked = false;
   _indeterminate = false;
@@ -108,5 +111,21 @@ export class AllCompanyComponent {
         this._loading = false;
       }
     );
+  }
+  // 获取当前年份
+  getYear() {
+    if (new Date().getMonth() === 0) {
+      return new Date().getFullYear() - 1;
+    } else {
+      return new Date().getFullYear();
+    }
+  }
+  // 获取当前月份的上一个月份
+  getMonth() {
+    if (new Date().getMonth() === 0) {
+      return 12;
+    } else {
+      return new Date().getMonth();
+    }
   }
 }

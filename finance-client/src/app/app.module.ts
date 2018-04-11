@@ -16,6 +16,7 @@ import {UnitOverviewComponent} from './component/unit-cost/overview/overview.com
 import {UnitResultComponent} from './component/unit-cost/result/one-company-all-product/result.component';
 import { ErrorComponent } from './component/error/error.component';
 import {SelectComponent} from './component/shared-component/select/select.component';
+import {Select2Component} from './component/shared-component/select2/select2.component';
 import {TableComponent} from './component/shared-component/table/table.component';
 
 import {BudgetService} from './api/budget.service';
@@ -34,6 +35,7 @@ import {GetResponseService} from './api/getResponse.service';
     ErrorComponent,
     UnitOverviewComponent,
     SelectComponent,
+    Select2Component,
     TableComponent,
     AllCompanyComponent
   ],

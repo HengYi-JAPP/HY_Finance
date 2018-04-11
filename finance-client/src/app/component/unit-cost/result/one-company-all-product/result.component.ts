@@ -13,7 +13,7 @@ export class UnitResultComponent {
   _loading = true;
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
-  _pageSize = 10; // 默认每页显示10条记录
+  _pageSize = 20; // 默认每页显示10条记录
   _year: '';
   _month: '';
   _company = '';
@@ -23,7 +23,13 @@ export class UnitResultComponent {
   _spec = '';
   constructor(private budgetService: BudgetService, private route: ActivatedRoute, private router: Router) {
     this.route.queryParams.subscribe((params: Params) => {
+      this._year = params['year'];
+      this._month = params['month'];
+      this._company = params['company'];
+      this._product = params['product'];
       this.findList({
+        year: params['year'],
+        month: params['month'],
         company: params['company'],
         product: params['product']
       });
@@ -117,7 +123,7 @@ export class UnitResultComponent {
       spec: this._spec,
     };
     this.tableData.splice(0, this.tableData.length);
-    this.budgetService.getAllCompanyData(params).subscribe(
+    this.budgetService.getResultData(params).subscribe(
       data => {
         this._total = data.page.total;
         this.tableData = data.data;

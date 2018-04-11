@@ -8,6 +8,10 @@ import java.math.BigDecimal;
  * @description
  **/
 public class AllCompanyResultVo {
+    //年
+    Integer year;
+    //月
+    Integer month;
     // 公司
     String company;
     // 产品
@@ -33,6 +37,21 @@ public class AllCompanyResultVo {
     // 总体差异
     BigDecimal totalDifference;
 
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
 
     public String getCompany() {
         return company;

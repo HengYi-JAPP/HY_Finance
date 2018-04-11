@@ -22,10 +22,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -153,7 +150,7 @@ public class FinanceBudgetController {
     }
 
     /***
-     * 导入预算数据
+     * 上传预算数据到服务器，以便导入
      * @param request
      * @param response
      * @return
@@ -184,13 +181,34 @@ public class FinanceBudgetController {
                             if (!excelTypes.containsKey(fileType)) {
                                 return ServerResponse.createByError(Const.FAIL_MSG);
                             }
-                            //创建一个缓存临时文件
-                            File file=File.createTempFile(myFileName,fileType);
+//                            //创建一个缓存临时文件
+//                            File file=File.createTempFile(myFileName,fileType);
+//                            //将multipartFile转为file
+//                            multipartFile.transferTo(file);
+//                            financeBudgetService.importBudgetData(file);
+//                            //程序退出时将临时文件删除
+//                            file.deleteOnExit();
+
+                            File directory=new File("C:\\Users\\Administrator\\Desktop\\finance\\importExcel");
+                            String [] files=directory.list();
+                            //如果目录下有文件就把目录下所有文件删除
+                            if (files.length>0){
+                                for (String fileName: files) {
+                                    File file=new File(directory.getPath()+"\\"+fileName);
+                                    file.delete();
+                                }
+                            }
+                            //创建一个新文件
+                            File newFile=new File(directory.getPath()+"\\"+myFileName);
+                            newFile.createNewFile();
+//                            if (!directory.exists()){
+//                                file.createNewFile();
+//                            }else {
+//                                file.delete();
+//                                file.createNewFile();
+//                            }
                             //将multipartFile转为file
-                            multipartFile.transferTo(file);
-                            financeBudgetService.importBudgetData(file);
-                            //程序退出时将临时文件删除
-                            file.deleteOnExit();
+                            multipartFile.transferTo(newFile);
                         }
                     }
                 }
@@ -210,25 +228,40 @@ public class FinanceBudgetController {
      */
     @RequestMapping(value = "/exportExcel")
     @ResponseBody
-    public String exportExcel(HttpServletRequest request,HttpServletResponse response){
+    public String exportExcel(HttpServletRequest request,HttpServletResponse response) throws IOException {
         try {
             //定义文件名称
-            String fileName="导出数据";
-//            File file = new File("d:\\导出数据.xlsx");
+            File file = new File("C:\\Users\\Administrator\\Desktop\\finance\\importExcel\\线上展示表_20180329修改.xlsx");
 //            if (!file.exists()){
 //                file.createNewFile();
 //            }
+            if (!file.exists()) {
+                response.sendError(404, "File not found!");
+                return null;
+            }
 //            FileInputStream in = new FileInputStream(file);
             //创建工作簿工厂
-            Workbook book =new XSSFWorkbook();
-            request.setCharacterEncoding("utf-8");
-            response.setContentType("application/vnd.ms-excel");
-            response.addHeader("Content-Disposition", "attachment;filename=" + new String((fileName + ".xlsx").getBytes(), "utf-8"));
-            OutputStream os = response.getOutputStream();
-            book.write(os);
+//            Workbook book =new XSSFWorkbook();
+//            request.setCharacterEncoding("utf-8");
+//            response.setContentType("application/vnd.ms-excel");
+//            response.addHeader("Content-Disposition", "attachment;filename=" + new String((fileName + ".xlsx").getBytes(), "utf-8"));
+//            OutputStream os = response.getOutputStream();
+//            os.write();
+//            book.write(os);
 //            in.close();
+            BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
+            byte[] buf = new byte[1024];
+            int len = 0;
+            response.reset();
+            response.setContentType("application/x-msdownload");
+            response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+            OutputStream os = response.getOutputStream();
+            while ((len = br.read(buf)) > 0) {
+                os.write(buf, 0, len);
+            }
+            br.close();
             os.close();
-            financeBudgetService.exportExcel();
+//            financeBudgetService.exportExcel();
             return null;
         }catch (Exception e){
             e.printStackTrace();

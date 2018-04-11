@@ -16,9 +16,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
  * @author: HJS
  * @Description:EXCEL导出导入功能
@@ -28,12 +28,19 @@ import java.util.Map;
 public class ExcelTaskImpl implements ExcelTask{
     @Autowired
     private FinanceDataMapper financeDataMapper;
-    @Scheduled(cron = "00 00 05 * * ?")
+    @Scheduled(cron = "00 00 05 01 * ?")
     @Override
     public void importexcel() throws Exception {
         System.out.println("开始了");
 //        File file = new File("D:\\work\\预算数据整理\\六家公司_预算单耗&单价_20180404中午.xlsx");
-        File file = new File("E:\\六家公司_预算单耗&单价_20180401.xlsx");
+        File directory = new File("E:\\C:\\Users\\Administrator\\Desktop\\finance\\importExcel");
+        String[] files=directory.list();
+        String file="";
+        if (files.length>0){
+            for (String myFile:files) {
+                file=myFile;
+            }
+        }
         System.out.println("表格读取成功");
         // 创建文件流对象和工作簿对象
         FileInputStream in = new FileInputStream(file); // 文件流
@@ -173,153 +180,91 @@ public class ExcelTaskImpl implements ExcelTask{
 
 
     @Override
-//    @Scheduled(cron = "00 24 10 * * ?")
+    @Scheduled(cron = "00 00 01 02 * ?")
     public void exportexcel () throws Exception {
-        ArrayList<Map<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
-        ArrayList<BudgetdetailBean> Budgetdetaillist = new ArrayList<BudgetdetailBean>();
-        String filepath="D:\\测试导出.xlsx";
+        ArrayList<LinkedHashMap<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
+        String filepath = "C:\\Users\\Administrator\\Desktop\\finance\\importExcel\\线上展示表_20180329修改.xlsx";
         File file = new File(filepath);
         FileInputStream in = new FileInputStream(file);
         Workbook book = WorkbookFactory.create(in); //工作簿
-        FileOutputStream out=null;
-        for (Map<String, Object> singleRecord : budgetresult) {
-            BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
-            if (singleRecord.get("id") instanceof Integer) {
-                budgetdetailBean.setId(new BigDecimal((Integer) singleRecord.get("id")));
-            }
-            if (singleRecord.get("year") instanceof Integer) {
-                budgetdetailBean.setYear(new BigDecimal((Integer) singleRecord.get("year")));
-            }
-            if (singleRecord.get("month") instanceof Integer) {
-                budgetdetailBean.setMonth(new BigDecimal((Integer) singleRecord.get("month")));
-            }
-            if (singleRecord.get("company") instanceof String) {
-                budgetdetailBean.setCompany((String) singleRecord.get("company"));
-            }
-            if (singleRecord.get("product") instanceof String) {
-                budgetdetailBean.setProduct((String) singleRecord.get("product"));
-            }
-            if (singleRecord.get("line") instanceof String) {
-                budgetdetailBean.setLine((String) singleRecord.get("line"));
-            }
-            if (singleRecord.get("spec") instanceof String) {
-                budgetdetailBean.setSpec((String) singleRecord.get("spec"));
-            }
-            if (singleRecord.get("yarnKind") instanceof String) {
-                budgetdetailBean.setYarnkind((String) singleRecord.get("yarnKind"));
-            }
-            if (singleRecord.get("workshop") instanceof String) {
-                budgetdetailBean.setWorkshop((String) singleRecord.get("workshop"));
-            }
-            if (singleRecord.get("AArate") instanceof Double) {
-                budgetdetailBean.setAarate(new BigDecimal((Double) singleRecord.get("AArate")));
-            }
-            if (singleRecord.get("FSrate") instanceof Double) {
-                budgetdetailBean.setFsrate(new BigDecimal((Double) singleRecord.get("FSrate")));
-            }
-            if (singleRecord.get("day_product") instanceof Double) {
-                budgetdetailBean.setDayProduct(new BigDecimal((Double) singleRecord.get("day_product")));
-            }
-            if (singleRecord.get("budget_total_product") instanceof Double) {
-                budgetdetailBean.setBudgetTotalProduct(new BigDecimal((Double) singleRecord.get("budget_total_product")));
-            }
-            if (singleRecord.get("type") instanceof String) {
-                budgetdetailBean.setType((String) singleRecord.get("type"));
-            }
-            for (Map.Entry<String, Object> entry : singleRecord.entrySet()) {
-                if (StringUtil.equals(entry.getKey(), "type")
-
-                        || StringUtil.equals(entry.getKey(), "budget_total_product")
-                        || StringUtil.equals(entry.getKey(), "day_product")
-                        || StringUtil.equals(entry.getKey(), "FSrate")
-                        || StringUtil.equals(entry.getKey(), "AArate")
-                        || StringUtil.equals(entry.getKey(), "workshop")
-                        || StringUtil.equals(entry.getKey(), "yarnKind")
-                        || StringUtil.equals(entry.getKey(), "product")
-                        || StringUtil.equals(entry.getKey(), "company")
-                        || StringUtil.equals(entry.getKey(), "year")
-                        || StringUtil.equals(entry.getKey(), "month")
-                        || StringUtil.equals(entry.getKey(), "id")
-                        || StringUtil.equals(entry.getKey(), "month")
-                        ) {
-                    continue;
-                }
-                if (entry.getValue() instanceof Integer) {
-
-                    MaterialcostdetailsBean materialcostdetailsBean = financeDataMapper.selectcostdetailbyid((Integer) entry.getValue());
-                    if (materialcostdetailsBean != null) {
-                        materialcostdetailsBean.setField(entry.getKey());
-                        budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(materialcostdetailsBean);
-                    }
-                }
-            }
-            Budgetdetaillist.add(budgetdetailBean);
-        }
-
+        System.out.println("开始导出");
+//        FileOutputStream out = null;
         try {
             //添加表头
-            int num3=0;
-            for (BudgetdetailBean budgetdetailBean1 : Budgetdetaillist) {
-                if (budgetdetailBean1.getType().equals("实际")) {
-                    Row row = book.getSheetAt(0).createRow(num3);
-                    Cell cell = row.createCell(0);
-                    cell.setCellValue(budgetdetailBean1.getCompany());
-                    Cell cell1 = row.createCell(1);
-                    cell1.setCellValue(budgetdetailBean1.getMonth().toString());
-                    Cell cell2 = row.createCell(2);
-                    cell2.setCellValue(budgetdetailBean1.getYear().toString());
-                    Cell cell3 = row.createCell(3);
-                    cell3.setCellValue(budgetdetailBean1.getProduct());
-                    Cell cell4 = row.createCell(4);
-                    cell4.setCellValue(budgetdetailBean1.getWorkshop());
-                    Cell cell5 = row.createCell(5);
-                    cell5.setCellValue(budgetdetailBean1.getLine());
-                    Cell cell6 = row.createCell(6);
-                    cell6.setCellValue(budgetdetailBean1.getSpec());
-                    Cell cell7 = row.createCell(7);
-                    cell7.setCellValue(budgetdetailBean1.getYarnkind());
-                    if (budgetdetailBean1.getAarate()!= null){
-                        Cell cell8 = row.createCell(8);
-                        cell8.setCellValue(budgetdetailBean1.getAarate().toString());
-                    }
-                    if (budgetdetailBean1.getFsrate()!=null){
-                        Cell cell9 = row.createCell(9);
-                        cell9.setCellValue(budgetdetailBean1.getFsrate().toString());
-                    }
-                    if (budgetdetailBean1.getDayProduct()!=null){
-                        Cell cell10 = row.createCell(10);
-                        cell10.setCellValue(budgetdetailBean1.getDayProduct().toString());
-                    }
-                    if (budgetdetailBean1.getBudgetTotalProduct()!=null){
-                        Cell cell11 = row.createCell(11);
-                        cell11.setCellValue(budgetdetailBean1.getBudgetTotalProduct().toString());
-                    }
-                    int num4=12;
-                    for (MaterialcostdetailsBean materialcostdetailsBean :budgetdetailBean1.getMaterialcostdetailsBeanArrayList()){
-                        Cell cell12 = row.createCell(num4++);
-                        cell12.setCellValue(materialcostdetailsBean.getMaterialName());
-                        Cell cell13 = row.createCell(num4++);
-                        cell13.setCellValue(materialcostdetailsBean.getUnitPrice().toString());
-                        Cell cell14 = row.createCell(num4++);
-                        cell14.setCellValue(materialcostdetailsBean.getPrice().toString());
-                        Cell cell15 = row.createCell(num4++);
-                        cell15.setCellValue(materialcostdetailsBean.getConsumption().toString());
-                    }
-                    num3++;
+            int num2 = 0;
+            //表头的列标
+            int i=0;
+            Row row0=book.getSheetAt(0).createRow(num2);
+            for (String key:budgetresult.get(0).keySet()) {
+                if ("id".equals(key)) {
+                } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                        || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
+                    Cell cell=row0.createCell(i++);
+                    cell.setCellValue(key);
+                }else {
+                    Cell cell0=row0.createCell(i++);
+                    cell0.setCellValue(key);
+                    Cell cell1=row0.createCell(i++);
+                    cell1.setCellValue("单位成本");
+                    Cell cell2=row0.createCell(i++);
+                    cell2.setCellValue("单价");
+                    Cell cell3=row0.createCell(i++);
+                    cell3.setCellValue("单耗");
                 }
+
             }
-            out = new FileOutputStream(filepath);
+            //开始添加数据
+            int num3=1;
+            for (LinkedHashMap<String,Object> map : budgetresult) {
+                Row row=book.getSheetAt(0).createRow(num3++);
+                //数据行的列标
+                int j =0;
+                for (String key : map.keySet()) {
+                    if ("id".equals(key)) {
+                    } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                            "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                            || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
+                        Cell cell=row.createCell(j++);
+                        if (!StringUtil.isEmpty(map.get(key))){
+                            cell.setCellValue(map.get(key).toString());
+                        }else {
+                            cell.setCellValue("");
+                        }
+                    } else {
+                        if (!StringUtil.isEmpty(map.get(key))){
+                            MaterialcostdetailsBean materialcostdetailsBean = financeDataMapper.selectcostdetailbyid(Integer.parseInt(map.get(key).toString()));
+                            Cell cell0 = row.createCell(j++);
+                            cell0.setCellValue(materialcostdetailsBean.getMaterialName());
+                            Cell cell1=row.createCell(j++);
+                            cell1.setCellValue(materialcostdetailsBean.getUnitPrice().toString());
+                            Cell cell2=row.createCell(j++);
+                            cell2.setCellValue(materialcostdetailsBean.getPrice().toString());
+                            Cell cell3=row.createCell(j++);
+                            cell3.setCellValue(materialcostdetailsBean.getConsumption().toString());
+                        }else {
+                            Cell cell0 = row.createCell(j++);
+                            cell0.setCellValue("");
+                            Cell cell1 = row.createCell(j++);
+                            cell1.setCellValue("");
+                            Cell cell2 = row.createCell(j++);
+                            cell2.setCellValue("");
+                            Cell cell3 = row.createCell(j++);
+                            cell3.setCellValue("");
+                        }
+                    }
+                }
+                System.out.println(num3);
+            }
+            FileOutputStream out = new FileOutputStream(filepath);
             book.write(out);
+            Date day=new Date();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println("结束时间："+df.format(day));
+            out.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-
     }
 
 }

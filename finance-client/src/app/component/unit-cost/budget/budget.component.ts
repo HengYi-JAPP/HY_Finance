@@ -34,7 +34,10 @@ export class UnitBudgetComponent {
   _spec = '';
   constructor(private budgetService: BudgetService) {
     this.uploadUrl = global.baseUrl + '/FinanceBudgetController/importBudgetData';
-    // this.findList({});
+    this.findList({
+      year: this.getYear(),
+        month: this.getMonth(),
+    });
   }
   _displayDataChange($event) {
     this._displayData = $event;
@@ -100,12 +103,12 @@ export class UnitBudgetComponent {
         this._loading = false;
       }
     );
-    this._loading = false;
+    // this._loading = false;
   }
   // 添加style
   getTrStyle(data) {
     return {
-      'background-color': data['type'] === '实际' ? '#58B7FF' : data['type1'] === '预算' ? '#FFFF00 ' : '#00FF00'
+      'background-color': data['type'] === '实际' ? '#8fcdca' : data['type1'] === '预算' ? '#96f09e' : '#f2bfea'
       // 'display': (data['type'] === '实际' && this._fact) || (data['type'] === '预算' && this._budget) ? '' : 'none'
     };
   }
@@ -132,16 +135,33 @@ export class UnitBudgetComponent {
         this._loading = false;
       }
     );
-    this._loading = false;
+    // this._loading = false;
   }
   // 导出Excel方法
   exportExcel() {
-    window.open(global.baseUrl + '/FinanceBudgetController/exportExcel');
+    window.location.href = global.baseUrl + '/FinanceBudgetController/exportExcel';
+    // window.open(global.baseUrl + '/FinanceBudgetController/exportExcel');
     // const param = {};
     // this.budgetService.exportExcel(param).subscribe(
     //   data => {
     //   }
     // );
+  }
+  // 获取当前年份
+  getYear() {
+    if (new Date().getMonth() === 0) {
+      return new Date().getFullYear() - 1;
+    } else {
+      return new Date().getFullYear();
+    }
+  }
+  // 获取当前月份的上一个月份
+  getMonth() {
+    if (new Date().getMonth() === 0) {
+      return 12;
+    } else {
+      return new Date().getMonth();
+    }
   }
 
 }

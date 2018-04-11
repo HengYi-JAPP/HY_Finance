@@ -9,6 +9,8 @@
   </resultMap>
   <resultMap id="resultMap" type="com.hengyi.domain.ResultDomain">
     <!--<id column="id" property="id" jdbcType="INTEGER"></id>-->
+    <result column="year" property="year" jdbcType="INTEGER"></result>
+    <result column="month" property="month" jdbcType="INTEGER"></result>
     <result column="company" property="company" jdbcType="VARCHAR"></result>
     <result column="product" property="product" jdbcType="VARCHAR"></result>
     <result column="line" property="line" jdbcType="VARCHAR"></result>
@@ -25,6 +27,8 @@
     <!--<result column="yarnKind" property="yarnKind" jdbcType="VARCHAR"></result>-->
   </resultMap>
   <resultMap id="allCompanyResultMap" type="com.hengyi.vo.AllCompanyResultVo">
+    <result column="year" property="year" jdbcType="INTEGER"></result>
+    <result column="month" property="month" jdbcType="INTEGER"></result>
     <result column="company" property="company" jdbcType="VARCHAR"></result>
     <result column="product" property="product" jdbcType="VARCHAR"></result>
     <result column="budget_total_product" property="budgetTotalProduct" jdbcType="VARCHAR"></result>
@@ -376,7 +380,7 @@
   </select>
   <!--获取公司维度的数据-->
   <select id="getAllCompanyData" resultMap="allCompanyResultMap" parameterType="com.hengyi.vo.ConditionVo">
-      SELECT company,product,
+      SELECT `year`,`month`,company,product,
       (CASE WHEN SUM(budget_total_product) IS NULL THEN 0 ELSE SUM(budget_total_product) END ) budget_total_product,
       (CASE WHEN SUM(total_product) IS NULL THEN 0 ELSE SUM(total_product) END) total_product,
       (CASE WHEN TRUNCATE(SUM(product_unit_price*total_product)/SUM(total_product),2) IS NULL THEN 0 ELSE TRUNCATE(SUM(product_unit_price*total_product)/SUM(total_product),2) END ) product_unit_price,

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {BudgetService} from '../../../api/budget.service';
 
 @Component({
@@ -7,39 +7,44 @@ import {BudgetService} from '../../../api/budget.service';
 })
 export class SelectComponent {
   @Output() FindList = new EventEmitter();
+  @Input() year: string;
+  @Input() month: string;
+  @Input() company: string;
+  @Input() product: string;
   years: any[] = [];
   months: any[] = [
-    {value: 1, label: '1月'},
-    {value: 2, label: '2月'},
-    {value: 3, label: '3月'},
-    {value: 4, label: '4月'},
-    {value: 5, label: '5月'},
-    {value: 6, label: '6月'},
-    {value: 7, label: '7月'},
-    {value: 8, label: '8月'},
-    {value: 9, label: '9月'},
-    {value: 10, label: '10月'},
-    {value: 11, label: '11月'},
-    {value: 12, label: '12月'},
+    {value: '1', label: '1月'},
+    {value: '2', label: '2月'},
+    {value: '3', label: '3月'},
+    {value: '4', label: '4月'},
+    {value: '5', label: '5月'},
+    {value: '6', label: '6月'},
+    {value: '7', label: '7月'},
+    {value: '8', label: '8月'},
+    {value: '9', label: '9月'},
+    {value: '10', label: '10月'},
+    {value: '11', label: '11月'},
+    {value: '12', label: '12月'},
     ];
   companys: any[] = [];
   products: any[] = [];
   productLines: any[] = [];
   workshops: any[] = [];
   specs: any[] = [];
-  year: number;
-  month: number;
-  company: string;
-  product: string;
+  // year: number;
+  // month: number;
+  // company: string;
+  // product: string;
   productLine: string;
   spec: string;
   workshop: string;
-  // 构造函数中放入测试数据
   constructor(private budgetService: BudgetService) {
+    this.year = this.getYear() + '';
+    this.month = this.getMonth() + '';
     // 年份选择框可以选择16年到当前年份
     const currentYear = new Date().getFullYear();
     for ( let i = 2016; i <= currentYear; i++) {
-      const obj = {value: i, label: i + '年'};
+      const obj = {value: i + '', label: i + '年'};
       this.years.push(obj);
     }
     this.budgetService.getDictionary({}).subscribe(
@@ -145,5 +150,22 @@ export class SelectComponent {
       spec: this.spec
     };
     this.FindList.emit(obj);
+  }
+
+  // 获取当前年份
+  getYear() {
+    if (new Date().getMonth() === 0) {
+      return new Date().getFullYear() - 1;
+    } else {
+      return new Date().getFullYear();
+    }
+  }
+  // 获取当前月份的上一个月份
+  getMonth() {
+    if (new Date().getMonth() === 0) {
+      return 12;
+    } else {
+      return new Date().getMonth();
+    }
   }
 }

@@ -11,12 +11,12 @@ public class ResultDomain
 {
     // 主键id
 //    Integer id;
+    // 年
+    Integer year;
+    // 月
+    Integer month;
     // 公司
     String company;
-    // 月
-//    Integer month;
-    // 年
-//    Integer year;
     // 产品
     String product;
     // 车间
@@ -64,21 +64,21 @@ public class ResultDomain
         this.company = company;
     }
 
-//    public Integer getMonth() {
-//        return month;
-//    }
-//
-//    public void setMonth(Integer month) {
-//        this.month = month;
-//    }
-//
-//    public Integer getYear() {
-//        return year;
-//    }
-//
-//    public void setYear(Integer year) {
-//        this.year = year;
-//    }
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
 
     public String getProduct() {
         return product;

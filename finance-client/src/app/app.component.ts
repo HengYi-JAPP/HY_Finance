@@ -13,11 +13,13 @@ import 'rxjs/add/operator/mergeMap';
 export class AppComponent implements OnInit {
   path: string;
   isCollapse: boolean;
+  cols: number;
   tags: [{}] = [{id: 0, name: '欢迎页', type: 'gray', path: '/Home'}];
   constructor(private message: ElMessageService,
               private router: Router,
               private route: ActivatedRoute) {
     this.isCollapse = true;
+    this.cols = 21;
   }
   ngOnInit () {
     this.router.events
@@ -60,9 +62,11 @@ export class AppComponent implements OnInit {
   // 隐藏收拢菜单栏
   getTogether() {
     this.isCollapse = false;
+    this.cols = 23;
   }
   // 展开菜单栏
   expand() {
     this.isCollapse = true;
+    this.cols = 21;
   }
 }

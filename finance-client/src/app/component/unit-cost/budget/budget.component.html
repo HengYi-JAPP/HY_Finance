@@ -1,6 +1,6 @@
 <div class="box" style="overflow-x: hidden;height: auto">
   <app-select (FindList)="findList($event)"></app-select>
-  <div style="margin-top: 20px;">
+  <div style="margin-top: 10px;">
     <div class="components-table-demo-control-bar">
       <form nz-form [nzLayout]="'inline'">
         <div nz-row nz-form-item>
@@ -74,15 +74,15 @@
             <!--<label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 50px">-->
             <!--</label>-->
           <!--</th>-->
-          <th nz-th nzWidth="100px" rowspan="3"></th>
+          <!--<th nz-th nzWidth="100px" rowspan="3"></th>-->
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>预算or实际</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>公司</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>月份</span></th>
+          <th nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>公司</span></th>
+          <th nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>月份</span></th>
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>年份</span></th>
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>产品</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>车间</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>生产线</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>规格</span></th>
+          <th nz-th nzWidth="70px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>车间</span></th>
+          <th nz-th nzWidth="70px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>生产线</span></th>
+          <th nz-th nzWidth="70px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>规格</span></th>
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>纱种</span></th>
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>AA率</span></th>
           <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>废丝率</span></th>
@@ -166,7 +166,7 @@
           <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->
           <!--</label>-->
         <!--</td>-->
-        <td></td>
+        <!--<td></td>-->
         <td nz-td style="text-align: center;line-height: 10px;padding: 5px" *ngFor="let key of getkeys(data)">{{data[key]}}</td>
       </tr>
       <!--<tr nz-tbody-tr>-->

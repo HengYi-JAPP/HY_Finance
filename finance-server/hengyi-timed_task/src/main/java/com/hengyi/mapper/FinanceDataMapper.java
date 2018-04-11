@@ -135,7 +135,7 @@ public interface FinanceDataMapper {
      * @param
      * @return
      */
-   public ArrayList<Map<String,Object>> selectproductbudgetdata();
+   public ArrayList<LinkedHashMap<String,Object>> selectproductbudgetdata();
 
     /**
      * 根据年、月查询详情表数据

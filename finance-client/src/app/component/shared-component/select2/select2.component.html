@@ -28,21 +28,6 @@
         <el-option *ngFor="let item of products" [label]="item.label" [value]="item.value" ></el-option>
       </el-select>
     </div>
-    <div el-col span="3">
-      <el-select title="车间" placeholder="请选择车间" [(model)]="workshop" [clearable]="true" (modelChange)="changeWorkshop()">
-        <el-option *ngFor="let item of workshops" [label]="item.label" [value]="item.value" ></el-option>
-      </el-select>
-    </div>
-    <div el-col span="4">
-      <el-select title="生产线" placeholder="请选择生产线" [(model)]="productLine" [clearable]="true" (modelChange)="changeProductLine()">
-        <el-option *ngFor="let item of productLines" [label]="item.label" [value]="item.value" ></el-option>
-      </el-select>
-    </div>
-    <div el-col span="3">
-      <el-select title="规格" placeholder="请选择规格" [(model)]="spec" [clearable]="true">
-        <el-option *ngFor="let item of specs" [label]="item.label" [value]="item.value" ></el-option>
-      </el-select>
-    </div>
     <div el-col span="2">
       <el-button (click)="findList()" type="primary">查询</el-button>
     </div>
