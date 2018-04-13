@@ -1,5 +1,5 @@
 <div class="box" style="overflow-x: hidden;height: auto">
-  <app-select2 (FindList)="findList($event)"></app-select2>
+  <app-select2 (FindList)="findList($event)" [year]="_year" [month]="_month" [company]="_company" [product]="_product"></app-select2>
   <div style="margin-top: 10px">
     <nz-table #groupingTable
               [nzAjaxData]="tableData"
@@ -48,7 +48,7 @@
       <tr nz-tbody-tr *ngFor="let data of tableData"
           style="line-height: 5px" [routerLink]="['/OneCompany']"
           [queryParams]="data" routerLinkActive="active"
-           style="background-color: #8fcdca">
+           style="background-color: #2090e6">
         <!--<td nz-td nzCheckbox>-->
           <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->
           <!--</label>-->

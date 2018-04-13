@@ -1,11 +1,12 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BudgetService} from '../../../api/budget.service';
 
 @Component({
   selector: 'app-select',
   templateUrl: './select.component.html'
 })
-export class SelectComponent {
+export class SelectComponent implements OnInit {
+
   @Output() FindList = new EventEmitter();
   @Input() year: string;
   @Input() month: string;
@@ -66,10 +67,14 @@ export class SelectComponent {
       }
     );
   }
+  ngOnInit() {
+    this.changeProduct();
+  }
   // 获取时间的方法
   handle(time: number): void {
   }
   changeCompany() {}
+  // 当产品改变时触发事件
   changeProduct() {
     this.workshops = [];
     this.productLines = [];
@@ -93,6 +98,7 @@ export class SelectComponent {
       }
     );
   }
+  // 当车间改变时触发事件
   changeWorkshop() {
     this.productLines = [];
     this.specs = [];
@@ -116,6 +122,7 @@ export class SelectComponent {
       }
     );
   }
+  // 当生产线改变时触发事件
   changeProductLine() {
     this.specs = [];
     const param = {

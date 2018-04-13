@@ -42,7 +42,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * 从SAP定期同步数据到本系统Mysql数据库,将物料描述分解成生产线、规格、产品等信息
      */
     @Override
-    @Scheduled(cron = "00 00 02 01 * ?")
+    @Scheduled(cron = "00 30 05 01 * ?")
     public void productlinedatatask() {
         System.out.println("开始存放");
         //集合存放每条生产线的各个成本项数据
@@ -169,7 +169,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * @Transactional(rollbackFor = Exception.class)
      * 计算生产线、规格、纱种维度的单位成本并放入UnitpPriceComparetask表中
      */
-    @Scheduled(cron = "00 00 03 01 * ?")
+    @Scheduled(cron = "00 30 06 01 * ?")
     public void unitpricecomparetask ()  {
         System.out.println("开始计算");
         //获得当前时间的年份与上月月份

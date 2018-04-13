@@ -1,34 +1,59 @@
 import { Component, OnInit } from '@angular/core';
 import {BudgetService} from '../../../../api/budget.service';
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-all-company',
   templateUrl: './all-company.component.html',
   styleUrls: ['./all-company.component.css']
 })
-export class AllCompanyComponent {
+export class AllCompanyComponent implements OnInit {
   tableData: any[] = [];
   // sums: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   _loading = true;
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
   _pageSize = 50; // 默认每页显示10条记录
-  _year: '';
-  _month: '';
+  _year = '';
+  _month = '';
   _company = '';
   _product = '';
   _workshop = '';
   _productLine = '';
   _spec = '';
-  constructor(private budgetService: BudgetService) {
+  _allChecked = false;
+  _indeterminate = false;
+  _displayData = [];
+  constructor(private budgetService: BudgetService,
+             private route: ActivatedRoute,
+             private router: Router) {
     this.findList({
       year: this.getYear(),
       month: this.getMonth(),
     });
+    this.route.paramMap.pipe(
+      switchMap((params: ParamMap) => {
+        if (params.keys.length === 0) {
+          return [];
+        }
+          this._year = params.get('year');
+          this._month = params.get('month');
+          this._company = params.get('company');
+          this._product = params.get('product');
+          this.findList({
+            year: this._year,
+            month: this._month,
+            // company: this._company,
+            // product: this._product
+          });
+          return [];
+        }
+      )
+    ).subscribe();
   }
-  _allChecked = false;
-  _indeterminate = false;
-  _displayData = [];
+  ngOnInit() {
+  }
   getkeys(item) {
     let array: any[];
     array = Object.keys(item);
@@ -87,8 +112,11 @@ export class AllCompanyComponent {
         this._total = data.page.total;
         this.tableData = data.data;
         this._loading = false;
+      },
+      error2 => {
       }
     );
+    this._loading = false;
   }
   changeList() {
     this._loading = true;
@@ -109,8 +137,12 @@ export class AllCompanyComponent {
         this._total = data.page.total;
         this.tableData = data.data;
         this._loading = false;
+      },
+      error2 => {
+        this._loading = false;
       }
     );
+    // this._loading = false;
   }
   // 获取当前年份
   getYear() {

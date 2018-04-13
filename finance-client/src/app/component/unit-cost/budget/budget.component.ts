@@ -101,6 +101,9 @@ export class UnitBudgetComponent {
         this.tableData = data.data[0];
         this.sums = data.data[1];
         this._loading = false;
+      },
+      error2 => {
+        this._loading = false;
       }
     );
     // this._loading = false;
@@ -108,7 +111,7 @@ export class UnitBudgetComponent {
   // 添加style
   getTrStyle(data) {
     return {
-      'background-color': data['type'] === '实际' ? '#8fcdca' : data['type1'] === '预算' ? '#96f09e' : '#f2bfea'
+      'background-color': data['type'] === '实际' ? '#61b2f1' : data['type1'] === '预算' ? '#2090e6' : '#135c97'
       // 'display': (data['type'] === '实际' && this._fact) || (data['type'] === '预算' && this._budget) ? '' : 'none'
     };
   }
@@ -125,13 +128,16 @@ export class UnitBudgetComponent {
       productLine: this._productLine,
       spec: this._spec,
       priceOrconsumer: this.priceORconsumer,
-      type: this._fact ? (this._budget ? '' : '实际') : (this._budget ? '预算' : '')
+      type: this._fact ? (this._budget ? '' : '实际') : (this._budget ? '预算' : '无')
     };
     this.tableData.splice(0, this.tableData.length);
     this.budgetService.getDetailData(params).subscribe(
       data => {
         this._total = data.page.total;
         this.tableData = data.data[0];
+        this._loading = false;
+      },
+      error2 => {
         this._loading = false;
       }
     );

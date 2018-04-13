@@ -9,27 +9,27 @@
       <!--</el-date-picker>-->
     <!--</div>-->
     <div el-col span="3">
-      <el-select title="年" placeholder="请选择年份" [(model)]="year" [clearable]="true">
+      <el-select title="年" placeholder="请选择年份" [(model)]="year" [clearable]="true" size="small">
         <el-option *ngFor="let item of years" [label]="item.label" [value]="item.value" ></el-option>
       </el-select>
     </div>
     <div el-col span="3">
-      <el-select title="月" placeholder="请选择月份" [(model)]="month" [clearable]="true">
+      <el-select title="月" placeholder="请选择月份" [(model)]="month" [clearable]="true" size="small">
         <el-option *ngFor="let item of months" [label]="item.label" [value]="item.value" ></el-option>
       </el-select>
     </div>
     <div el-col span="3">
-      <el-select title="公司" placeholder="请选择公司" [(model)]="company" [clearable]="true" (modelChange)="changeCompany()">
+      <el-select title="公司" placeholder="请选择公司" [(model)]="company" [clearable]="true" (modelChange)="changeCompany()" size="small">
         <el-option *ngFor="let item of companys" [label]="item.label" [value]="item.value" ></el-option>
       </el-select>
     </div>
     <div el-col span="3">
-      <el-select title="产品" placeholder="请选择产品" [(model)]="product" [clearable]="true" (modelChange)="changeProduct()">
+      <el-select title="产品" placeholder="请选择产品" [(model)]="product" [clearable]="true" (modelChange)="changeProduct()" size="small">
         <el-option *ngFor="let item of products" [label]="item.label" [value]="item.value" ></el-option>
       </el-select>
     </div>
     <div el-col span="2">
-      <el-button (click)="findList()" type="primary">查询</el-button>
+      <el-button (click)="findList()" type="primary" size="small">查询</el-button>
     </div>
   </div>
 </div>

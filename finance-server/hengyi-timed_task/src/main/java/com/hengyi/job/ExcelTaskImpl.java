@@ -28,7 +28,12 @@ import java.util.*;
 public class ExcelTaskImpl implements ExcelTask{
     @Autowired
     private FinanceDataMapper financeDataMapper;
-    @Scheduled(cron = "00 00 05 01 * ?")
+
+    /***
+     * 导入Excel
+     * @throws Exception
+     */
+    @Scheduled(cron = "00 00 00 01 * ?")
     @Override
     public void importexcel() throws Exception {
         System.out.println("开始了");
@@ -180,7 +185,7 @@ public class ExcelTaskImpl implements ExcelTask{
 
 
     @Override
-    @Scheduled(cron = "00 00 01 02 * ?")
+    @Scheduled(cron = "00 30 07 02 * ?")
     public void exportexcel () throws Exception {
         ArrayList<LinkedHashMap<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
         String filepath = "C:\\Users\\Administrator\\Desktop\\finance\\importExcel\\线上展示表_20180329修改.xlsx";

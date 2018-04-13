@@ -1,3 +1,6 @@
 .box{
   height: 550px;
 }
+ul,li{
+  background-color: green;
+}

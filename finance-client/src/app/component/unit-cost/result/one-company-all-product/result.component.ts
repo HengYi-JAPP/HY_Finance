@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {BudgetService} from '../../../../api/budget.service';
-import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ActivatedRoute, ParamMap, Router, Params} from '@angular/router';
 
 @Component({
   selector: 'app-result',
@@ -8,20 +8,26 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
   styleUrls: ['./result.component.css']
 })
 export class UnitResultComponent {
+
   tableData: any[] = [];
   sums: any[] = [];
   _loading = true;
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
   _pageSize = 20; // 默认每页显示10条记录
-  _year: '';
-  _month: '';
+  _year = '';
+  _month = '';
   _company = '';
   _product = '';
   _workshop = '';
   _productLine = '';
   _spec = '';
-  constructor(private budgetService: BudgetService, private route: ActivatedRoute, private router: Router) {
+  _allChecked = false;
+  _indeterminate = false;
+  _displayData = [];
+  constructor(private budgetService: BudgetService,
+              private route: ActivatedRoute,
+              private router: Router) {
     this.route.queryParams.subscribe((params: Params) => {
       this._year = params['year'];
       this._month = params['month'];
@@ -44,9 +50,6 @@ export class UnitResultComponent {
       });
     });
   }
-  _allChecked = false;
-  _indeterminate = false;
-  _displayData = [];
   getkeys(item) {
     let array: any[];
     array = Object.keys(item);
@@ -133,6 +136,7 @@ export class UnitResultComponent {
   }
   // 返回
   goBack() {
-    this.router.navigate(['/UnitCostResult']);
+    this.router.navigate(['/UnitCostResult',
+      {year: this._year, month: this._month, company: this._company, product: this._product}]);
   }
 }

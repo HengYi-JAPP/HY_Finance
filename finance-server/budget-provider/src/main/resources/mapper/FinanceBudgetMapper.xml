@@ -409,7 +409,7 @@
     <if test="spec != null">
       AND spec = #{spec,jdbcType=VARCHAR}
     </if>
-    GROUP BY company, product
+    GROUP BY `year`,`month`, company, product
     <include refid="page" />
   </select>
   <!--获取所有公司维度的记录数-->
@@ -444,7 +444,7 @@
     <if test="spec != null">
       AND spec = #{spec,jdbcType=VARCHAR}
     </if>
-    GROUP BY company, product ) sums
+    GROUP BY `year`,`month`, company, product ) sums
   </select>
     <!--导入数据所用到的插入语句和查询语句-->
     <insert id="insertmaterialcostdetails" parameterType="com.hengyi.bean.MaterialcostdetailsBean" useGeneratedKeys="true" keyProperty="id" keyColumn="id">

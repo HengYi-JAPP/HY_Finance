@@ -8,7 +8,7 @@ const url = global.baseUrl + '/FinanceBudgetController';
 export class BudgetService {
   constructor(private response: GetResponseService) {}
   /* 从后台获取详细列表数据*/
-  getDetailData(param): Observable<any> {
+  getDetailData(param, ): Observable<any> {
     return this.response.appPost(param, url + '/getDetailData');
   }
   /* 从后台获取*/

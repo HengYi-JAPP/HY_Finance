@@ -188,7 +188,7 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
         select * FROM Budgetdetail WHERE month =#{month} and year=#{year}
     </select>
     <select id="selectproductbudgetdata" resultType="java.util.LinkedHashMap" parameterType="com.hengyi.bean.SapDataMonthBean">
-        select * FROM Budgetdetail ORDER BY `year`,`month`,company,product,workshop,line,spec
+        select * FROM Budgetdetail ORDER BY `year`,`month`,company,product,workshop,line,spec,yarnKind
     </select>
     <select id="selectpricelist" resultMap="PriceResultMap">
         select * FROM MaterialPrice

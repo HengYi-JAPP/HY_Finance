@@ -10,10 +10,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(_ => {
-      this.array = ['assets/picture/p1.png',
-        'assets/picture/p2.png',
-        'assets/picture/p3.png',
-        'assets/picture/p4.png'];
+      this.array = [
+        'assets/picture/p6.jpg',
+        'assets/picture/p5.JPG',
+        'assets/picture/p7.jpg',
+        'assets/picture/p8.jpg'];
     }, 500);
   }
 
