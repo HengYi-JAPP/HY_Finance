@@ -111,7 +111,7 @@ export class UnitBudgetComponent {
   // 添加style
   getTrStyle(data) {
     return {
-      'background-color': data['type'] === '实际' ? '#61b2f1' : data['type1'] === '预算' ? '#2090e6' : '#135c97'
+      'background-color': data['type'] === '实际' ? '#7edef1' : data['type1'] === '预算' ? '#4bbee6' : '#329297'
       // 'display': (data['type'] === '实际' && this._fact) || (data['type'] === '预算' && this._budget) ? '' : 'none'
     };
   }
@@ -171,3 +171,4 @@ export class UnitBudgetComponent {
   }
 
 }
+

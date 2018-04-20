@@ -1,6 +1,6 @@
 <div class="box" style="overflow-x: hidden;height: auto">
   <app-select2 (FindList)="findList($event)" [year]="_year" [month]="_month" [company]="_company" [product]="_product"></app-select2>
-  <div style="margin-top: 10px">
+  <div style="margin-top: 10px;background-color: white">
     <nz-table #groupingTable
               [nzAjaxData]="tableData"
               nzShowSizeChanger
@@ -21,26 +21,26 @@
             <!--<label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 10px">-->
             <!--</label>-->
           <!--</th>-->
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>年</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>月</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>公司</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>产品</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>预算产量</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>实际产量</span></th>
-          <th nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>实际单位成本①</span></th>
-          <th nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>考核维度实际单位成本②</span></th>
-          <th nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>考核维度预算单位成本③</span></th>
-          <th nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>目标预算单位成本④</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>单价变动影响单位成本①-②</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>单耗变动影响单位成本②-③</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>结构变动影响单位成本③-④</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>总体差异①-④</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>年</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>月</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>公司</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>产品</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>预算产量</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>实际产量</span></th>
+          <th class="Header-color" nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>实际单位成本①</span></th>
+          <th class="Header-color" nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>考核维度实际单位成本②</span></th>
+          <th class="Header-color" nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>考核维度预算单位成本③</span></th>
+          <th class="Header-color" nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>目标预算单位成本④</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>单价变动影响单位成本①-②</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>单耗变动影响单位成本②-③</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>结构变动影响单位成本③-④</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>总体差异①-④</span></th>
         </tr>
         <tr>
-          <th nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>实际单价*实际单耗*实际结构</span></th>
-          <th nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>预算单价*实际单耗*实际结构</span></th>
-          <th nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>预算单价*预算单耗*实际结构</span></th>
-          <th nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>预算单价*预算单耗*预算结构</span></th>
+          <th class="Header-color" nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>实际单价*实际单耗*实际结构</span></th>
+          <th class="Header-color" nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>预算单价*实际单耗*实际结构</span></th>
+          <th class="Header-color" nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>预算单价*预算单耗*实际结构</span></th>
+          <th class="Header-color" nz-th nzWidth="125px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>预算单价*预算单耗*预算结构</span></th>
         </tr>
         </thead>
       </ng-template>
@@ -48,7 +48,7 @@
       <tr nz-tbody-tr *ngFor="let data of tableData"
           style="line-height: 5px" [routerLink]="['/OneCompany']"
           [queryParams]="data" routerLinkActive="active"
-           style="background-color: #2090e6">
+           style="background-color: #69ece1">
         <!--<td nz-td nzCheckbox>-->
           <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->
           <!--</label>-->

@@ -2,5 +2,9 @@
   height: 550px;
 }
 ul,li{
-  background-color: green;
+  background-color:#606266;
 }
+.welcome-font{
+  color: #fcfffa;margin-left: 1150px;margin-top: 20px;font-style:italic;font-family:sans-serif,Times, serif;font-weight:900;
+}
+
