@@ -33,12 +33,13 @@ public class ExcelTaskImpl implements ExcelTask{
      * 导入Excel
      * @throws Exception
      */
-    @Scheduled(cron = "00 00 00 01 * ?")
+    @Scheduled(cron = "00 20 15 * * ?")
     @Override
     public void importexcel() throws Exception {
         System.out.println("开始了");
 //        File file = new File("D:\\work\\预算数据整理\\六家公司_预算单耗&单价_20180404中午.xlsx");
-        File directory = new File("E:\\C:\\Users\\Administrator\\Desktop\\finance\\importExcel");
+        String path="C:\\Users\\Administrator\\Desktop\\finance\\importExcel";
+        File directory = new File(path);
         String[] files=directory.list();
         String file="";
         if (files.length>0){
@@ -48,7 +49,7 @@ public class ExcelTaskImpl implements ExcelTask{
         }
         System.out.println("表格读取成功");
         // 创建文件流对象和工作簿对象
-        FileInputStream in = new FileInputStream(file); // 文件流
+        FileInputStream in = new FileInputStream(path+"//"+file); // 文件流
         Workbook book = WorkbookFactory.create(in); //工作簿
         List<BudgetdetailBean> budgetdetailBeanList = new ArrayList<>();
         //将生产线匹配关系放入集合
@@ -152,7 +153,7 @@ public class ExcelTaskImpl implements ExcelTask{
                     String[] lines=new String[1];
                     //遍历一行中的所有的数据添加进budgetdetailBeanList集合
                     for (ProductMatchBean productMatchBean :productmatchlist){
-                        if (StringUtil.equals(productMatchBean.getProductLine(),budgetdetailBean.getLine())){
+                        if (StringUtil.equals(productMatchBean.getProductLine(),budgetdetailBean.getLine(),productMatchBean.getCompany(),budgetdetailBean.getCompany())){
                             lines=productMatchBean.getProductMatch().split("/");
                         break;
                         }
@@ -173,7 +174,7 @@ public class ExcelTaskImpl implements ExcelTask{
                 }
             }
         }
-        System.out.println("执行结束");
+        System.out.println("执行结束"+new Date());
 //        for (BudgetdetailBean budgetdetailBean : budgetdetailBeanList) {
 //            for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
 //                financeDataMapper.insertmaterialcostdetails(materialcostdetailsBean);
@@ -185,10 +186,10 @@ public class ExcelTaskImpl implements ExcelTask{
 
 
     @Override
-    @Scheduled(cron = "00 30 07 02 * ?")
+    @Scheduled(cron = "00 10 21 * * ?")
     public void exportexcel () throws Exception {
         ArrayList<LinkedHashMap<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
-        String filepath = "C:\\Users\\Administrator\\Desktop\\finance\\importExcel\\线上展示表_20180329修改.xlsx";
+        String filepath = "C:\\Users\\Administrator\\Desktop\\finance\\exportExcel\\导出.xlsx";
         File file = new File(filepath);
         FileInputStream in = new FileInputStream(file);
         Workbook book = WorkbookFactory.create(in); //工作簿

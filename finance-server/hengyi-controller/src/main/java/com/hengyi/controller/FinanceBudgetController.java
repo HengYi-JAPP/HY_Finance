@@ -67,6 +67,34 @@ public class FinanceBudgetController {
         }
         return  ServerResponse.createByError(Const.FAIL_MSG);
     }
+
+    /***
+     * 获取成本项大类（分阶段）
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/getCostItem",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<List<Map<String,Object>>> getCostItem(HttpServletRequest request,HttpServletResponse response){
+        try {
+            ConditionVo conditionVo=InputSteamToJSON.getParams(request.getInputStream(),ConditionVo.class);
+            Long total=financeBudgetService.getTotalCount(conditionVo);
+            Page page=new Page(conditionVo.getPageIndex(),conditionVo.getPageCount(),total);
+            conditionVo.setOffset(page.getOffset());
+            conditionVo.setLimit(page.getPageSize());
+            List<Map<String,Object>> list =null;
+            if ("stage".equals(conditionVo.getStageType())){
+                list=financeBudgetService.getCostItem(conditionVo);
+            }else if("noneStage".equals(conditionVo.getStageType())){
+                list=financeBudgetService.getSumCostItem(conditionVo);
+            }
+            return  ServerResponse.createBySuccess(Const.SUCCESS_MSG,list,page);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ServerResponse.createByError(Const.FAIL_MSG);
+    }
     /***
      * 获取字典数据
      * @param request
@@ -253,7 +281,7 @@ public class FinanceBudgetController {
             byte[] buf = new byte[1024];
             int len = 0;
             response.reset();
-            response.setContentType("application/x-msdownload");
+                response.setContentType("application/x-msdownload");
             response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
             OutputStream os = response.getOutputStream();
             while ((len = br.read(buf)) > 0) {

@@ -26,6 +26,8 @@ public class ConditionVo extends QueryDtoBase{
     String priceOrconsumer;
     //类型：实际或者预算
     String type;
+    // 是否分阶段标志
+    String stageType;
 
     public Integer getYear() {
         return year;
@@ -97,5 +99,13 @@ public class ConditionVo extends QueryDtoBase{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getStageType() {
+        return stageType;
+    }
+
+    public void setStageType(String stageType) {
+        this.stageType = stageType;
     }
 }

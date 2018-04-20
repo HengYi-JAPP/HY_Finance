@@ -4,7 +4,7 @@ import com.hengyi.bean.BudgetdetailBean;
 import com.hengyi.bean.MaterialcostdetailsBean;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.mapper.FinanceBudgetMapper;
-import com.hengyi.mapper.FinanceDataMapper;
+//import com.hengyi.mapper.FinanceDataMapper;
 import com.hengyi.util.Page;
 import com.hengyi.util.StringUtil;
 import com.hengyi.vo.AllCompanyResultVo;
@@ -37,7 +37,7 @@ public class FinanceBudgetServiceImplTest {
     @Autowired
     private FinanceBudgetMapper financeBudgetMapper;
     @Autowired
-    private FinanceDataMapper financeDataMapper;
+//    private FinanceDataMapper financeDataMapper;
     @Test
     public void getDetailData() throws Exception {
         ConditionVo conditionVo=new ConditionVo();
@@ -256,90 +256,90 @@ public class FinanceBudgetServiceImplTest {
 
 
 
-    @Test
-    public void exportexcel () throws Exception {
-        ArrayList<LinkedHashMap<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
-        String filepath = "D:\\测试导出3.xlsx";
-        File file = new File(filepath);
-        FileInputStream in = new FileInputStream(file);
-        Workbook book = WorkbookFactory.create(in); //工作簿
-        System.out.println("开始导出");
-//        FileOutputStream out = null;
-        try {
-            //添加表头
-            int num2 = 0;
-            //表头的列标
-            int i=0;
-            Row row0=book.getSheetAt(0).createRow(num2);
-            for (String key:budgetresult.get(0).keySet()) {
-                if ("id".equals(key)) {
-                } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
-                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
-                        || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
-                    Cell cell=row0.createCell(i++);
-                    cell.setCellValue(key);
-                }else {
-                    Cell cell0=row0.createCell(i++);
-                    cell0.setCellValue(key);
-                    Cell cell1=row0.createCell(i++);
-                    cell1.setCellValue("单位成本");
-                    Cell cell2=row0.createCell(i++);
-                    cell2.setCellValue("单价");
-                    Cell cell3=row0.createCell(i++);
-                    cell3.setCellValue("单耗");
-                }
-
-            }
-            //开始添加数据
-            int num3=1;
-            for (LinkedHashMap<String,Object> map : budgetresult) {
-                Row row=book.getSheetAt(0).createRow(num3++);
-                //数据行的列标
-                int j =0;
-                for (String key : map.keySet()) {
-                    if ("id".equals(key)) {
-                    } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
-                            "product".equals(key) || "workshop".equals(key) || "line".equals(key)
-                            || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
-                        Cell cell=row.createCell(j++);
-                        if (!StringUtil.isEmpty(map.get(key))){
-                            cell.setCellValue(map.get(key).toString());
-                        }else {
-                            cell.setCellValue("");
-                        }
-                    } else {
-                        if (!StringUtil.isEmpty(map.get(key))){
-                            MaterialcostdetailsBean materialcostdetailsBean = financeDataMapper.selectcostdetailbyid(Integer.parseInt(map.get(key).toString()));
-                            Cell cell0 = row.createCell(j++);
-                            cell0.setCellValue(materialcostdetailsBean.getMaterialName());
-                            Cell cell1=row.createCell(j++);
-                            cell1.setCellValue(materialcostdetailsBean.getUnitPrice().toString());
-                            Cell cell2=row.createCell(j++);
-                            cell2.setCellValue(materialcostdetailsBean.getPrice().toString());
-                            Cell cell3=row.createCell(j++);
-                            cell3.setCellValue(materialcostdetailsBean.getConsumption().toString());
-                        }else {
-                            Cell cell0 = row.createCell(j++);
-                            cell0.setCellValue("");
-                            Cell cell1 = row.createCell(j++);
-                            cell1.setCellValue("");
-                            Cell cell2 = row.createCell(j++);
-                            cell2.setCellValue("");
-                            Cell cell3 = row.createCell(j++);
-                            cell3.setCellValue("");
-                        }
-                    }
-                }
-                System.out.println(num3);
-            }
-            FileOutputStream out = new FileOutputStream(filepath);
-            book.write(out);
-            Date day=new Date();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            System.out.println("结束时间："+df.format(day));
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @Test
+//    public void exportexcel () throws Exception {
+//        ArrayList<LinkedHashMap<String, Object>> budgetresult = financeDataMapper.selectproductbudgetdata();
+//        String filepath = "D:\\测试导出3.xlsx";
+//        File file = new File(filepath);
+//        FileInputStream in = new FileInputStream(file);
+//        Workbook book = WorkbookFactory.create(in); //工作簿
+//        System.out.println("开始导出");
+////        FileOutputStream out = null;
+//        try {
+//            //添加表头
+//            int num2 = 0;
+//            //表头的列标
+//            int i=0;
+//            Row row0=book.getSheetAt(0).createRow(num2);
+//            for (String key:budgetresult.get(0).keySet()) {
+//                if ("id".equals(key)) {
+//                } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
+//                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+//                        || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
+//                    Cell cell=row0.createCell(i++);
+//                    cell.setCellValue(key);
+//                }else {
+//                    Cell cell0=row0.createCell(i++);
+//                    cell0.setCellValue(key);
+//                    Cell cell1=row0.createCell(i++);
+//                    cell1.setCellValue("单位成本");
+//                    Cell cell2=row0.createCell(i++);
+//                    cell2.setCellValue("单价");
+//                    Cell cell3=row0.createCell(i++);
+//                    cell3.setCellValue("单耗");
+//                }
+//
+//            }
+//            //开始添加数据
+//            int num3=1;
+//            for (LinkedHashMap<String,Object> map : budgetresult) {
+//                Row row=book.getSheetAt(0).createRow(num3++);
+//                //数据行的列标
+//                int j =0;
+//                for (String key : map.keySet()) {
+//                    if ("id".equals(key)) {
+//                    } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
+//                            "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+//                            || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
+//                        Cell cell=row.createCell(j++);
+//                        if (!StringUtil.isEmpty(map.get(key))){
+//                            cell.setCellValue(map.get(key).toString());
+//                        }else {
+//                            cell.setCellValue("");
+//                        }
+//                    } else {
+//                        if (!StringUtil.isEmpty(map.get(key))){
+//                            MaterialcostdetailsBean materialcostdetailsBean = financeDataMapper.selectcostdetailbyid(Integer.parseInt(map.get(key).toString()));
+//                            Cell cell0 = row.createCell(j++);
+//                            cell0.setCellValue(materialcostdetailsBean.getMaterialName());
+//                            Cell cell1=row.createCell(j++);
+//                            cell1.setCellValue(materialcostdetailsBean.getUnitPrice().toString());
+//                            Cell cell2=row.createCell(j++);
+//                            cell2.setCellValue(materialcostdetailsBean.getPrice().toString());
+//                            Cell cell3=row.createCell(j++);
+//                            cell3.setCellValue(materialcostdetailsBean.getConsumption().toString());
+//                        }else {
+//                            Cell cell0 = row.createCell(j++);
+//                            cell0.setCellValue("");
+//                            Cell cell1 = row.createCell(j++);
+//                            cell1.setCellValue("");
+//                            Cell cell2 = row.createCell(j++);
+//                            cell2.setCellValue("");
+//                            Cell cell3 = row.createCell(j++);
+//                            cell3.setCellValue("");
+//                        }
+//                    }
+//                }
+//                System.out.println(num3);
+//            }
+//            FileOutputStream out = new FileOutputStream(filepath);
+//            book.write(out);
+//            Date day=new Date();
+//            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            System.out.println("结束时间："+df.format(day));
+//            out.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

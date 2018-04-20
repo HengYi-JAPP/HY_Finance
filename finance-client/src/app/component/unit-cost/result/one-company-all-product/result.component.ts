@@ -105,8 +105,10 @@ export class UnitResultComponent {
     this._spec = param.spec;
     this.budgetService.getResultData(params).subscribe(
       data => {
-        this._total = data.page.total;
-        this.tableData = data.data;
+        if (data.page !== null) {
+          this._total = data.page.total;
+          this.tableData = data.data;
+        }
         this._loading = false;
       }
     );
@@ -128,8 +130,10 @@ export class UnitResultComponent {
     this.tableData.splice(0, this.tableData.length);
     this.budgetService.getResultData(params).subscribe(
       data => {
-        this._total = data.page.total;
-        this.tableData = data.data;
+        if (data.page !== null) {
+          this._total = data.page.total;
+          this.tableData = data.data;
+        }
         this._loading = false;
       }
     );

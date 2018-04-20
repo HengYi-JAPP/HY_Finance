@@ -7,6 +7,7 @@
         <result column="product_match" property="productMatch" jdbcType="NVARCHAR"/>
         <result column="product_material_match" property="productMaterialMatch" jdbcType="NVARCHAR"/>
         <result column="product_material_yarn" property="productMaterialYarn" jdbcType="NVARCHAR"/>
+        <result column="company" property="company" jdbcType="VARCHAR"/>
         <result column="product_specifications_match" property="productSpecificationsMatch" jdbcType="NVARCHAR"/>
         <result column="product_specifications_yarn" property="productSpecificationsYarn" jdbcType="NVARCHAR"/>
     </resultMap>
@@ -60,6 +61,10 @@
         <result column="work_shop" property="workShop" jdbcType="NVARCHAR"/>
         <result column="product_yarn" property="productYarn" jdbcType="NVARCHAR"/>
     </resultMap>
+
+    <update id="updateCheckProductUnitPrice" parameterType="com.hengyi.domain.CheckProductUnitPriceDomain">
+        UPDATE MaterialCostDetails SET check_product_unit_price = #{checkProductUnitPrice} WHERE id=#{id}
+    </update>
 
     <insert id="insertsapdata" parameterType="com.hengyi.bean.FinanceSapDataInsertBean">
        insert into FinanceSapData ( order_id, cost_id,
@@ -144,7 +149,7 @@
 
 
     <select id="selectproductmatch" resultMap="ProductmatchResultMap">
-select product_material_match,product_match,product_line,product_material_yarn,product_specifications_match,product_specifications_yarn FROM  ProductLineMatch ORDER BY product_material_match DESC
+select product_material_match,product_match,product_line,product_material_yarn,company,product_specifications_match,product_specifications_yarn FROM  ProductLineMatch ORDER BY product_material_match DESC
     </select>
 
     <select id="selectallcompany" resultType="java.lang.String">
@@ -188,7 +193,7 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
         select * FROM Budgetdetail WHERE month =#{month} and year=#{year}
     </select>
     <select id="selectproductbudgetdata" resultType="java.util.LinkedHashMap" parameterType="com.hengyi.bean.SapDataMonthBean">
-        select * FROM Budgetdetail ORDER BY `year`,`month`,company,product,workshop,line,spec
+        select * FROM Budgetdetail ORDER BY `year`,`month`,company,product,workshop,line,spec,yarnKind,type
     </select>
     <select id="selectpricelist" resultMap="PriceResultMap">
         select * FROM MaterialPrice
@@ -255,7 +260,6 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
         </if>
         ) b
     </select>
-
 
     <delete id="deleteFinanceSapDatabymonth" parameterType="com.hengyi.bean.SapDataMonthBean">
         DELETE  FROM  FinanceSapData WHERE month =#{month} and year =#{year}

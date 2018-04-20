@@ -3,15 +3,19 @@ package com.hengyi.job;
 import com.hengyi.bean.*;
 import com.hengyi.mapper.FinanceDataMapper;
 import com.hengyi.sapmapper.SapDataMapper;
+import com.hengyi.service.FinanceBudgetService;
 import com.hengyi.util.DateUtil;
 import com.hengyi.util.ExcelUtil;
 import com.hengyi.util.MathUtil;
 import com.hengyi.util.StringUtil;
+import com.hengyi.vo.ConditionVo;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -34,6 +38,8 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
     private SapDataMapper sapDataMapper;
     @Autowired
     private FinanceDataMapper financeDataMapper;
+    @Resource
+    private FinanceBudgetService financeBudgetService;
 
     /**
      * @param
@@ -41,8 +47,9 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * @Transactional(rollbackFor = Exception.class)
      * 从SAP定期同步数据到本系统Mysql数据库,将物料描述分解成生产线、规格、产品等信息
      */
+//    @Scheduled(cron = "00 30 05 * * ?")
     @Override
-    @Scheduled(cron = "00 30 05 01 * ?")
+    @Scheduled(cron = "00 20 17 * * ?")
     public void productlinedatatask() {
         System.out.println("开始存放");
         //集合存放每条生产线的各个成本项数据
@@ -169,7 +176,9 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      * @Transactional(rollbackFor = Exception.class)
      * 计算生产线、规格、纱种维度的单位成本并放入UnitpPriceComparetask表中
      */
-    @Scheduled(cron = "00 30 06 01 * ?")
+//    @Scheduled(cron = "00 30 06 * * ?")
+    @Override
+    @Scheduled(cron = "00 05 18 * * ?")
     public void unitpricecomparetask ()  {
         System.out.println("开始计算");
         //获得当前时间的年份与上月月份
@@ -292,7 +301,12 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                             for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
                                 for (MaterialcostdetailsBean materialcostdetailsBean1 : budgetdetailBean1.getMaterialcostdetailsBeanArrayList()) {
                                     if (StringUtil.equals(materialcostdetailsBean.getMaterialName(), materialcostdetailsBean1.getMaterialName())) {
-                                        unitPriceCompareBean.setCheckProductUnitPrice(unitPriceCompareBean.getCheckProductUnitPrice().add(MathUtil.multiply(materialcostdetailsBean.getConsumption(), materialcostdetailsBean1.getPrice())));
+                                        materialcostdetailsBean.setCheckProductUnitPrice(MathUtil.multiply(materialcostdetailsBean.getConsumption(), materialcostdetailsBean1.getPrice()));
+                                        materialcostdetailsBean1.setCheckProductUnitPrice(materialcostdetailsBean1.getUnitPrice());
+                                        unitPriceCompareBean.setCheckProductUnitPrice(unitPriceCompareBean.getCheckProductUnitPrice().add(materialcostdetailsBean.getCheckProductUnitPrice()));
+                                        //插入考核维度单位成本
+                                        financeDataMapper.updateCheckProductUnitPrice(materialcostdetailsBean);
+                                        financeDataMapper.updateCheckProductUnitPrice(materialcostdetailsBean1);
                                         unitPriceCompareBean.setCheckBudgetUnitPrice(unitPriceCompareBean.getCheckBudgetUnitPrice().add(MathUtil.multiply(materialcostdetailsBean.getPrice(), materialcostdetailsBean1.getConsumption())));
                                         unitPriceCompareBean.setBudgetUnitPrice(unitPriceCompareBean.getBudgetUnitPrice().add(materialcostdetailsBean1.getUnitPrice()));
                                     }
@@ -306,6 +320,24 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
             }
            }
         System.out.println("计算结束");
+    }
+
+    /***
+     * 考核维度单位成本
+     */
+//    @Scheduled(cron = "00 00 00 02 * ?")
+    public void checkBudgetUnitPrice(){
+        ConditionVo conditionVo=new ConditionVo();
+        conditionVo.setPriceOrconsumer("price");
+        conditionVo.setLimit(10);
+        conditionVo.setOffset(10);
+        conditionVo.setPageIndex(2);
+        conditionVo.setPageCount(10);
+        List<Map<String, Object>> list = financeBudgetService.getDetailData(conditionVo);
+//        for (Map<String,Object> map:list) {
+        for (String key: list.get(0).keySet()) {
+            System.out.println("key:" + key);
+        }
     }
 }
 

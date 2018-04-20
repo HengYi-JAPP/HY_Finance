@@ -8,10 +8,14 @@ const url = global.baseUrl + '/FinanceBudgetController';
 export class BudgetService {
   constructor(private response: GetResponseService) {}
   /* 从后台获取详细列表数据*/
-  getDetailData(param, ): Observable<any> {
+  getDetailData(param ): Observable<any> {
     return this.response.appPost(param, url + '/getDetailData');
   }
-  /* 从后台获取*/
+  /* 从后台获取成本项大类的方法*/
+  getCostItem(param): Observable<any> {
+    return this.response.appPost(param, url + '/getCostItem');
+  }
+  /* 从后台获取字典列表，供选择框使用*/
   getDictionary(param): Observable<any> {
     return this.response.appPost( param, url + '/getDictionary');
   }
@@ -26,5 +30,6 @@ export class BudgetService {
   /* 导出Excel */
   exportExcel(param): Observable<any> {
     return this.response.appPost2(param, url + '/exportExcel');
+    // return this.response.appPost2(param, url + '/exportExcel');
   }
 }

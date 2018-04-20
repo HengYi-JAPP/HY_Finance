@@ -14,10 +14,14 @@ export class AppComponent implements OnInit {
   path: string;
   isCollapse: boolean;
   cols: number;
+  today: string;
   tags: [{}] = [{id: 0, name: '欢迎页', type: 'gray', path: '/Home'}];
   constructor(private message: ElMessageService,
               private router: Router,
               private route: ActivatedRoute) {
+    const date = new Date();
+    this.today = date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate() + ' ' + date.getHours() +
+      ':' + date.getMinutes() + ':' + date.getSeconds();
     this.isCollapse = true;
     this.cols = 20;
   }

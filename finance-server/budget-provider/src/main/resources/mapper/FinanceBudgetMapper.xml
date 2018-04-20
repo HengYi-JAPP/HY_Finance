@@ -46,21 +46,21 @@
         <result column="product_specifications_match" property="productSpecificationsMatch" jdbcType="NVARCHAR"/>
         <result column="product_specifications_yarn" property="productSpecificationsYarn" jdbcType="NVARCHAR"/>
     </resultMap>
-    <sql id="Base_Column_List" >
+  <sql id="Base_Column_List" >
         b.id id1, b.type type1, b.company company1, b.month month1, b.year year1, b.product product1, b.workshop workshop1,b.line line1, b.spec spec1,
         b.yarnKind yarnKind1, b.AArate AArate1,b.FSrate FSrate1, b.day_product day_product1, b.budget_total_product budget_total_product1, b.mate_pta mate_pta1,
         b.mate_meg mate_meg1, b.mate_poy mate_poy1, b.mate_slice mate_slice1,b.poly_aux_yect poly_aux_yect1, b.poly_aux_egc poly_aux_egc1, b.poly_aux_eyht poly_aux_eyht1,
         b.poly_aux_jwsc poly_aux_jwsc1, b.poly_salary poly_salary1, b.poly_dep poly_dep1,b.poly_hdl poly_hdl1, b.ploy_hsl ploy_hsl1, b.poly_mac poly_mac1,
         b.poly_fuel_biomass poly_fuel_biomass1, b.poly_fuel_heavyoil poly_fuel_heavyoil1, b.poly_fuel_smj poly_fuel_smj1,b.poly_fuel_diesel poly_fuel_diesel1,
-        b.poly_fuel_steam poly_fuel_steam1, b.poly_fuel_coal poly_fuel_coal1, b.poly_fuel_else poly_fuel_else1, b.spin_aux_oil spin_aux_oil1,
-        b.spin_aux_shortSF220 spin_aux_shortSF2201, b.spin_aux_shortSF2180 spin_aux_shortSF21801, b.delionNW2641TS delionNW2641TS1, b.delionNW2642 delionNW26421,
-        b.delion6329TS delion6329TS1,b.delionTSC900 delionTSC9001, b.delionTSC502 delionTSC5021, b.spin_aux_agent spin_aux_agent1, b.spin_aux_silicone spin_aux_silicone1,
+        b.poly_fuel_steam poly_fuel_steam1, b.poly_fuel_coal poly_fuel_coal1, b.poly_else poly_else1, b.spin_aux_oil spin_aux_oil1,
+        b.spin_aux_shortSF220 spin_aux_shortSF2201, b.spin_aux_shortSF2180 spin_aux_shortSF21801, b.spin_aux_delionNW2641TS spin_aux_delionNW2641TS1, b.spin_aux_delionNW2642 spin_aux_delionNW26421,
+        b.spin_aux_delion6329TS spin_aux_delion6329TS1,b.spin_aux_delionTSC900 spin_aux_delionTSC9001, b.spin_aux_delionTSC502 spin_aux_delionTSC5021, b.spin_aux_agent spin_aux_agent1, b.spin_aux_silicone spin_aux_silicone1,
         b.spin_aux_hml spin_aux_hml1, b.spin_aux_lml spin_aux_lml1,b.spin_aux_bml spin_aux_bml1, b.spin_aux_else spin_aux_else1,
         b.spin_pack_slice spin_pack_slice1, b.spin_pack_weaving spin_pack_weaving1, b.spin_pack_packaging spin_pack_packaging1,
         b.spin_pack_cartons spin_pack_cartons1, b.spin_pack_wooden spin_pack_wooden1, b.spin_pack_foamboard spin_pack_foamboard1,
         b.spin_pack_else spin_pack_else1, b.spin_paper spin_paper1,b.spin_melt spin_melt1, b.spin_salary spin_salary1, b.spin_dep spin_dep1,
-        b.spin_water spin_water1, b.spin_elect spin_elect1, b.spin_mac spin_mac1, b.spin_repair spin_repair1,b.spin_biomass spin_biomass1, b.spin_heavyoil spin_heavyoil1,
-        b.spin_smj spin_smj1, b.spin_diesel spin_diesel1, b.spin_steam spin_steam1, b.spin_coal spin_coal1, b.spin_fuel spin_fuel1,
+        b.spin_water spin_water1, b.spin_elect spin_elect1, b.spin_mac spin_mac1, b.spin_repair spin_repair1,b.spin_fuel_biomass spin_fuel_biomass1, b.spin_fuel_heavyoil spin_fuel_heavyoil1,
+        b.spin_fuel_smj spin_fuel_smj1, b.spin_fuel_diesel spin_fuel_diesel1, b.spin_fuel_steam spin_fuel_steam1, b.spin_fuel_coal spin_fuel_coal1, b.spin_fuel_else spin_fuel_else1,
         b.spin_else spin_else1
     </sql>
   <sql id="page">
@@ -324,7 +324,7 @@
   </select>
   <!--获取物料详情值-->
   <select id="getCostDetail" resultType="com.hengyi.bean.MaterialcostdetailsBean" parameterType="java.lang.Integer">
-    SELECT id id,consumption consumption,unit_price unitPrice,material_name materialName,state state,price price FROM MaterialCostDetails WHERE id = #{id,jdbcType=INTEGER}
+    SELECT id id,consumption consumption,unit_price unitPrice,material_name materialName,state state,price price,check_product_unit_price checkProductUnitPrice FROM MaterialCostDetails WHERE id = #{id,jdbcType=INTEGER}
   </select>
   <!--获取结果数据-->
   <select id="getResult" resultMap="resultMap" parameterType="com.hengyi.vo.ConditionVo">
@@ -446,6 +446,9 @@
     </if>
     GROUP BY `year`,`month`, company, product ) sums
   </select>
+
+
+
     <!--导入数据所用到的插入语句和查询语句-->
     <insert id="insertmaterialcostdetails" parameterType="com.hengyi.bean.MaterialcostdetailsBean" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT  INTO MaterialCostDetails

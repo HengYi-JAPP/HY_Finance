@@ -109,14 +109,16 @@ export class AllCompanyComponent implements OnInit {
     this._spec = param.spec;
     this.budgetService.getAllCompanyData(params).subscribe(
       data => {
-        this._total = data.page.total;
-        this.tableData = data.data;
+        if (data.page !== null) {
+          this._total = data.page.total;
+          this.tableData = data.data;
+        }
         this._loading = false;
       },
       error2 => {
+        this._loading = false;
       }
     );
-    this._loading = false;
   }
   changeList() {
     this._loading = true;
@@ -134,8 +136,10 @@ export class AllCompanyComponent implements OnInit {
     this.tableData.splice(0, this.tableData.length);
     this.budgetService.getAllCompanyData(params).subscribe(
       data => {
-        this._total = data.page.total;
-        this.tableData = data.data;
+        if (data.page !== null) {
+          this._total = data.page.total;
+          this.tableData = data.data;
+        }
         this._loading = false;
       },
       error2 => {

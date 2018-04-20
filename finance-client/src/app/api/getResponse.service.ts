@@ -4,7 +4,7 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { HttpHeaders} from '@angular/common/http';
 import * as global from '../global';
 import {Observable} from 'rxjs/Observable';
-import {catchError, retry} from 'rxjs/operators';
+import {catchError, map, retry} from 'rxjs/operators';
 import {ErrorObservable} from 'rxjs/observable/ErrorObservable';
 // 设置请求头
 const  httpOptions = {
@@ -16,7 +16,7 @@ const  httpOptions = {
 // 导出Excel的请求头
 const httpOptions2 = {
   headers: new HttpHeaders({
-    'Content-Type':  'multipart/form-data',
+    'Content-Type':  'application/json',
     'Authorization': 'my-auth-token',
     'responseType': 'blob'
   })
@@ -60,10 +60,18 @@ export class GetResponseService {
 
   appPost2 (param: any, url: string): Observable<any> {
     return this.http.post<any>(url, param, httpOptions2).pipe(
+      map(res => new Blob([res.text()], { type: 'application/json' })),
       retry(1),
       catchError(this.handleError)
     );
   }
+  // 发送一个请求
+  // appRequest(url: any, data?: any ): Observable<any> {
+  //   return this.http.request('post', url, {body: data, observe: 'response', responseType: 'blob'}).pipe(
+  //     retry(1),
+  //     catchError(this.handleError)
+  //   );
+  // }
   // 错误处理方法
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

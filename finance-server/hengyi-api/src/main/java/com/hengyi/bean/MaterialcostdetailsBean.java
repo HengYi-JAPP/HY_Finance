@@ -20,6 +20,8 @@ public class MaterialcostdetailsBean {
     private BigDecimal money;
 
     private  BigDecimal kwmeng;
+    //考核维度单位成本
+    private BigDecimal checkProductUnitPrice;
 
     public BigDecimal getMoney() {
         return money;
@@ -95,6 +97,14 @@ public class MaterialcostdetailsBean {
     public void setPrice(BigDecimal price) {
         this.price = price;
         this.price.setScale(5,   BigDecimal.ROUND_HALF_UP);
+    }
+
+    public BigDecimal getCheckProductUnitPrice() {
+        return checkProductUnitPrice;
+    }
+
+    public void setCheckProductUnitPrice(BigDecimal checkProductUnitPrice) {
+        this.checkProductUnitPrice = checkProductUnitPrice;
     }
 
     @Override

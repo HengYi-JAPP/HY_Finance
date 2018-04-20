@@ -5,6 +5,7 @@ public class ProductMatchBean {
     private String productMatch;
     private String productLine;
     private String productMaterialYarn;
+    private String company;
     private String productSpecificationsMatch;
     private String productSpecificationsYarn;
 
@@ -31,13 +32,20 @@ public class ProductMatchBean {
     public void setProductSpecificationsYarn(String productSpecificationsYarn) {
         this.productSpecificationsYarn = productSpecificationsYarn;
     }
+    public String getCompany() {
+        return company;
+    }
 
-    public ProductMatchBean(String productMaterialMatch, String productMatch, String productLine, String productMaterialYarn, String productSpecificationsMatch, String productSpecificationsYarn) {
+    public void setCompany(String company) {
+        this.company = company;
+    }
+    public ProductMatchBean(String productMaterialMatch, String productMatch, String productLine, String productMaterialYarn, String productSpecificationsMatch, String productSpecificationsYarn,String company) {
 
         this.productMaterialMatch = productMaterialMatch;
         this.productMatch = productMatch;
         this.productLine = productLine;
         this.productMaterialYarn = productMaterialYarn;
+        this.company=company;
         this.productSpecificationsMatch = productSpecificationsMatch;
         this.productSpecificationsYarn = productSpecificationsYarn;
     }

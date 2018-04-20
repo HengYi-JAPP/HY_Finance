@@ -97,12 +97,15 @@ export class UnitBudgetComponent {
     this.tableData.splice(0, this.tableData.length);
     this.budgetService.getDetailData(params).subscribe(
       data => {
-        this._total = data.page.total;
-        this.tableData = data.data[0];
-        this.sums = data.data[1];
+        if (data.page !== null) {
+          this._total = data.page.total;
+          this.tableData = data.data[0];
+          this.sums = data.data[1];
+        }
         this._loading = false;
       },
       error2 => {
+        console.log('我错了');
         this._loading = false;
       }
     );
@@ -133,8 +136,10 @@ export class UnitBudgetComponent {
     this.tableData.splice(0, this.tableData.length);
     this.budgetService.getDetailData(params).subscribe(
       data => {
-        this._total = data.page.total;
-        this.tableData = data.data[0];
+        if (data.page !== null) {
+          this._total = data.page.total;
+          this.tableData = data.data[0];
+        }
         this._loading = false;
       },
       error2 => {
@@ -145,13 +150,22 @@ export class UnitBudgetComponent {
   }
   // 导出Excel方法
   exportExcel() {
-    window.location.href = global.baseUrl + '/FinanceBudgetController/exportExcel';
+    // window.location.href = global.baseUrl + '/FinanceBudgetController/exportExcel';
     // window.open(global.baseUrl + '/FinanceBudgetController/exportExcel');
-    // const param = {};
-    // this.budgetService.exportExcel(param).subscribe(
-    //   data => {
-    //   }
-    // );
+    const param = {};
+    // const url = global.baseUrl + '/FinanceBudgetController/exportExcel';
+    this.budgetService.exportExcel(param).subscribe(
+      data => {
+        // Blob转化为链接
+        const link = document.createElement('a');
+        link.setAttribute('href', window.URL.createObjectURL(data));
+        link.setAttribute('download', 'filename.json');
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    );
   }
   // 获取当前年份
   getYear() {

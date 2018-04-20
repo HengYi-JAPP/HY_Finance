@@ -1164,8 +1164,8 @@ public class StringUtil extends StringUtils {
 	 * @param str2
 	 * @return
 	 */
-	public static boolean equals(String str1, String str2){
-		return  (str1+"").equals((str2+""));
+	public static boolean equals(String str1, String str2,String str3,String str4){
+		return  (str1+"").equals((str2+""))&&(str3+"").equals(str4+"");
 	}
 
 	/***

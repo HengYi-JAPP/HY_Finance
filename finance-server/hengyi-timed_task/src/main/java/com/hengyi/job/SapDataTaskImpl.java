@@ -39,7 +39,7 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-    @Scheduled(cron = "00 00 03 01 * ?")
+//    @Scheduled(cron = "00 00 03 * * ?")
     public void getsapdata() {
         System.out.println("同步开始");
         //获得当前时间的年份与上月月份

@@ -49,6 +49,251 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         return mapList;
     }
 
+    /****
+     * 获取成本大类（分聚酯阶段和纺丝阶段）
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getCostItem(ConditionVo conditionVo){
+        //设置条件为单位成本
+        conditionVo.setPriceOrconsumer("cost");
+        //获取明细项
+        List<Map<String,Object>> detailList=this.getDetailData(conditionVo);
+        //用于存储结果
+        List<Map<String,Object>> resultList=new ArrayList<>();
+        //对明细项进行累加合计
+        for (Map<String,Object> detail: detailList) {
+            Map<String, Object> hashMap = new LinkedHashMap<String, Object>();
+            //聚酯辅料
+            double polyAuxCount = 0;
+            //聚酯工资
+            double polySalaryCount = 0;
+            //聚酯折旧
+            double polyDepCount=0;
+            //聚酯耗电
+            double polyHdlCount=0;
+            //聚酯耗水
+            double polyHslCount=0;
+            //聚酯机配件
+            double polyMacCount=0;
+            //聚酯燃料
+            double polyFuelCount=0;
+            //聚酯其他
+            double polyElseCount=0;
+            //聚酯制造费用合计
+            double polyCount=0;
+            //纺丝辅料
+            double spinAuxCount=0;
+            //包装费
+            double spinPackCount=0;
+            //纸管
+            double spinPaperCount=0;
+            //聚酯熔体
+//        double spinMeltCount=0;
+            //纺丝工资
+            double spinSalaryCount=0;
+            //纺丝折旧
+            double spinDepCount=0;
+            //纺丝耗水
+            double spinWaterCount=0;
+            //纺丝耗电
+            double spinEelectCount=0;
+            //纺丝机配件
+            double spinMacCount=0;
+            //纺丝燃料
+            double spinFuelCount=0;
+            //纺丝其他
+            double spinElseCount=0;
+            //纺丝制造费用合计
+            double spinCount=0;
+            for (String key:detail.keySet()) {
+                if ("id".equals(key)||"id1".equals(key)){
+                }else if ("type".equals(key)||"type1".equals(key)||"company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                        || "spec".equals(key) || "yarnKind".equals(key) ||"company1".equals(key) ||
+                        "month1".equals(key) || "year1".equals(key) ||
+                        "product1".equals(key) || "workshop1".equals(key) || "line1".equals(key)
+                        || "spec1".equals(key) || "yarnKind1".equals(key)||"budget_total_product".equals(key)||"budget_total_product1".equals(key)){
+                    hashMap.put(key,detail.get(key));
+                }else if (key.contains("poly_aux")){
+                    polyAuxCount+=Double.parseDouble(detail.get(key).toString());
+                    polyCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("poly_salary")){
+                    polySalaryCount+=Double.parseDouble(detail.get(key).toString());
+                    polyCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("poly_dep")){
+                    polyDepCount+=Double.parseDouble(detail.get(key).toString());
+                    polyCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("poly_hdl")){
+                    polyHdlCount+=Double.parseDouble(detail.get(key).toString());
+                    polyCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("poly_hsl")){
+                    polyHslCount+=Double.parseDouble(detail.get(key).toString());
+                    polyCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("poly_mac")){
+                    polyMacCount+=Double.parseDouble(detail.get(key).toString());
+                    polyCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("poly_fuel")){
+                    polyFuelCount+=Double.parseDouble(detail.get(key).toString());
+                    polyCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("poly_else")){
+                    polyElseCount+=Double.parseDouble(detail.get(key).toString());
+                    polyCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_aux")){
+                    spinAuxCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_pack")){
+                    spinPackCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_paper")){
+                    spinPaperCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_salary")){
+                    spinSalaryCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_dep")){
+                    spinDepCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_water")){
+                    spinWaterCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_elect")){
+                    spinEelectCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_mac")){
+                    spinMacCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_fuel")){
+                    spinFuelCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("spin_else")){
+                    spinElseCount+=Double.parseDouble(detail.get(key).toString());
+                    spinCount+=Double.parseDouble(detail.get(key).toString());
+                }
+            }
+            hashMap.put("poly_aux",changeIntoBigdecimal(polyAuxCount));
+            hashMap.put("poly_salary",changeIntoBigdecimal(polySalaryCount));
+            hashMap.put("poly_dep",changeIntoBigdecimal(polyDepCount));
+            hashMap.put("poly_hdl",changeIntoBigdecimal(polyHdlCount));
+            hashMap.put("poly_hsl",changeIntoBigdecimal(polyHslCount));
+            hashMap.put("poly_mac",changeIntoBigdecimal(polyMacCount));
+            hashMap.put("poly_fuel",changeIntoBigdecimal(polyFuelCount));
+            hashMap.put("poly_else",changeIntoBigdecimal(polyElseCount));
+            hashMap.put("poly",changeIntoBigdecimal(polyCount));
+            hashMap.put("spin_aux",changeIntoBigdecimal(spinAuxCount));
+            hashMap.put("spin_pack",changeIntoBigdecimal(spinPackCount));
+            hashMap.put("spin_paper",changeIntoBigdecimal(spinPaperCount));
+            hashMap.put("spin_salary",changeIntoBigdecimal(spinSalaryCount));
+            hashMap.put("spin_dep",changeIntoBigdecimal(spinDepCount));
+            hashMap.put("spin_water",changeIntoBigdecimal(spinWaterCount));
+            hashMap.put("spin_elect",changeIntoBigdecimal(spinEelectCount));
+            hashMap.put("spin_mac",changeIntoBigdecimal(spinMacCount));
+            hashMap.put("spin_fuel",changeIntoBigdecimal(spinFuelCount));
+            hashMap.put("spin_else",changeIntoBigdecimal(spinElseCount));
+            hashMap.put("spin",changeIntoBigdecimal(spinCount));
+            resultList.add(hashMap);
+        }
+        return resultList;
+    }
+
+    /****
+     * 获取成本大类(不分阶段)
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> getSumCostItem(ConditionVo conditionVo) {
+        //设置条件为单位成本
+        conditionVo.setPriceOrconsumer("cost");
+        //获取明细项
+        List<Map<String,Object>> detailList=this.getDetailData(conditionVo);
+        //用于存储结果
+        List<Map<String,Object>> resultList=new ArrayList<>();
+        //对明细项进行累加合计
+        for (Map<String,Object> detail: detailList) {
+            Map<String, Object> hashMap = new LinkedHashMap<String, Object>();
+            //辅料
+            double AuxCount = 0;
+            //包装费
+            double PackCount=0;
+            //纸管
+            double PaperCount=0;
+            //工资
+            double SalaryCount = 0;
+            //折旧
+            double DepCount=0;
+            //耗电
+            double HdlCount=0;
+            //耗水
+            double HslCount=0;
+            //机配件
+            double MacCount=0;
+            //燃料
+            double FuelCount=0;
+            //其他
+            double ElseCount=0;
+            //熔体
+//        double spinMeltCount=0;
+            //制造费用合计
+            double Count=0;
+            for (String key:detail.keySet()) {
+                if ("id".equals(key)||"id1".equals(key)){
+                }else if ("type".equals(key)||"type1".equals(key)||"company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                        || "spec".equals(key) || "yarnKind".equals(key) ||"company1".equals(key) ||
+                        "month1".equals(key) || "year1".equals(key) ||
+                        "product1".equals(key) || "workshop1".equals(key) || "line1".equals(key)
+                        || "spec1".equals(key) || "yarnKind1".equals(key)||"budget_total_product".equals(key)||"budget_total_product1".equals(key)){
+                    hashMap.put(key,detail.get(key));
+                }else if (key.contains("aux")){
+                    AuxCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("pack")){
+                    PackCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("paper")){
+                    PaperCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("salary")){
+                    SalaryCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("dep")){
+                    DepCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("hdl")){
+                    HdlCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("hsl")){
+                    HslCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("mac")){
+                    MacCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("fuel")){
+                    FuelCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }else if (key.contains("else")){
+                    ElseCount+=Double.parseDouble(detail.get(key).toString());
+                    Count+=Double.parseDouble(detail.get(key).toString());
+                }
+            }
+            hashMap.put("aux",changeIntoBigdecimal(AuxCount));
+            hashMap.put("pack",changeIntoBigdecimal(PackCount));
+            hashMap.put("paper",changeIntoBigdecimal(PaperCount));
+            hashMap.put("salary",changeIntoBigdecimal(SalaryCount));
+            hashMap.put("dep",changeIntoBigdecimal(DepCount));
+            hashMap.put("hsl",changeIntoBigdecimal(HslCount));
+            hashMap.put("hdl",changeIntoBigdecimal(HdlCount));
+            hashMap.put("mac",changeIntoBigdecimal(MacCount));
+            hashMap.put("fuel",changeIntoBigdecimal(FuelCount));
+            hashMap.put("else",changeIntoBigdecimal(ElseCount));
+            hashMap.put("count",changeIntoBigdecimal(Count));
+            resultList.add(hashMap);
+        }
+        return resultList;
+    }
+
     /***
      * 获取详情合计的均值
      * @param conditionVo
@@ -56,7 +301,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
      */
     @Override
     public List<Map<String, Object>> getSumDetail(ConditionVo conditionVo) {
-        //将分页去除查询出所有数据都查出来
+        //将分页去除查询出所有数据
         conditionVo.setOffset(null);
         conditionVo.setLimit(null);
         //存储实际均值
@@ -71,7 +316,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         List<Map<String,Object>> list= financeBudgetMapper.getDetailData(conditionVo);
         //将详情记录id转化为相应值并按实际，预算，差异的顺序查找出来
         List<Map<String,Object>> mapList=getList(list,conditionVo);
-        BigDecimal sumFactProduct=new BigDecimal(0);
+        double sumFactProduct=0;
         String [] array=new String[]{"id","type","company","month","year","product","workshop","line","spec","yarnKind","AArate","FSrate","day_product","budget_total_product"};
         for (int i = 0; i < array.length; i++) {
             fact.put(array[i],mapList.get(0).get(array[i]));
@@ -80,8 +325,10 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         }
         //对实际进行求和
         for (String key:mapList.get(0).keySet()) {
-            BigDecimal sumFact= new BigDecimal(0);
-            BigDecimal sumBudget=new BigDecimal(0);
+//            BigDecimal sumFact= new BigDecimal(0);
+//            BigDecimal sumBudget=new BigDecimal(0);
+            double sumFact=0;
+            double sumBudget=0;
             if ("id".equals(key)||"id1".equals(key)||"type".equals(key)||"type1".equals(key)||"company".equals(key) || "month".equals(key) || "year".equals(key) ||
                     "product".equals(key) || "workshop".equals(key) || "line".equals(key)
                     || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) ||
@@ -97,19 +344,20 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                     }else {
                         //对实际进行求和
                         if (i%3 == 0){
-                            sumFact=sumFact.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i).get("budget_total_product").toString())));
-                            sumFactProduct=sumFactProduct.add(new BigDecimal(mapList.get(i).get("budget_total_product").toString()));
+                            sumFact+=Double.parseDouble(mapList.get(i).get(key).toString())*Double.parseDouble((mapList.get(i).get("budget_total_product").toString()));
+//                            sumFact=sumFact.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i).get("budget_total_product").toString())));
+                            sumFactProduct=sumFactProduct+Double.parseDouble(mapList.get(i).get("budget_total_product").toString());
                         }else{//对预算进行求和
-                            sumBudget=sumBudget.add(new BigDecimal(mapList.get(i).get(key+"1").toString()).multiply(new BigDecimal(mapList.get(i-1).get("budget_total_product").toString())));
+                            sumBudget=sumBudget+Double.parseDouble(mapList.get(i).get(key+"1").toString())*Double.parseDouble(mapList.get(i-1).get("budget_total_product").toString());
                         }
                     }
                 }
-                if (sumFactProduct.compareTo(new BigDecimal(0))==0){
+                if (sumFactProduct==0){
                     fact.put(key,0);
                     budget.put(key,0);
                 }else {
-                   fact.put(key,sumFact.divide(sumFactProduct));
-                   budget.put(key,sumBudget.divide(sumFactProduct));
+                   fact.put(key,sumFact/sumFactProduct);
+                   budget.put(key,sumBudget/sumFactProduct);
                 }
             }
         }
@@ -427,6 +675,8 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                 resultMap.put(key, materialcostdetailsBean.getConsumption().setScale(3, BigDecimal.ROUND_HALF_UP));
             } else if ("cost".equals(conditionVo.getPriceOrconsumer())) {
                 resultMap.put(key, materialcostdetailsBean.getUnitPrice());
+            } else if ("checkUnitPrice".equals(conditionVo.getPriceOrconsumer())) {
+                resultMap.put(key,materialcostdetailsBean.getCheckProductUnitPrice());
             }
         }
         return resultMap;
@@ -523,6 +773,14 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         return mapList;
     }
 
+    /***
+     * 将double类型转化为6位的Bigdecimal
+     * @param value
+     * @return
+     */
+    private BigDecimal changeIntoBigdecimal(double value){
+        return new BigDecimal(value).setScale(6,BigDecimal.ROUND_HALF_UP);
+    }
     /***
      * 导出Excel
      */

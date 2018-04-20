@@ -40,8 +40,6 @@ export class SelectComponent implements OnInit {
   spec: string;
   workshop: string;
   constructor(private budgetService: BudgetService) {
-    this.year = this.getYear() + '';
-    this.month = this.getMonth() + '';
     // 年份选择框可以选择16年到当前年份
     const currentYear = new Date().getFullYear();
     for ( let i = 2016; i <= currentYear; i++) {
@@ -68,6 +66,8 @@ export class SelectComponent implements OnInit {
     );
   }
   ngOnInit() {
+    this.year = this.getYear() + '';
+    this.month = this.getMonth() + '';
     this.changeProduct();
   }
   // 获取时间的方法

@@ -5,7 +5,7 @@ import {BudgetService} from '../../../api/budget.service';
   selector: 'app-select2',
   templateUrl: './select2.component.html'
 })
-export class Select2Component {
+export class Select2Component implements OnInit{
   @Output() FindList = new EventEmitter();
   @Input() year: string;
   @Input() month: string;
@@ -36,8 +36,6 @@ export class Select2Component {
   workshop: string;
   // 构造函数中放入测试数据
   constructor(private budgetService: BudgetService) {
-    this.year = new Date().getFullYear() + '';
-    this.month = new Date().getMonth() + '';
     // 年份选择框可以选择16年到当前年份
     const currentYear = new Date().getFullYear();
     for ( let i = 2016; i <= currentYear; i++) {
@@ -62,6 +60,10 @@ export class Select2Component {
         });
       }
     );
+  }
+  ngOnInit() {
+    this.year = new Date().getFullYear() + '';
+    this.month = new Date().getMonth() + '';
   }
   // 获取时间的方法
   handle(time: number): void {

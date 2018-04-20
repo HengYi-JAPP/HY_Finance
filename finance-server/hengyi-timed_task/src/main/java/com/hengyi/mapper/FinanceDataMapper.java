@@ -199,4 +199,10 @@ public interface FinanceDataMapper {
      */
     public  ArrayList<String> selectbudgetdatabybean(BudgetdetailBean budgetdetailBean);
 
+    /***
+     * 更新考核维度考核维度预算单位成本
+     * @param
+     */
+    public void updateCheckProductUnitPrice(MaterialcostdetailsBean materialcostdetailsBean);
+
 }

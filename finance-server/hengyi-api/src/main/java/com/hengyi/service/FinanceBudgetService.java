@@ -19,6 +19,10 @@ import java.util.Map;
 public interface FinanceBudgetService {
     // 获取详情表数据
     List<Map<String, Object>> getDetailData(ConditionVo conditionVo);
+    // 获取成本大类（分聚酯阶段和纺丝阶段）
+    List<Map<String,Object>> getCostItem(ConditionVo conditionVo);
+    // 获取成本大类（不分聚酯阶段和纺丝阶段）
+    List<Map<String,Object>> getSumCostItem(ConditionVo conditionVo);
 
     // 获取详情合计的均值
     List<Map<String,Object>> getSumDetail(ConditionVo conditionVo);
