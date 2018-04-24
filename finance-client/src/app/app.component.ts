@@ -4,6 +4,7 @@ import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
+import index from "@angular/cli/lib/cli";
 
 @Component({
   selector: 'app-root',
@@ -73,4 +74,10 @@ export class AppComponent implements OnInit {
     this.isCollapse = true;
     this.cols = 20;
   }
+  handle(index: string): void {
+    console.log(index)
+  }
+
 }
+
+

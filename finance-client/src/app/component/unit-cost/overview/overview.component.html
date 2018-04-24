@@ -1,24 +1,6 @@
-<div class="box" style="overflow-x: hidden;height: auto">
-  <app-select (FindList)="findList($event)" [year]="_year" [month]="_month"
-              [company]="_company" [product]="_product"></app-select>
+<div class="box">
+  <app-select (FindList)="findList()"></app-select>
   <div style="margin-top: 10px">
-    <form nz-form [nzLayout]="'inline'">
-      <div nz-row nz-form-item>
-        <div nz-form-control>
-          <div nz-form-label>
-            <label>是否分阶段</label>
-          </div>
-          <nz-radio-group [(ngModel)]="stageType" [ngModelOptions]="{standalone: true}" >
-            <label nz-radio-button [nzValue]="'stage'" (click)="changeList()">
-              <span>分阶段</span>
-            </label>
-            <label nz-radio-button [nzValue]="'noneStage'" (click)="changeList()">
-              <span>不分阶段</span>
-            </label>
-          </nz-radio-group>
-        </div>
-      </div>
-    </form>
     <nz-table #groupingTable
               [nzAjaxData]="tableData"
               nzShowSizeChanger
@@ -39,51 +21,51 @@
             <!--<label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 10px">-->
             <!--</label>-->
           <!--</th>-->
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>实际or预算</span></th>
-          <th nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>公司</span></th>
-          <th nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>月</span></th>
-          <th nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>年</span></th>
-          <th nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>产品</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>车间</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>生产线</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>规格</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纱种</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>总产量</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>辅料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>包装费</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>纸管</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>工资</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>折旧</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>耗水</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>耗电</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>机配件</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>燃料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>其他</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>制造费用合计</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="9" *ngIf="stageType === 'stage'"><span>聚酯成本</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="11" *ngIf="stageType === 'stage'"><span>纺丝成本</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>实际or预算</span></th>
+          <th class="Header-color" nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>公司</span></th>
+          <th class="Header-color" nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>月</span></th>
+          <th class="Header-color" nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>年</span></th>
+          <th class="Header-color" nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>产品</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>车间</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>生产线</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>规格</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纱种</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>总产量</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>辅料</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>包装费</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>纸管</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>工资</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>折旧</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>耗水</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>耗电</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>机配件</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>燃料</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>其他</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2" *ngIf="stageType === 'noneStage'"><span>制造费用合计</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="9" *ngIf="stageType === 'stage'"><span>聚酯成本</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1" colspan="11" *ngIf="stageType === 'stage'"><span>纺丝成本</span></th>
         </tr>
         <tr *ngIf="stageType === 'stage'">
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯辅料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯工资</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯折旧</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯耗水</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯耗电</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯机配件</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯燃料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯其他</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯制造费用合计</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝辅料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>包装费</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纸管</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝工资</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝折旧</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝耗水</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝耗电</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝机配件</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝燃料</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝其他</span></th>
-          <th nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝制造费用合计</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯辅料</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯工资</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯折旧</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯耗水</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯耗电</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯机配件</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯燃料</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯其他</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>聚酯制造费用合计</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝辅料</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>包装费</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纸管</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝工资</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝折旧</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝耗水</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝耗电</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝机配件</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝燃料</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝其他</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>纺丝制造费用合计</span></th>
         </tr>
         </thead>
       </ng-template>
