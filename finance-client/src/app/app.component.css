@@ -2,5 +2,22 @@
   height: 550px;
 }
 ul,li{
-  background-color: green;
+  background-color:#00474f;
 }
+.welcome-font{
+  color: #fcfffa;margin-left: 1150px;margin-top: 20px;font-style:italic;font-family:sans-serif,Times, serif;font-weight:900;
+}
+.footer{
+  width:100%;
+  height:30px;
+  position: fixed;
+  bottom: 0px;
+}
+.left-title-style{
+  font-weight:900;color: #f1f5f0;
+  font:bold;
+}
+.ui-li-set{
+  background-color:#00474f;
+}
+

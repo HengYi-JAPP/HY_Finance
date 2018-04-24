@@ -4,6 +4,7 @@ import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
+import index from "@angular/cli/lib/cli";
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,7 @@ export class AppComponent implements OnInit {
               private router: Router,
               private route: ActivatedRoute) {
     this.isCollapse = true;
-    this.cols = 21;
+    this.cols = 20;
   }
   ngOnInit () {
     this.router.events
@@ -62,11 +63,17 @@ export class AppComponent implements OnInit {
   // 隐藏收拢菜单栏
   getTogether() {
     this.isCollapse = false;
-    this.cols = 23;
+    this.cols = 22;
   }
   // 展开菜单栏
   expand() {
     this.isCollapse = true;
-    this.cols = 21;
+    this.cols = 20;
   }
+  handle(index: string): void {
+    console.log(index)
+  }
+
 }
+
+

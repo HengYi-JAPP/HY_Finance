@@ -8,44 +8,44 @@
               (nzPageIndexChange)="_refreshStatus()"
               (nzPageSizeChange)="_refreshStatus()"
               nzBordered
-              [nzScroll]="{ x: 3000, y: 300 }">
+              [nzScroll]="{ x: 3000, y: 520 }">
       <ng-template #nzFixedHeader>
-        <thead nz-thead>
+        <thead nz-thead style="background-color: #8fcdca">
         <tr>
           <!--<th nz-th nzCheckbox nzWidth="100px" rowspan="2">-->
             <!--<label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 10px">-->
             <!--</label>-->
           <!--</th>-->
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>年</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>月</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>公司</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>产品</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>生产线</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>规格</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1" colspan="8"><span>聚酯成本</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1" colspan="8"><span>纺丝成本</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>年</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>月</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>公司</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>产品</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>生产线</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="2"><span>规格</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1" colspan="8"><span>聚酯成本</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1" colspan="8"><span>纺丝成本</span></th>
         </tr>
         <tr>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>辅料</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>工资</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>折旧</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>水电</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>配件</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>燃料</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>其他</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>制造费用合计</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>辅料</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>工资</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>折旧</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>水电</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>配件</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>燃料</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>其他</span></th>
-          <th nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>制造费用合计</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>辅料</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>工资</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>折旧</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>水电</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>配件</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>燃料</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>其他</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>制造费用合计</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>辅料</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>工资</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>折旧</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>水电</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>配件</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>燃料</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>其他</span></th>
+          <th class="Header-color" nz-th nzWidth="150px" style="text-align: center" rowspan="1"><span>制造费用合计</span></th>
         </tr>
         </thead>
       </ng-template>
-      <tbody nz-tbody>
+      <tbody nz-tbody style="background-color: #c7e9fa">
       <tr nz-tbody-tr *ngFor="let data of tableData">
         <!--<td nz-td nzCheckbox>-->
           <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->

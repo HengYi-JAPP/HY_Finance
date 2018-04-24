@@ -1,11 +1,27 @@
 <!--The content below is only a placeholder and can be replaced.-->
 
 <!--菜单栏配置页面-->
-  <div style="height: 700px;background-color: crimson">
+<body style="overflow-y: hidden;overflow-x: hidden;width:100%;height:100%;MARGIN-RIGHT: auto;MARGIN-LEFT: auto;">
+  <div style="height: 700px;background-color:#00474f">
     <div el-row>
-      <div style="background-color: #2090e6;height: 50px;float: left;width: 100%">
-      <img src="assets/picture/logo3.png" style="float: left;width: 10%;height: 50px;cursor:pointer;margin-left: 10px" routerLink="/Home" routerLinkActive="active">
-        <h2 style="color: white;margin-left: 1150px;margin-top: 10px">欢迎使用财务预算系统!</h2>
+      <div style="background-color:#1890ff;height: 70px;float: left;width: 100%;text-align: center">
+      <img src="assets/picture/logo3.png" style="float: left; cursor:pointer;margin-left: 10px;margin-top: 10px" routerLink="/Home" routerLinkActive="active">
+        <div id="nav" style="float: right;margin-right: 50px;margin-top: 10px">
+          <el-menu [model]="0" (modelChange)="handle($event)" class="el-menu-demo" mode="horizontal"
+                   background-color="#0050b3"
+                   active-text-color="#1890ff"
+                   text-color="#002329"
+
+          >
+            <el-submenu index="2" title="Hi,欢迎使用">
+              <el-menu-item index="2-1">查看信息</el-menu-item>
+              <el-menu-item index="2-2">修改信息</el-menu-item>
+              <el-menu-item index="2-3">退出登录</el-menu-item>
+            </el-submenu>
+          </el-menu>
+
+        </div>
+        <!--<h2  class="welcome-font"  >欢迎使用财务预算系统!</h2>-->
         <!--<el-tag *ngFor="let tag of  tags"-->
                 <!--[closable]="true"-->
                 <!--[type]="tag.type"-->
@@ -14,49 +30,80 @@
         <!--</el-tag>-->
       </div>
     </div>
-    <div el-row style="color: white;">
-      <div el-col span="20">
-        <nz-breadcrumb>
-          <nz-breadcrumb-item>
-            <i class="anticon anticon-home"></i>
-          </nz-breadcrumb-item>
-          <nz-breadcrumb-item>
-            <a href=""><i class="anticon anticon-user"></i><span>Application List</span></a>
-          </nz-breadcrumb-item>
-          <nz-breadcrumb-item>
-            <a href="">Application</a>
-          </nz-breadcrumb-item>
-        </nz-breadcrumb>
-      </div>
-      <div el-col span="4">
-        <span style="">日期</span>
-      </div>
-    </div>
-    <div el-row>
-      <div el-col span="1" *ngIf="!isCollapse">
-        <el-button class="el-icon-d-arrow-right"style="margin-bottom: 10px;margin-top: 10px" (click)="expand()" size="small"></el-button>
+    <!--<div el-row style="height:50px; ">-->
+      <!--<div el-col span="20" >-->
+        <!--<nz-breadcrumb style="height: 25px;margin-top: 5px;">-->
+          <!--<nz-breadcrumb-item>-->
+            <!--<i class="anticon anticon-home"></i>-->
+          <!--</nz-breadcrumb-item>-->
+          <!--<nz-breadcrumb-item>-->
+            <!--<a href=""><i class="anticon anticon-user"></i><span style="color:white">Application List</span></a>-->
+          <!--</nz-breadcrumb-item>-->
+          <!--<nz-breadcrumb-item>-->
+            <!--<a href=""><i class="el-icon-search"></i><span style="color:white">Application</span></a>-->
+          <!--</nz-breadcrumb-item>-->
+        <!--</nz-breadcrumb>-->
+      <!--</div>-->
+      <!--<div el-col span="4">-->
+        <!--<nz-breadcrumb style="height: 25px;margin-top: 5px;">-->
+          <!--<nz-breadcrumb-item>-->
+            <!--<i class="el-icon-date"><span style="color: white">DATE</span></i>-->
+          <!--</nz-breadcrumb-item>-->
+        <!--</nz-breadcrumb>-->
+      <!--</div>-->
+
+      <!--&lt;!&ndash;<div el-col span="4"  >&ndash;&gt;-->
+        <!--&lt;!&ndash;<span title >&ndash;&gt;-->
+          <!--&lt;!&ndash;<i class="el-icon-date"> </i>&ndash;&gt;-->
+          <!--&lt;!&ndash;<span style="font-weight:900;color: white;">DATE</span>&ndash;&gt;-->
+
+          <!--&lt;!&ndash;</span>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+    <!--</div>-->
+    <div el-row  style="height: 580px">
+      <div el-col span="2" *ngIf="!isCollapse">
+        <el-button class="el-icon-more-outline"
+                   style = "  margin-bottom: 10px;border-style: none;margin-top: 10px;margin-right:10px;margin-left: 10px; background-color:#00474f"
+                   (click)="expand()"
+                   size="small"></el-button>
         <i class="anticon anticon-appstore" style="margin-left: 20px"></i>
       </div>
-      <div el-col span="3" *ngIf="isCollapse">
-        <el-button class="el-icon-d-arrow-left"style="margin-bottom: 10px;margin-left: 110px;margin-top: 10px" (click)="getTogether()" size="small"></el-button>
-        <ul nz-menu [nzMode]="'inline'" nzTheme="'dark'" style="margin-top: 10px;background-color: green">
-          <li nz-submenu [nzOpen]="true">
+      <div el-col span="4" *ngIf="isCollapse"  >
+        <el-button class="el-icon-more"
+                   style = " border-style: none;margin-bottom: 10px;margin-left: 180px ;margin-top: 10px;background-color:#00474f"
+                   (click)="getTogether()"
+                   size="small"></el-button>
+        <ul class="ui-li-set" nz-menu [nzMode]="'inline'" [nzTheme]="'dark'" style="margin-top: 10px">
+          <li class="ui-li-set" nz-submenu [nzOpen]="true">
           <span title>
             <i class="anticon anticon-appstore"></i>
-            <span>财务预算分析</span>
+            <span  class = "left-title-style" >财务预算分析</span>
           </span>
-            <ul>
-              <li nz-submenu [nzOpen]="true">
-                <span title>单位成本</span>
-                <ul>
-                  <li nz-menu-item routerLink="/UnitCostBudget" routerLinkActive="active">
-                    <span>成本项详情</span>
+            <ul class="ui-li-set">
+              <li   class="ui-li-set" nz-submenu [nzOpen]="true">
+
+                <span title>
+                  <i class="el-icon-circle-check-outline"></i>
+                  <span class = "left-title-style">单位成本</span>
+                </span>
+                <ul class="ui-li-set">
+                  <li class="ui-li-set" nz-menu-item routerLink="/UnitCostBudget" routerLinkActive="active">
+                <span title>
+                  <i class="el-icon-view"></i>
+                  <span class = "left-title-style">成本项详情</span>
+                </span>
+                  </li >
+                  <li  class="ui-li-set" nz-menu-item routerLink="/UnitCostOverview" routerLinkActive="active">
+                 <span title>
+                  <i class="el-icon-rank"></i>
+                  <span class = "left-title-style">成本项概览</span>
+                </span>
                   </li>
-                  <li nz-menu-item routerLink="/UnitCostOverview" routerLinkActive="active">
-                    <span>成本项概览</span>
-                  </li>
-                  <li nz-menu-item routerLink="/UnitCostResult" routerLinkActive="active">
-                    <span>对比分析结果</span>
+                  <li  class="ui-li-set" nz-menu-item routerLink="/UnitCostResult" routerLinkActive="active">
+                 <span title>
+                  <i class="el-icon-printer"></i>
+                  <span class = "left-title-style">对比分析结果</span>
+                </span>
                   </li>
                 </ul>
               </li>
@@ -93,17 +140,19 @@
       </div>
       <div style="margin-top: 0px">
         <div el-col [span]="cols">
-          <div style="background-color:lightblue">
+          <div style="background-color:white">
             <router-outlet></router-outlet>
           </div>
         </div>
       </div>
     </div>
-    <div>
-      <p style="text-align: center;margin-top: auto">版权所有：恒逸集团 ©2010-2017 Zhejiang Hengyi Group Co., Ltd. All Rights Reserved </p>
-    </div>
-  </div>
 
+  </div>
+  <div class="footer">
+    <p style="text-align: center;color:white;margin-bottom;10px;margin-top: auto;font-weight:500;">版权所有：恒逸集团 ©2010-2017 Zhejiang Hengyi Group Co.,
+      Ltd. All Rights Reserved </p>
+  </div>
+</body>
 
 
 
