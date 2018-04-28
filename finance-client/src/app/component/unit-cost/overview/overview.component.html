@@ -46,9 +46,9 @@
               nzBordered
               [nzScroll]="{ x: 4000, y: 350 }">
       <ng-template #nzFixedHeader>
-        <thead nz-thead style="background-color: #8fcdca">
-        <tr style="line-height: 5px">
-          <!--<th nz-th nzCheckbox nzWidth="50px" rowspan="2">-->
+        <thead nz-thead style="background-color: #e3f3ff">
+        <tr>
+          <!--<th nz-th nzCheckbox nzWidth="100px" rowspan="2">-->
             <!--<label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)" style="width: 10px">-->
             <!--</label>-->
           <!--</th>-->
@@ -100,7 +100,7 @@
         </tr>
         </thead>
       </ng-template>
-      <tbody nz-tbody style="background-color: #c7e9fa">
+      <tbody nz-tbody style="background-color: #87e8de">
       <tr nz-tbody-tr *ngFor="let data of tableData" [ngStyle]="getTrStyle(data)" style="line-height: 5px">
         <!--<td nz-td nzCheckbox>-->
           <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->

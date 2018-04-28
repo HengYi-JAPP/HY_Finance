@@ -2,7 +2,7 @@
   height: 550px;
 }
 ul,li{
-  background-color:#00474f;
+  background-color:#b5f5ec;
 }
 .welcome-font{
   color: #fcfffa;margin-left: 1150px;margin-top: 20px;font-style:italic;font-family:sans-serif,Times, serif;font-weight:900;
@@ -14,10 +14,10 @@ ul,li{
   bottom: 0px;
 }
 .left-title-style{
-  font-weight:900;color: #f1f5f0;
+  font-weight:900;color: #262626;
   font:bold;
 }
 .ui-li-set{
-  background-color:#00474f;
+  background-color:#b5f5ec;
 }
 
