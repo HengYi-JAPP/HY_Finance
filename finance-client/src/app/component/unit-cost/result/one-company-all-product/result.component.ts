@@ -15,8 +15,10 @@ export class UnitResultComponent {
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
   _pageSize = 20; // 默认每页显示10条记录
-  _year = '';
-  _month = '';
+  // _year = '';
+  // _month = '';
+  _startMonth = '';
+  _endMonth = '';
   _company = '';
   _product = '';
   _workshop = '';
@@ -29,13 +31,17 @@ export class UnitResultComponent {
               private route: ActivatedRoute,
               private router: Router) {
     this.route.queryParams.subscribe((params: Params) => {
-      this._year = params['year'];
-      this._month = params['month'];
+      // this._year = params['year'];
+      // this._month = params['month'];
+      this._startMonth = params['year'] + '-' + params['month'];
+      this._endMonth = params['year'] + '-' + params['month'];
       this._company = params['company'];
       this._product = params['product'];
       this.findList({
-        year: params['year'],
-        month: params['month'],
+        // year: params['year'],
+        // month: params['month'],
+        startMonth: params['year'] + '-' + params['month'],
+        endMonth: params['year'] + '-' + params['month'],
         company: params['company'],
         product: params['product']
       });
@@ -88,16 +94,20 @@ export class UnitResultComponent {
     const params = {
       pageIndex: this._current,
       pageCount: this._pageSize,
-      year: param.year,
-      month: param.month,
+      // year: param.year,
+      // month: param.month,
+      startMonth: param.startMonth,
+      endMonth: param.endMonth,
       company: param.company,
       product: param.product,
       workshop: param.workshop,
       productLine: param.productLine,
       spec: param.spec,
     };
-    this._year = param.year;
-    this._month = param.month;
+    // this._year = param.year;
+    // this._month = param.month;
+    this._startMonth = param.startMonth,
+    this._endMonth = param.endMonth,
     this._company = param.company;
     this._product = param.product;
     this._workshop = param.workshop;
@@ -119,8 +129,10 @@ export class UnitResultComponent {
     const params = {
       pageIndex: this._current,
       pageCount: this._pageSize,
-      year: this._year,
-      month: this._month,
+      // year: this._year,
+      // month: this._month,
+      startMonth: this._startMonth,
+      endMonth: this._endMonth,
       company: this._company,
       product: this._product,
       workshop: this._workshop,
@@ -141,6 +153,6 @@ export class UnitResultComponent {
   // 返回
   goBack() {
     this.router.navigate(['/UnitCostResult',
-      {year: this._year, month: this._month, company: this._company, product: this._product}]);
+      {startMonth: this._startMonth, endMonth: this._endMonth, company: this._company, product: this._product}]);
   }
 }

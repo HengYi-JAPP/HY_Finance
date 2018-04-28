@@ -1,5 +1,5 @@
 <div class="box" style="overflow-x: hidden;height: auto">
-  <app-select (FindList)="findList($event)" [year]="_year" [month]="_month"
+  <app-select (FindList)="findList($event)" [startMonth]="_startMonth" [endMonth]="_endMonth"
               [company]="_company" [product]="_product"></app-select>
   <div style="margin-top: 10px ">
     <nz-table #groupingTable
@@ -32,6 +32,7 @@
           <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>产品</span></th>
           <th class="Header-color" nz-th nzWidth="100px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>生产线</span></th>
           <th class="Header-color" nz-th nzWidth="100px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>规格</span></th>
+          <th class="Header-color" nz-th nzWidth="100px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>纱种</span></th>
           <th class="Header-color" nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>预算产量</span></th>
           <th class="Header-color" nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="2"><span>实际产量</span></th>
           <th class="Header-color" nz-th nzWidth="150px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>实际单位成本①</span></th>

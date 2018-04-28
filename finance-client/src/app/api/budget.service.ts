@@ -32,4 +32,8 @@ export class BudgetService {
     return this.response.appPost2(param, url + '/exportExcel');
     // return this.response.appPost2(param, url + '/exportExcel');
   }
+  // 获取详情均值
+  getSumDetail(param): Observable<any> {
+    return this.response.appPost(param, url + '/getSumDetail');
+  }
 }

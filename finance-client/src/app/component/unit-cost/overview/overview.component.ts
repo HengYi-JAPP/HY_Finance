@@ -10,13 +10,16 @@ import {BudgetService} from '../../../api/budget.service';
 export class UnitOverviewComponent {
   tableData: any[] = [];
   stageType = 'stage'; // 是否分阶段标志，默认是分阶段的
+  dimension = 'dimension'; // 是否是考核维度的，默认是考核维度的
   sums: any[] = [];
   _loading = true;
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
   _pageSize = 10; // 默认每页显示10条记录
-  _year = '';
-  _month = '';
+  // _year = '';
+  // _month = '';
+  _startMonth = '';
+  _endMonth = '';
   _company = '';
   _product = '';
   _workshop = '';
@@ -28,8 +31,10 @@ export class UnitOverviewComponent {
   // 构造函数中放入测试数据
   constructor(private budgetService: BudgetService) {
     this.findList({
-      year: this.getYear(),
-      month: this.getMonth(),
+      // year: this.getYear(),
+      // month: this.getMonth(),
+      startMonth: this.getYear() + '-' + this.getMonth(),
+      endMonth: this.getYear() + '-' + this.getMonth()
     });
   }
   getkeys(item) {
@@ -71,16 +76,21 @@ export class UnitOverviewComponent {
       pageIndex: this._current,
       pageCount: this._pageSize,
       stageType: this.stageType,
-      year: param.year,
-      month: param.month,
+      dimension: this.dimension,
+      // year: param.year,
+      // month: param.month,
+      startMonth: param.startMonth,
+      endMonth: param.endMonth,
       company: param.company,
       product: param.product,
       workshop: param.workshop,
       productLine: param.productLine,
       spec: param.spec
     };
-    this._year = param.year;
-    this._month = param.month;
+    // this._year = param.year;
+    // this._month = param.month;
+    this._startMonth = param.startMonth;
+    this._endMonth = param.endMonth;
     this._company = param.company;
     this._product = param.product;
     this._workshop = param.workshop;
@@ -105,8 +115,11 @@ export class UnitOverviewComponent {
       pageIndex: this._current,
       pageCount: this._pageSize,
       stageType: this.stageType,
-      year: this._year,
-      month: this._month,
+      dimension: this.dimension,
+      // year: this._year,
+      // month: this._month,
+      startMonth: this._startMonth,
+      endMonth: this._endMonth,
       company: this._company,
       product: this._product,
       workshop: this._workshop,
@@ -126,6 +139,11 @@ export class UnitOverviewComponent {
         this._loading = false;
       }
     );
+  }
+  getTrStyle(data) {
+    return {
+      'background-color': data['type'] === '实际' ? '#7edef1' : data['type1'] === '预算' ? '#4bbee6' : '#329297'
+    };
   }
   // 获取当前年份
   getYear() {

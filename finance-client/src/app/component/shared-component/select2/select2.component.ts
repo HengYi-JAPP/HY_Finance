@@ -5,27 +5,29 @@ import {BudgetService} from '../../../api/budget.service';
   selector: 'app-select2',
   templateUrl: './select2.component.html'
 })
-export class Select2Component implements OnInit{
+export class Select2Component implements OnInit {
   @Output() FindList = new EventEmitter();
-  @Input() year: string;
-  @Input() month: string;
+  // @Input() year: string;
+  // @Input() month: string;
+  @Input() startMonth: string;
+  @Input() endMonth: string;
   @Input() company: string;
   @Input() product: string;
   years: any[] = [];
-  months: any[] = [
-    {value: '1', label: '1月'},
-    {value: '2', label: '2月'},
-    {value: '3', label: '3月'},
-    {value: '4', label: '4月'},
-    {value: '5', label: '5月'},
-    {value: '6', label: '6月'},
-    {value: '7', label: '7月'},
-    {value: '8', label: '8月'},
-    {value: '9', label: '9月'},
-    {value: '10', label: '10月'},
-    {value: '11', label: '11月'},
-    {value: '12', label: '12月'},
-    ];
+  // months: any[] = [
+  //   {value: '1', label: '1月'},
+  //   {value: '2', label: '2月'},
+  //   {value: '3', label: '3月'},
+  //   {value: '4', label: '4月'},
+  //   {value: '5', label: '5月'},
+  //   {value: '6', label: '6月'},
+  //   {value: '7', label: '7月'},
+  //   {value: '8', label: '8月'},
+  //   {value: '9', label: '9月'},
+  //   {value: '10', label: '10月'},
+  //   {value: '11', label: '11月'},
+  //   {value: '12', label: '12月'},
+  //   ];
   companys: any[] = [];
   products: any[] = [];
   productLines: any[] = [];
@@ -62,11 +64,11 @@ export class Select2Component implements OnInit{
     );
   }
   ngOnInit() {
-    this.year = new Date().getFullYear() + '';
-    this.month = new Date().getMonth() + '';
-  }
-  // 获取时间的方法
-  handle(time: number): void {
+    // this.year = new Date().getFullYear() + '';
+    // this.month = new Date().getMonth() + '';
+    this.startMonth = this.getYear() + '-' + this.getMonth();
+    this.endMonth = this.getYear() + '-' + this.getMonth();
+    this.changeProduct();
   }
   changeCompany() {}
   changeProduct() {
@@ -74,8 +76,10 @@ export class Select2Component implements OnInit{
     this.productLines = [];
     this.specs = [];
     const param = {
-      year: this.year,
-      month: this.month,
+      // year: this.year,
+      // month: this.month,
+      startMonth: new Date(this.startMonth).getFullYear() + '-' + (new Date(this.startMonth).getMonth() + 1),
+      endMonth: new Date(this.endMonth).getFullYear() + '-' + (new Date(this.endMonth).getMonth() + 1),
       company: this.company,
       product: this.product
     };
@@ -94,8 +98,10 @@ export class Select2Component implements OnInit{
   }
   findList() {
     const obj = {
-      year: this.year,
-      month: this.month,
+      // year: this.year,
+      // month: this.month,
+      startMonth: new Date(this.startMonth).getFullYear() + '-' + (new Date(this.startMonth).getMonth() + 1),
+      endMonth: new Date(this.endMonth).getFullYear() + '-' + (new Date(this.endMonth).getMonth() + 1),
       company: this.company,
       product: this.product,
       // workshop: this.workshop,
@@ -103,5 +109,21 @@ export class Select2Component implements OnInit{
       // spec: this.spec
     };
     this.FindList.emit(obj);
+  }
+  // 获取当前年份
+  getYear() {
+    if (new Date().getMonth() === 0) {
+      return new Date().getFullYear() - 1;
+    } else {
+      return new Date().getFullYear();
+    }
+  }
+  // 获取当前月份的上一个月份
+  getMonth() {
+    if (new Date().getMonth() === 0) {
+      return 12;
+    } else {
+      return new Date().getMonth();
+    }
   }
 }

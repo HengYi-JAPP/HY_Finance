@@ -25,8 +25,10 @@ export class UnitBudgetComponent {
   _displayData = [];
   _fact = true;
   _budget = true;
-  _year: '';
-  _month: '';
+  // _year: '';
+  // _month: '';
+  _startMonth: '';
+  _endMonth: '';
   _company = '';
   _product = '';
   _workshop = '';
@@ -35,8 +37,10 @@ export class UnitBudgetComponent {
   constructor(private budgetService: BudgetService) {
     this.uploadUrl = global.baseUrl + '/FinanceBudgetController/importBudgetData';
     this.findList({
-      year: this.getYear(),
-        month: this.getMonth(),
+      // year: this.getYear(),
+      // month: this.getMonth(),
+      startMonth: this.getYear() + '-' + this.getMonth(),
+      endMonth: this.getYear() + '-' + this.getMonth()
     });
   }
   _displayDataChange($event) {
@@ -78,8 +82,10 @@ export class UnitBudgetComponent {
     const params = {
       pageIndex: this._current,
       pageCount: this._pageSize,
-      year: param.year,
-      month: param.month,
+      // year: param.year,
+      // month: param.month,
+      startMonth: param.startMonth,
+      endMonth: param.endMonth,
       company: param.company,
       product: param.product,
       workshop: param.workshop,
@@ -87,8 +93,10 @@ export class UnitBudgetComponent {
       spec: param.spec,
       priceOrconsumer: this.priceORconsumer
     };
-    this._year = param.year;
-    this._month = param.month;
+    // this._year = param.year;
+    // this._month = param.month;
+    this._startMonth = param.startMonth;
+    this._endMonth = param.endMonth;
     this._company = param.company;
     this._product = param.product;
     this._workshop = param.workshop;
@@ -105,7 +113,6 @@ export class UnitBudgetComponent {
         this._loading = false;
       },
       error2 => {
-        console.log('我错了');
         this._loading = false;
       }
     );
@@ -123,8 +130,10 @@ export class UnitBudgetComponent {
     const params = {
       pageIndex: this._current,
       pageCount: this._pageSize,
-      year: this._year,
-      month: this._month,
+      // year: this._year,
+      // month: this._month,
+      startMonth: this._startMonth,
+      endMonth: this._endMonth,
       company: this._company,
       product: this._product,
       workshop: this._workshop,
@@ -164,6 +173,30 @@ export class UnitBudgetComponent {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+      }
+    );
+  }
+  // 计算均值的方法
+  sumCheck() {
+    const params = {
+      // year: this._year,
+      // month: this._month,
+      startMonth: this._startMonth,
+      endMonth: this._endMonth,
+      company: this._company,
+      product: this._product,
+      workshop: this._workshop,
+      productLine: this._productLine,
+      spec: this._spec,
+      priceOrconsumer: 'checkUnitPrice',
+      type: this._fact ? (this._budget ? '' : '实际') : (this._budget ? '预算' : '无')
+    };
+    if (this.sums != null) {
+      this.sums.splice(0, this.sums.length);
+    }
+    this.budgetService.getSumDetail(params).subscribe(
+      data => {
+          this.sums = data.data;
       }
     );
   }

@@ -1,5 +1,5 @@
 <div class="box" style="overflow-x: hidden;height: auto">
-  <app-select2 (FindList)="findList($event)" [year]="_year" [month]="_month" [company]="_company" [product]="_product"></app-select2>
+  <app-select2 (FindList)="findList($event)" [startMonth]="_startMonth" [endMonth]="_endMonth" [company]="_company" [product]="_product"></app-select2>
   <div style="margin-top: 10px;background-color: white">
     <nz-table #groupingTable
               [nzAjaxData]="tableData"

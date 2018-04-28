@@ -15,8 +15,10 @@ export class AllCompanyComponent implements OnInit {
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
   _pageSize = 50; // 默认每页显示10条记录
-  _year = '';
-  _month = '';
+  // _year = '';
+  // _month = '';
+  _startMonth = '';
+  _endMonth = '';
   _company = '';
   _product = '';
   _workshop = '';
@@ -29,21 +31,27 @@ export class AllCompanyComponent implements OnInit {
              private route: ActivatedRoute,
              private router: Router) {
     this.findList({
-      year: this.getYear(),
-      month: this.getMonth(),
+      startMonth: this.getYear() + '-' + this.getMonth(),
+      endMonth: this.getYear() + '-' + this.getMonth()
+      // year: this.getYear(),
+      // month: this.getMonth(),
     });
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) => {
         if (params.keys.length === 0) {
           return [];
         }
-          this._year = params.get('year');
-          this._month = params.get('month');
+          // this._year = params.get('year');
+          // this._month = params.get('month');
+          this._startMonth = params.get('startMonth');
+          this._endMonth = params.get('endMonth');
           this._company = params.get('company');
           this._product = params.get('product');
           this.findList({
-            year: this._year,
-            month: this._month,
+            // year: this._year,
+            // month: this._month,
+            startMonth: this._startMonth,
+            endMonth: this._endMonth
             // company: this._company,
             // product: this._product
           });
@@ -92,16 +100,20 @@ export class AllCompanyComponent implements OnInit {
     const params = {
       pageIndex: this._current,
       pageCount: this._pageSize,
-      year: param.year,
-      month: param.month,
+      startMonth: param.startMonth,
+      endMonth: param.endMonth,
+      // year: param.year,
+      // month: param.month,
       company: param.company,
       product: param.product,
       // workshop: param.workshop,
       // productLine: param.productLine,
       // spec: param.spec,
     };
-    this._year = param.year;
-    this._month = param.month;
+    this._startMonth = param.startMonth;
+    this._endMonth = param.endMonth;
+    // this._year = param.year;
+    // this._month = param.month;
     this._company = param.company;
     this._product = param.product;
     this._workshop = param.workshop;
@@ -125,8 +137,10 @@ export class AllCompanyComponent implements OnInit {
     const params = {
       pageIndex: this._current,
       pageCount: this._pageSize,
-      year: this._year,
-      month: this._month,
+      // year: this._year,
+      // month: this._month,
+      startMonth: this._startMonth,
+      endMonth: this._endMonth,
       company: this._company,
       product: this._product,
       workshop: this._workshop,

@@ -1,6 +1,37 @@
 <div class="box" style="overflow-x: hidden;height: auto">
-  <app-select (FindList)="findList()"></app-select>
-  <div style="margin-top:10px">
+  <app-select (FindList)="findList($event)" [startMonth]="_startMonth" [endMonth]="_endMonth"
+              [company]="_company" [product]="_product"></app-select>
+  <div style="margin-top: 10px">
+    <form nz-form [nzLayout]="'inline'">
+      <div nz-row nz-form-item>
+        <div nz-form-control>
+          <div nz-form-label>
+            <label>是否分阶段</label>
+          </div>
+          <nz-radio-group [(ngModel)]="stageType" [ngModelOptions]="{standalone: true}" >
+            <label nz-radio-button [nzValue]="'stage'" (click)="changeList()">
+              <span>分阶段</span>
+            </label>
+            <label nz-radio-button [nzValue]="'noneStage'" (click)="changeList()">
+              <span>不分阶段</span>
+            </label>
+          </nz-radio-group>
+        </div>
+        <div nz-form-control>
+          <div nz-form-label>
+            <label>维度</label>
+          </div>
+          <nz-radio-group [(ngModel)]="dimension" [ngModelOptions]="{standalone: true}" >
+            <label nz-radio-button [nzValue]="'dimension'" (click)="changeList()">
+              <span>考核维度</span>
+            </label>
+            <label nz-radio-button [nzValue]="'noneDimension'" (click)="changeList()">
+              <span>非考核维度</span>
+            </label>
+          </nz-radio-group>
+        </div>
+      </div>
+    </form>
     <nz-table #groupingTable
               [nzAjaxData]="tableData"
               nzShowSizeChanger
@@ -13,7 +44,7 @@
               (nzPageSizeChange)="_refreshStatus()"
               [nzLoading]="_loading"
               nzBordered
-              [nzScroll]="{ x: 4000, y: 370 }">
+              [nzScroll]="{ x: 4000, y: 350 }">
       <ng-template #nzFixedHeader>
         <thead nz-thead style="background-color: #8fcdca">
         <tr style="line-height: 5px">
@@ -70,7 +101,7 @@
         </thead>
       </ng-template>
       <tbody nz-tbody style="background-color: #c7e9fa">
-      <tr nz-tbody-tr *ngFor="let data of tableData">
+      <tr nz-tbody-tr *ngFor="let data of tableData" [ngStyle]="getTrStyle(data)" style="line-height: 5px">
         <!--<td nz-td nzCheckbox>-->
           <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->
           <!--</label>-->

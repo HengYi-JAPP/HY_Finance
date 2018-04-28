@@ -1,23 +1,21 @@
 <div style="margin-top: 10px">
   <div el-row gutter="20">
-    <!--<div el-col span="5">-->
-      <!--<el-date-picker (modelChange)="handle($event)" placeholder="开始时间" title="开始时间">-->
-      <!--</el-date-picker>-->
-    <!--</div>-->
-    <!--<div el-col span="5">-->
-      <!--<el-date-picker (modelChange)="handle($event)" placeholder="结束时间" title="结束时间">-->
-      <!--</el-date-picker>-->
-    <!--</div>-->
     <div el-col span="3">
-      <el-select title="年" placeholder="请选择年份" [(model)]="year" [clearable]="true" size="small">
-        <el-option *ngFor="let item of years" [label]="item.label" [value]="item.value" ></el-option>
-      </el-select>
+      <nz-datepicker [(ngModel)]="startMonth" [nzMode]="'month'" [nzSize]="'large'" [nzPlaceHolder]="'请选择开始月份'" [nzFormat]="'YYYY-MM'"></nz-datepicker>
     </div>
     <div el-col span="3">
-      <el-select title="月" placeholder="请选择月份" [(model)]="month" [clearable]="true" size="small">
-        <el-option *ngFor="let item of months" [label]="item.label" [value]="item.value" ></el-option>
-      </el-select>
+      <nz-datepicker [(ngModel)]="endMonth" [nzMode]="'month'" [nzSize]="'large'" [nzPlaceHolder]="'请选择结束月份'" [nzFormat]="'YYYY-MM'"></nz-datepicker>
     </div>
+    <!--<div el-col span="3">-->
+      <!--<el-select title="年" placeholder="请选择年份" [(model)]="year" [clearable]="true" size="small">-->
+        <!--<el-option *ngFor="let item of years" [label]="item.label" [value]="item.value" ></el-option>-->
+      <!--</el-select>-->
+    <!--</div>-->
+    <!--<div el-col span="3">-->
+      <!--<el-select title="月" placeholder="请选择月份" [(model)]="month" [clearable]="true" size="small">-->
+        <!--<el-option *ngFor="let item of months" [label]="item.label" [value]="item.value" ></el-option>-->
+      <!--</el-select>-->
+    <!--</div>-->
     <div el-col span="3">
       <el-select title="公司" placeholder="请选择公司" [(model)]="company" [clearable]="true" (modelChange)="changeCompany()" size="small">
         <el-option *ngFor="let item of companys" [label]="item.label" [value]="item.value" ></el-option>
