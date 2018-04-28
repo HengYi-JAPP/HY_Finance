@@ -52,7 +52,7 @@
         </thead>
       </ng-template>
       <tbody nz-tbody>
-      <tr nz-tbody-tr *ngFor="let data of tableData" style="line-height: 5px;background-color: #4bbee6">
+      <tr nz-tbody-tr *ngFor="let data of tableData" style="line-height: 5px;background-color: #87e8de;font-weight: 1000">
         <!--<td nz-td nzCheckbox>-->
           <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->
           <!--</label>-->
@@ -60,7 +60,7 @@
         <td></td>
         <td nz-td style="text-align: center;line-height: 10px;padding: 5px;line-height: 10px" *ngFor="let key of getkeys(data)">{{data[key]}}</td>
       </tr>
-      <tr nz-tbody-tr>
+      <tr nz-tbody-tr style="background-color: #b7eb8f">
         <td nz-td style="text-align: center;line-height: 10px;padding: 5px"><el-button type="primary" size="mini">均值</el-button></td>
         <td *ngFor="let sum of sums" style="text-align: center;line-height: 10px;padding: 5px">{{sum}}</td>
       </tr>

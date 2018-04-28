@@ -1,4 +1,7 @@
 @import "../../../app.component.css";
 .Header-color{
-  background-color: white;
+  background-color: #1890ff;
+  color:white;
+;
 }
+nz-table,nz-table tr th,nz-table tr td { border:1px solid #85a5ff; font-weight: bold}
