@@ -31,6 +31,11 @@
           </nz-radio-group>
         </div>
       </div>
+      <div nz-row nz-form-item>
+        <div nz-form-control>
+          <button nz-button (click)="exportExcel()">导出数据</button>
+        </div>
+      </div>
     </form>
     <nz-table #groupingTable
               [nzAjaxData]="tableData"

@@ -1,0 +1,41 @@
+<!--这是查看新增规格的页面-->
+<div class="box" style="overflow-x: hidden;height: auto">
+  <app-select (FindList)="findList($event)" [startMonth]="_startMonth" [endMonth]="_endMonth"
+              [company]="_company" [product]="_product"></app-select>
+  <div style="margin-top: 10px ">
+    <nz-table
+      #groupingTable
+      [nzAjaxData]="tableData"
+      nzShowSizeChanger
+      [nzLoading]="_loading"
+      [nzTotal]="_total"
+      [(nzPageSize)]="_pageSize"
+      [(nzPageIndex)]="_current"
+      [nzPageSize]="10"
+      (nzDataChange)="_displayDataChange($event)"
+      (nzPageIndexChange)="_refreshStatus()"
+      (nzPageSizeChange)="_refreshStatus()"
+      nzBordered
+      [nzScroll]="{ x: 500, y: 400 }">
+      <ng-template #nzFixedHeader>
+        <thead nz-thead>
+          <tr  style="line-height: 5px">
+            <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px"><span>年</span></th>
+            <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px"><span>月</span></th>
+            <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px"><span>公司</span></th>
+            <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px"><span>产品</span></th>
+            <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px"><span>车间</span></th>
+            <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px"><span>生产线</span></th>
+            <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px"><span>规格</span></th>
+            <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px"><span>纱种</span></th>
+          </tr>
+        </thead>
+      </ng-template>
+      <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of tableData"  style="line-height: 5px" style="background-color:#87e8de">
+        <td nz-td style="text-align: center;line-height: 10px;padding: 5px" *ngFor="let key of getkeys(data)">{{data[key]}}</td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

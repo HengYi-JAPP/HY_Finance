@@ -1,5 +1,6 @@
 package com.hengyi.service;
 
+import com.hengyi.domain.DetailAddDomain;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.vo.AllCompanyResultVo;
@@ -7,7 +8,9 @@ import com.hengyi.vo.ConditionVo;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -62,11 +65,21 @@ public interface FinanceBudgetService {
     // 获取公司维度的数据
     List<AllCompanyResultVo> getAllCompanyData(ConditionVo conditionVo);
 
+    //获取新增规格的总记录数
+    Long getNewlyIncreasedCount(ConditionVo conditionVo);
+    //获取新增规格的
+    List<DetailAddDomain> getNewlyIncreased(ConditionVo conditionVo);
+
     // 获取公司维度均值记录数
     Long getAllCompanyDataCount(ConditionVo conditionVo);
-
     //导入预算数据
     void importBudgetData(File file) throws IOException, InvalidFormatException;
-    //导出实际数据
-     void exportExcel();
+    //根据条件导出详情表数据
+     void exportExcel(ConditionVo conditionVo) throws FileNotFoundException;
+     //根据条件导出成本项大类的数据
+     String exportOverviewExcel(ConditionVo conditionVo) throws IOException;
+     //根据条件导出公司维度的数据
+     String exportAllCompanyExcel(ConditionVo conditionVo) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException;
+     //根据条件导出当个规格的数据
+     String exportResultExcel(ConditionVo conditionVo) throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException;
 }

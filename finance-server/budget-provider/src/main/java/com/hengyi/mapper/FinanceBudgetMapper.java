@@ -3,6 +3,7 @@ package com.hengyi.mapper;
 import com.hengyi.bean.BudgetdetailBean;
 import com.hengyi.bean.MaterialcostdetailsBean;
 import com.hengyi.bean.ProductMatchBean;
+import com.hengyi.domain.DetailAddDomain;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.vo.AllCompanyResultVo;
@@ -11,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,11 +92,26 @@ public interface FinanceBudgetMapper {
     List<AllCompanyResultVo> getAllCompanyData(ConditionVo conditionVo);
 
     /***
-     * 获取所有公司粗略的记录数
+     * 获取所有公司维度的记录数
      * @param conditionVo
      * @return
      */
     Long getAllCompanyDataCount(ConditionVo conditionVo);
+
+    /***
+     * 获取新增规格的总记录数
+     * @param conditionVo
+     * @return
+     */
+    Long getNewlyIncreasedCount(ConditionVo conditionVo);
+
+    /***
+     * 获取新增规格的列表
+     * @param conditionVo
+     * @return
+     */
+    List<DetailAddDomain> getNewlyIncreasd(ConditionVo conditionVo);
+
 
     ArrayList<String> selectfieldbymaterialname(String materialName);
 
@@ -121,4 +138,18 @@ public interface FinanceBudgetMapper {
      * @return
      */
     public  ArrayList<String> selectbudgetdatabybean(BudgetdetailBean budgetdetailBean);
+
+    /***
+     * 获取预算详情数据
+     * @param conditionVo
+     * @return
+     */
+    ArrayList<LinkedHashMap<String, Object>> getBudgetDetail(ConditionVo conditionVo);
+
+    /***
+     * 根据id获取详情价格、单耗、单价、单位成本
+     * @param i
+     * @return
+     */
+    MaterialcostdetailsBean selectBudgetDetailById(Integer i);
 }

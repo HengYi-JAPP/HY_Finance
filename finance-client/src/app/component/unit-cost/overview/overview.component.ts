@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SelectComponent} from '../../shared-component/select/select.component';
 import {BudgetService} from '../../../api/budget.service';
+import * as global from '../../../../app/global';
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
@@ -11,7 +12,6 @@ export class UnitOverviewComponent {
   tableData: any[] = [];
   stageType = 'stage'; // 是否分阶段标志，默认是分阶段的
   dimension = 'dimension'; // 是否是考核维度的，默认是考核维度的
-  sums: any[] = [];
   _loading = true;
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
@@ -28,8 +28,11 @@ export class UnitOverviewComponent {
   _allChecked = false;
   _indeterminate = false;
   _displayData = [];
+  downloadUrl = '';
   // 构造函数中放入测试数据
   constructor(private budgetService: BudgetService) {
+    // 声明成本大类级别的Excel
+    this.downloadUrl = global.baseUrl + '/FinanceBudgetController/exportOverviewData';
     this.findList({
       // year: this.getYear(),
       // month: this.getMonth(),
@@ -140,9 +143,32 @@ export class UnitOverviewComponent {
       }
     );
   }
+  // 导出成本项大类的Excel数据
+  exportExcel() {
+    const params = {
+      startMonth: this._startMonth,
+      endMonth: this._endMonth,
+      company: this._company,
+      product: this._product,
+      workshop: this._workshop,
+      productLine: this._productLine,
+      spec: this._productLine,
+      stageType: this.stageType,
+      dimension: this.dimension
+    };
+    const array = Object.keys(params);
+    let param = '?id=null';
+    array.forEach((item, i) => {
+      if (params[array[i]]) {
+        param = param + '&' + array[i] + '=' + params[array[i]];
+      }
+    })
+    const a = window.open(this.downloadUrl + param);
+    a.document.execCommand('SaveAs');
+  }
   getTrStyle(data) {
     return {
-      'background-color': data['type'] === '实际' ? '#7edef1' : data['type1'] === '预算' ? '#4bbee6' : '#329297'
+      'background-color': data['type'] === '实际' ? 'white' : data['type1'] === '预算' ? 'white' : '#87e8de'
     };
   }
   // 获取当前年份

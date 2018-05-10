@@ -2,16 +2,19 @@ package com.hengyi.vo;
 
 import com.hengyi.util.QueryDtoBase;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+
 /**
  * @author liuyuan
  * @create 2018-03-22 14:39
  * @description 传入的参数查询条件实体类
  **/
 public class ConditionVo extends QueryDtoBase{
-    //年
-    Integer year;
-    //月
-    Integer month;
+    // 开始月份(含月份)
+    String startMonth;
+    //结束月份
+    String endMonth;
     //公司
     String company;
     //产品
@@ -28,21 +31,40 @@ public class ConditionVo extends QueryDtoBase{
     String type;
     // 是否分阶段标志
     String stageType;
+    // 是否考核维度的标识
+    String dimension;
 
-    public Integer getYear() {
-        return year;
+//    public Integer getYear() {
+//        return year;
+//    }
+//
+//    public void setYear(Integer year) {
+//        this.year = year;
+//    }
+//
+//    public Integer getMonth() {
+//        return month;
+//    }
+//
+//    public void setMonth(Integer month) {
+//        this.month = month;
+//    }
+
+
+    public String getStartMonth() {
+        return startMonth;
     }
 
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setStartMonth(String startMonth) {
+        this.startMonth = startMonth;
     }
 
-    public Integer getMonth() {
-        return month;
+    public String getEndMonth() {
+        return endMonth;
     }
 
-    public void setMonth(Integer month) {
-        this.month = month;
+    public void setEndMonth(String endMonth) {
+        this.endMonth = endMonth;
     }
 
     public String getCompany() {
@@ -108,4 +130,34 @@ public class ConditionVo extends QueryDtoBase{
     public void setStageType(String stageType) {
         this.stageType = stageType;
     }
+
+    public String getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
+    public ConditionVo(HttpServletRequest request) {
+        try {
+            //设置编码类型，解决中文乱码问题
+            request.setCharacterEncoding("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        this.startMonth = request.getParameter("startMonth");
+        this.endMonth = request.getParameter("endMonth");
+        this.company = request.getParameter("company");
+        this.product = request.getParameter("product");
+        this.workshop = request.getParameter("workshop");
+        this.productLine = request.getParameter("productLine");
+        this.spec = request.getParameter("spec");
+        this.priceOrconsumer = request.getParameter("priceOrconsumer");
+        this.type = request.getParameter("type");
+        this.stageType = request.getParameter("stageType");
+        this.dimension = request.getParameter("dimension");
+    }
+
+    public ConditionVo() {}
 }

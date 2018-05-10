@@ -26,7 +26,7 @@ public class ResultDomain
     // 规格
     String spec;
     // 纱种
-//    String yarnKind;
+    String yarnKind;
     //预算产量
     BigDecimal budgetTotalProduct;
     // 实际产量
@@ -112,13 +112,13 @@ public class ResultDomain
         this.spec = spec;
     }
 
-//    public String getYarnKind() {
-//        return yarnKind;
-//    }
-//
-//    public void setYarnKind(String yarnKind) {
-//        this.yarnKind = yarnKind;
-//    }
+    public String getYarnKind() {
+        return yarnKind;
+    }
+
+    public void setYarnKind(String yarnKind) {
+        this.yarnKind = yarnKind;
+    }
 
     public BigDecimal getBudgetTotalProduct() {
         return budgetTotalProduct;

@@ -21,4 +21,6 @@ public interface ExcelTask {
      * 导出预算EXCEL
      */
     public void exportexcel() throws Exception;
+
+    public void importexcel2() throws Exception;
 }

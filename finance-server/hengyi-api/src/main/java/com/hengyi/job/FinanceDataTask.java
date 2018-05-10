@@ -22,4 +22,9 @@ public interface FinanceDataTask {
      * 生产线-规格-差异化维度     单位成本计算定时任务
      */
     public void unitpricecomparetask();
+
+    /****
+     * 详情数据定时任务（用于获取新增规格）
+     */
+    public void productlinedatatask2();
 }

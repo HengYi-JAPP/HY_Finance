@@ -20,10 +20,15 @@ import {Select2Component} from './component/shared-component/select2/select2.com
 import {TableComponent} from './component/shared-component/table/table.component';
 
 import {BudgetService} from './api/budget.service';
-import {OverviewService} from './api/overview.service';
-import {ResultService} from './api/result.service';
+import {ExcelServiceService} from './api/excelService.service';
+// import {OverviewService} from './api/overview.service';
+// import {ResultService} from './api/result.service';
 import { AllCompanyComponent } from './component/unit-cost/result/all-company/all-company.component';
 import {GetResponseService} from './api/getResponse.service';
+import { NewlyIncreasedComponent } from './component/unit-cost/newly-increased/newly-increased.component';
+import { ProductlineManageComponent } from './component/dictionary/productline-manage/productline-manage.component';
+import { MaterialComponent } from './component/unit-cost/overview/material/material.component';
+import { BudgetManageComponent } from './component/unit-cost/budget/budget-manage/budget-manage.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,7 +42,11 @@ import {GetResponseService} from './api/getResponse.service';
     SelectComponent,
     Select2Component,
     TableComponent,
-    AllCompanyComponent
+    AllCompanyComponent,
+    NewlyIncreasedComponent,
+    ProductlineManageComponent,
+    MaterialComponent,
+    BudgetManageComponent
   ],
   imports: [
     BrowserModule, // 在浏览器上运行所需的模块
@@ -51,8 +60,9 @@ import {GetResponseService} from './api/getResponse.service';
   ],
   providers: [
     BudgetService,
-    OverviewService,
-    ResultService,
+    ExcelServiceService,
+    // OverviewService,
+    // ResultService,
     GetResponseService
   ],
   bootstrap: [AppComponent]

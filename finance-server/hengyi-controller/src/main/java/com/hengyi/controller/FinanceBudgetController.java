@@ -1,16 +1,13 @@
 package com.hengyi.controller;
 
+import com.hengyi.domain.DetailAddDomain;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.service.FinanceBudgetService;
 import com.hengyi.util.*;
 import com.hengyi.vo.AllCompanyResultVo;
 import com.hengyi.vo.ConditionVo;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,7 +64,24 @@ public class FinanceBudgetController {
         }
         return  ServerResponse.createByError(Const.FAIL_MSG);
     }
-
+    /***
+     * 获取详细数据的均值
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/getSumDetail",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<List<Map<String,Object>>> getSumDetail(HttpServletRequest request,HttpServletResponse response){
+        try {
+            ConditionVo conditionVo=InputSteamToJSON.getParams(request.getInputStream(),ConditionVo.class);
+            List<Map<String,Object>> list=financeBudgetService.getSumDetail(conditionVo);
+            return ServerResponse.createBySuccess(Const.SUCCESS_MSG,list);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ServerResponse.createByError(Const.FAIL_MSG);
+    }
     /***
      * 获取成本项大类（分阶段）
      * @param request
@@ -79,6 +93,11 @@ public class FinanceBudgetController {
     public ServerResponse<List<Map<String,Object>>> getCostItem(HttpServletRequest request,HttpServletResponse response){
         try {
             ConditionVo conditionVo=InputSteamToJSON.getParams(request.getInputStream(),ConditionVo.class);
+            if ("dimension".equals(conditionVo.getDimension())) {
+                conditionVo.setPriceOrconsumer("checkUnitPrice");
+            }else if ("noneDimension".equals(conditionVo.getDimension())){
+                conditionVo.setPriceOrconsumer("cost");
+            }
             Long total=financeBudgetService.getTotalCount(conditionVo);
             Page page=new Page(conditionVo.getPageIndex(),conditionVo.getPageCount(),total);
             conditionVo.setOffset(page.getOffset());
@@ -178,6 +197,28 @@ public class FinanceBudgetController {
     }
 
     /***
+     * 查询新增的规格
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/getNewlyIncreased",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<List> getNewlyIncreased(HttpServletRequest request,HttpServletResponse response){
+        try {
+            ConditionVo conditionVo=InputSteamToJSON.getParams(request.getInputStream(),ConditionVo.class);
+            long total=financeBudgetService.getNewlyIncreasedCount(conditionVo);
+            Page page=new Page(conditionVo.getPageIndex(),conditionVo.getPageCount(),total);
+            conditionVo.setOffset(page.getOffset());
+            conditionVo.setLimit(page.getPageSize());
+            List<DetailAddDomain> list=financeBudgetService.getNewlyIncreased(conditionVo);
+            return  ServerResponse.createBySuccess(Const.SUCCESS_MSG,list,page);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ServerResponse.createByError(Const.FAIL_MSG);
+    }
+    /***
      * 上传预算数据到服务器，以便导入
      * @param request
      * @param response
@@ -249,50 +290,93 @@ public class FinanceBudgetController {
     }
 
     /***
-     * 导出Excel的方法
+     * 导出预算详情数据的方法
      * @param request
      * @param response
      * @return
      */
-    @RequestMapping(value = "/exportExcel")
+    @RequestMapping(value = "/exportBudgetData")
     @ResponseBody
     public String exportExcel(HttpServletRequest request,HttpServletResponse response) throws IOException {
         try {
-            //定义文件名称
-            File file = new File("C:\\Users\\Administrator\\Desktop\\finance\\importExcel\\线上展示表_20180329修改.xlsx");
-//            if (!file.exists()){
-//                file.createNewFile();
-//            }
-            if (!file.exists()) {
-                response.sendError(404, "File not found!");
-                return null;
-            }
-//            FileInputStream in = new FileInputStream(file);
-            //创建工作簿工厂
-//            Workbook book =new XSSFWorkbook();
-//            request.setCharacterEncoding("utf-8");
-//            response.setContentType("application/vnd.ms-excel");
-//            response.addHeader("Content-Disposition", "attachment;filename=" + new String((fileName + ".xlsx").getBytes(), "utf-8"));
-//            OutputStream os = response.getOutputStream();
-//            os.write();
-//            book.write(os);
-//            in.close();
-            BufferedInputStream br = new BufferedInputStream(new FileInputStream(file));
-            byte[] buf = new byte[1024];
-            int len = 0;
-            response.reset();
-                response.setContentType("application/x-msdownload");
-            response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
-            OutputStream os = response.getOutputStream();
-            while ((len = br.read(buf)) > 0) {
-                os.write(buf, 0, len);
-            }
-            br.close();
-            os.close();
-//            financeBudgetService.exportExcel();
-            return null;
+            //解决中文乱码问题
+            ConditionVo conditionVo=new ConditionVo(request);
+            //先导出文件到服务器上以便接下去下载
+            financeBudgetService.exportExcel(conditionVo);
+            //定义文件路径
+            String filePath="C:\\Users\\Administrator\\Desktop\\finance\\exportExcel\\导出.xlsx";
+            //通过返回的文件路径去下载给前端
+            ExcelUtil.download(filePath,response);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("loggerBack");
+        }
+        return null;
+    }
+
+    /***
+     * 导出成本项大类的方法
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/exportOverviewData")
+    @ResponseBody
+    public String exportOverviewExcel(HttpServletRequest request,HttpServletResponse response) {
+        try {
+            ConditionVo conditionVo=new ConditionVo(request);
+            if ("dimension".equals(conditionVo.getDimension())) {
+                conditionVo.setPriceOrconsumer("checkUnitPrice");
+            }else if ("noneDimension".equals(conditionVo.getDimension())){
+                conditionVo.setPriceOrconsumer("cost");
+            }
+            //先根据条件导出一份成本大类的Excel，并得到一个文件路径
+            String filePath=financeBudgetService.exportOverviewExcel(conditionVo);
+            //通过返回的文件路径去给前端下载
+            ExcelUtil.download(filePath,response);
+        }catch (Exception e){
+            LoggerUtil.error("出错了，访问失败");
+        }
+        return null;
+    }
+
+    /***
+     * 导出公司维度的结果的方法
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/exportAllCompanyExcel")
+    @ResponseBody
+    public String exportAllCompanyExcel(HttpServletRequest request,HttpServletResponse response){
+        try {
+            ConditionVo conditionVo=new ConditionVo(request);
+            //先根据条件导出一份成本大类的Excel，并得到一个文件路径
+            String filePath=financeBudgetService.exportAllCompanyExcel(conditionVo);
+            //通过返回的文件路径去给前端下载
+            ExcelUtil.download(filePath,response);
+        }catch (Exception e){
+            LoggerUtil.error("出错了，访问失败");
+        }
+        return null;
+    }
+
+    /***
+     * 导出规格维度的结果Excel
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/exportResultExcel")
+    @ResponseBody
+    public String exportResultExcel(HttpServletRequest request,HttpServletResponse response){
+        try {
+            ConditionVo conditionVo=new ConditionVo(request);
+            //先根据条件导出一份导出结果数据
+            String filePath=financeBudgetService.exportResultExcel(conditionVo);
+            //通过返回的文件路径去给前端下载
+            ExcelUtil.download(filePath,response);
+        }catch (Exception e){
+            LoggerUtil.error("出错了，访问失败");
         }
         return null;
     }

@@ -1,5 +1,14 @@
 <div class="box" style="overflow-x: hidden;height: auto">
   <app-select2 (FindList)="findList($event)" [startMonth]="_startMonth" [endMonth]="_endMonth" [company]="_company" [product]="_product"></app-select2>
+  <form nz-form [nzLayout]="'inline'">
+    <form nz-form [nzLayout]="'inline'">
+      <div nz-row nz-form-item>
+        <div nz-form-control>
+          <button nz-button (click)="exportExcel()">导出数据</button>
+        </div>
+      </div>
+    </form>
+  </form>
   <div style="margin-top: 10px;background-color: white">
     <nz-table #groupingTable
               [nzAjaxData]="tableData"

@@ -4,7 +4,6 @@ import {Router, ActivatedRoute, NavigationEnd} from '@angular/router';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
-import index from "@angular/cli/lib/cli";
 
 @Component({
   selector: 'app-root',
@@ -48,16 +47,16 @@ export class AppComponent implements OnInit {
       );
   }
   // 关闭标签
-  closeTag (index: number) {
+  closeTag (i: number) {
     if (this.tags.length === 1) {
       this.message['info']('最后一个标签无法删除！ ' );
     } else {
-      if (this.tags[index]['path'] === this.path) {
-        this.tags.splice(index, 1);
-        if (index >= this.tags.length) {
-          this.router.navigate([this.tags[index - 1]['path']]);
+      if (this.tags[i]['path'] === this.path) {
+        this.tags.splice(i, 1);
+        if (i >= this.tags.length) {
+          this.router.navigate([this.tags[i - 1]['path']]);
         } else {
-          this.router.navigate([this.tags[index]['path']]);
+          this.router.navigate([this.tags[i]['path']]);
         }
       } else {
         this.router.navigate([this.path]);
@@ -74,8 +73,8 @@ export class AppComponent implements OnInit {
     this.isCollapse = true;
     this.cols = 20;
   }
-  handle(index: string): void {
-    console.log(index)
+  handle(i: string): void {
+    console.log(i);
   }
 
 }

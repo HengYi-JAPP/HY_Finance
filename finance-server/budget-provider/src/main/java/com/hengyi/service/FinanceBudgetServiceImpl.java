@@ -3,6 +3,7 @@ package com.hengyi.service;
 import com.hengyi.bean.BudgetdetailBean;
 import com.hengyi.bean.MaterialcostdetailsBean;
 import com.hengyi.bean.ProductMatchBean;
+import com.hengyi.domain.DetailAddDomain;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.mapper.FinanceBudgetMapper;
@@ -14,13 +15,15 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -57,7 +60,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
     @Override
     public List<Map<String, Object>> getCostItem(ConditionVo conditionVo){
         //设置条件为单位成本
-        conditionVo.setPriceOrconsumer("cost");
+//        conditionVo.setPriceOrconsumer("cost");
         //获取明细项
         List<Map<String,Object>> detailList=this.getDetailData(conditionVo);
         //用于存储结果
@@ -205,7 +208,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
     @Override
     public List<Map<String, Object>> getSumCostItem(ConditionVo conditionVo) {
         //设置条件为单位成本
-        conditionVo.setPriceOrconsumer("cost");
+//        conditionVo.setPriceOrconsumer("cost");
         //获取明细项
         List<Map<String,Object>> detailList=this.getDetailData(conditionVo);
         //用于存储结果
@@ -317,13 +320,17 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         //将详情记录id转化为相应值并按实际，预算，差异的顺序查找出来
         List<Map<String,Object>> mapList=getList(list,conditionVo);
         double sumFactProduct=0;
-        String [] array=new String[]{"id","type","company","month","year","product","workshop","line","spec","yarnKind","AArate","FSrate","day_product","budget_total_product"};
+        String [] array=new String[]{"company","month","year","product","workshop","line","spec","yarnKind","AArate","FSrate","day_product"};
+        String [] array2=new String[]{conditionVo.getCompany(),conditionVo.getStartMonth().toString(),conditionVo.getEndMonth().toString(),conditionVo.getProduct(),conditionVo.getWorkshop(),conditionVo.getProductLine(),conditionVo.getSpec(),null,null,null,null};
+        fact.put("type","实际");
+        budget.put("type","预算");
+        difference.put("type","差异");
         for (int i = 0; i < array.length; i++) {
-            fact.put(array[i],mapList.get(0).get(array[i]));
-            budget.put(array[i],mapList.get(0).get(array[i]));
-            difference.put(array[i],mapList.get(0).get(array[i]));
+            fact.put(array[i],array2[i]);
+            budget.put(array[i],array2[i]);
+            difference.put(array[i],array2[i]);
         }
-        //对实际进行求和
+        //遍历所有字段
         for (String key:mapList.get(0).keySet()) {
 //            BigDecimal sumFact= new BigDecimal(0);
 //            BigDecimal sumBudget=new BigDecimal(0);
@@ -346,43 +353,32 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                         if (i%3 == 0){
                             sumFact+=Double.parseDouble(mapList.get(i).get(key).toString())*Double.parseDouble((mapList.get(i).get("budget_total_product").toString()));
 //                            sumFact=sumFact.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i).get("budget_total_product").toString())));
+                            // 累计实际总产量
                             sumFactProduct=sumFactProduct+Double.parseDouble(mapList.get(i).get("budget_total_product").toString());
-                        }else{//对预算进行求和
+                        }else{
+                            //对预算进行求和
                             sumBudget=sumBudget+Double.parseDouble(mapList.get(i).get(key+"1").toString())*Double.parseDouble(mapList.get(i-1).get("budget_total_product").toString());
                         }
                     }
                 }
+                fact.put(key,sumFactProduct);
+                budget.put(key,sumFactProduct);
+                budget.put(key,sumFactProduct);
                 if (sumFactProduct==0){
                     fact.put(key,0);
                     budget.put(key,0);
+                    difference.put(key,0);
                 }else {
-                   fact.put(key,sumFact/sumFactProduct);
-                   budget.put(key,sumBudget/sumFactProduct);
+                    fact.put(key,new BigDecimal(sumFact/sumFactProduct).setScale(5,BigDecimal.ROUND_HALF_UP));
+                    budget.put(key,new BigDecimal(sumBudget/sumFactProduct).setScale(5,BigDecimal.ROUND_HALF_UP));
+                    difference.put(key,new BigDecimal(sumFact/sumFactProduct-sumBudget/sumFactProduct).setScale(5,BigDecimal.ROUND_HALF_UP));
                 }
             }
         }
         resultList.add(fact);
         resultList.add(budget);
+        resultList.add(difference);
         return resultList;
-//        // 获取所有实际的数据
-//        conditionVo.setType("实际");
-//        mapList = getOneTypeList(list, conditionVo);
-//        //累计所有实际记录的总产量(由于无论预算还是实际计算均值都是用实际的总产量)
-//        BigDecimal sumFactProduct=new BigDecimal(0);
-//        for (Map map:mapList) {
-//            if ((StringUtil.isEmpty(map.get("budget_total_product")))) {
-//                sumFactProduct = sumFactProduct.add(new BigDecimal(map.get("budget_total_product").toString()));
-//            } else {
-//                continue;
-//            }
-//        }
-//        resultList.add(getSum(mapList,sumFactProduct,fact));
-//
-//        //获取所有预算的数据
-//        conditionVo.setType("预算");
-//        mapList = getOneTypeList(list, conditionVo);
-//        resultList.add(getSum(mapList,sumFactProduct,budget));
-//        return mapList;
     }
 
 //    /***
@@ -501,11 +497,32 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
     public List<AllCompanyResultVo> getAllCompanyData(ConditionVo conditionVo) {
         List<AllCompanyResultVo> list = financeBudgetMapper.getAllCompanyData(conditionVo);
         for (AllCompanyResultVo vo : list) {
-            vo.setPriceEffect(vo.getProductUnitPrice().subtract(vo.getCheckBudgetUnitPrice()));
+            vo.setPriceEffect(vo.getProductUnitPrice().subtract(vo.getCheckProductUnitPrice()));
             vo.setConsumerEffect(vo.getCheckProductUnitPrice().subtract(vo.getCheckBudgetUnitPrice()));
             vo.setStructureEffect(vo.getCheckBudgetUnitPrice().subtract(vo.getBudgetUnitPrice()));
             vo.setTotalDifference(vo.getProductUnitPrice().subtract(vo.getBudgetUnitPrice()));
         }
+        return list;
+    }
+
+    /***
+     * 获取新增规格的总记录数
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public Long getNewlyIncreasedCount(ConditionVo conditionVo) {
+        return financeBudgetMapper.getNewlyIncreasedCount(conditionVo);
+    }
+
+    /***
+     * 获取新增规格的列表
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public List<DetailAddDomain> getNewlyIncreased(ConditionVo conditionVo) {
+        List<DetailAddDomain> list=financeBudgetMapper.getNewlyIncreasd(conditionVo);
         return list;
     }
 
@@ -781,11 +798,286 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
     private BigDecimal changeIntoBigdecimal(double value){
         return new BigDecimal(value).setScale(6,BigDecimal.ROUND_HALF_UP);
     }
+
     /***
-     * 导出Excel
+     * 根据条件导出详情Excel数据
+     * @param conditionVo
+     * @throws FileNotFoundException
      */
     @Override
-    public void exportExcel() {
+    public void exportExcel(ConditionVo conditionVo) throws FileNotFoundException {
+        ArrayList<LinkedHashMap<String, Object>> budgetresult=financeBudgetMapper.getBudgetDetail(conditionVo);
+        String filepath = "C:\\Users\\Administrator\\Desktop\\finance\\exportExcel\\导出.xlsx";
+        FileOutputStream out=new FileOutputStream(new File(filepath));
+        SXSSFWorkbook book=new SXSSFWorkbook(1000);
+        System.out.println("开始导出");
+        try {
+            //添加表头
+            int num2 = 0;
+            //表头的列标
+            int i=0;
+            Row row0=book.createSheet().createRow(num2);
+            for (String key:budgetresult.get(0).keySet()) {
+                if ("id".equals(key)) {
+                } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                        || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
+                    Cell cell=row0.createCell(i++);
+                    cell.setCellValue(key);
+                }else {
+                    Cell cell0=row0.createCell(i++);
+                    cell0.setCellValue(key);
+                    Cell cell1=row0.createCell(i++);
+                    cell1.setCellValue("单位成本");
+                    Cell cell2=row0.createCell(i++);
+                    cell2.setCellValue("单价");
+                    Cell cell3=row0.createCell(i++);
+                    cell3.setCellValue("单耗");
+                }
 
+            }
+            //开始添加数据
+            int num3=1;
+            for (LinkedHashMap<String,Object> map : budgetresult) {
+                Row row=book.getSheetAt(0).createRow(num3++);
+                //数据行的列标
+                int j =0;
+                for (String key : map.keySet()) {
+                    if ("id".equals(key)) {
+                    } else if ("type".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                            "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                            || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) || "FSrate".equals(key) || "day_product".equals(key) || "budget_total_product".equals(key)) {
+                        Cell cell=row.createCell(j++);
+                        if (!StringUtil.isEmpty(map.get(key))){
+                            cell.setCellValue(map.get(key).toString());
+                        }else {
+                            cell.setCellValue("");
+                        }
+                    } else {
+                        if (!StringUtil.isEmpty(map.get(key))){
+                            MaterialcostdetailsBean materialcostdetailsBean = financeBudgetMapper.selectBudgetDetailById(Integer.parseInt(map.get(key).toString()));
+                            Cell cell0 = row.createCell(j++);
+                            cell0.setCellValue(materialcostdetailsBean.getMaterialName());
+                            Cell cell1=row.createCell(j++);
+                            cell1.setCellValue(materialcostdetailsBean.getUnitPrice().toString());
+                            Cell cell2=row.createCell(j++);
+                            cell2.setCellValue(materialcostdetailsBean.getPrice().toString());
+                            Cell cell3=row.createCell(j++);
+                            cell3.setCellValue(materialcostdetailsBean.getConsumption().toString());
+                        }else {
+                            Cell cell0 = row.createCell(j++);
+                            cell0.setCellValue("0");
+                            Cell cell1 = row.createCell(j++);
+                            cell1.setCellValue("0");
+                            Cell cell2 = row.createCell(j++);
+                            cell2.setCellValue("0");
+                            Cell cell3 = row.createCell(j++);
+                            cell3.setCellValue("0");
+                        }
+                    }
+                }
+            }
+            book.write(out);
+            Date day=new Date();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println("结束时间："+df.format(day));
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /***
+     * 根据查询条件导出成本项大类Excel，并返回存放路径
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public String exportOverviewExcel(ConditionVo conditionVo) throws IOException {
+        //初始化路径
+        String filePath= "";
+        //初始化
+        List<Map<String,Object>> list =null;
+        //初始化阶段
+        String stage="";
+        //初始化
+        String demension="";
+        if ("stage".equals(conditionVo.getStageType())){
+            list=getCostItem(conditionVo);
+            stage="分阶段";
+        }else if("noneStage".equals(conditionVo.getStageType())){
+            list=getSumCostItem(conditionVo);
+            stage="不分阶段";
+        }
+
+        if ("dimension".equals(conditionVo.getDimension())){
+            demension="考核维度";
+        }else if ("noneDimension".equals(conditionVo.getDimension())){
+            demension="非考核维度";
+        }
+        filePath = "C:\\Users\\Administrator\\Desktop\\finance\\exportExcel\\"+stage+demension+"导出成本项大类.xlsx";
+        File file=new File(filePath);
+        if (!file.exists()){
+            file.createNewFile();
+        }
+        FileOutputStream out=new FileOutputStream(new File(filePath));
+        SXSSFWorkbook book=new SXSSFWorkbook(1000);
+        System.out.println("开始导出");
+        try {
+            //添加表头
+            int num2 = 0;
+            //表头的列标
+            int i=0;
+            Row row0=book.createSheet().createRow(num2);
+            for (String key:list.get(0).keySet()) {
+                if ("id".equals(key)) {
+                } else if ("type".equals(key)||"type1".equals(key)||"company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                        || "spec".equals(key) || "yarnKind".equals(key) ||"company1".equals(key) ||
+                        "month1".equals(key) || "year1".equals(key) ||
+                        "product1".equals(key) || "workshop1".equals(key) || "line1".equals(key)
+                        || "spec1".equals(key) || "yarnKind1".equals(key)||"budget_total_product".equals(key)||"budget_total_product1".equals(key)) {
+                    Cell cell=row0.createCell(i++);
+                    cell.setCellValue(key);
+                }else {
+                    Cell cell0=row0.createCell(i++);
+                    cell0.setCellValue(key);
+                }
+
+            }
+            //开始添加数据
+            int num3=1;
+            for (Map<String,Object> map : list) {
+                Row row=book.getSheetAt(0).createRow(num3++);
+                //数据行的列标
+                int j =0;
+                for (String key : map.keySet()) {
+                    if ("id".equals(key)) {
+                    } else if ("type".equals(key)||"type1".equals(key)||"company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                            "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                            || "spec".equals(key) || "yarnKind".equals(key) ||"company1".equals(key) ||
+                            "month1".equals(key) || "year1".equals(key) ||
+                            "product1".equals(key) || "workshop1".equals(key) || "line1".equals(key)
+                            || "spec1".equals(key) || "yarnKind1".equals(key)||"budget_total_product".equals(key)||"budget_total_product1".equals(key)) {
+                        Cell cell=row.createCell(j++);
+                        if (!StringUtil.isEmpty(map.get(key))){
+                            cell.setCellValue(map.get(key).toString());
+                        }else {
+                            cell.setCellValue("");
+                        }
+                    } else {
+                        if (!StringUtil.isEmpty(map.get(key))){
+                            Cell cell=row.createCell(j++);
+                            cell.setCellValue(map.get(key).toString());
+                        }else {
+                            Cell cell = row.createCell(j++);
+                            cell.setCellValue("0");
+                        }
+                    }
+                }
+            }
+            book.write(out);
+            Date day=new Date();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println("结束时间："+df.format(day));
+            out.close();
+            return filePath;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return filePath;
+    }
+
+    /***
+     * 根据条件导出公司维度的数据
+     * @param conditionVo
+     * @return
+     */
+    @Override
+    public String exportAllCompanyExcel(ConditionVo conditionVo) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        //初始化一个文件路径对象
+        String filePath="";
+        List<AllCompanyResultVo> list=getAllCompanyData(conditionVo);
+        filePath = "C:\\Users\\Administrator\\Desktop\\finance\\exportExcel\\"+"导出公司维度预算对比结果.xlsx";
+        File file=new File(filePath);
+        if (!file.exists()){
+            file.createNewFile();
+        }
+        FileOutputStream out=new FileOutputStream(new File(filePath));
+        SXSSFWorkbook book=new SXSSFWorkbook(1000);
+        //添加表头
+        int num2 = 0;
+        //表头的列标
+        int i=0;
+        Row row0=book.createSheet().createRow(num2);
+        //获取公司维度结果对象的所有属性值
+        Field[] fields= AllCompanyResultVo.class.getDeclaredFields();
+        //遍历公司维度结果对象的所有属性值,并把它放到单元格中
+        for ( i=0;i<fields.length;i++){
+            Cell cell=row0.createCell(i);
+            cell.setCellValue(fields[i].getName());
+        }
+        //遍历公司维度的结果,开始添加结果数据
+        int num3=0;
+        for (AllCompanyResultVo allCompanyResultVo:list) {
+            Row row=book.getSheetAt(0).createRow(num3++);
+            for (i=0;i<fields.length;i++){
+                Cell cell=row.createCell(i);
+                String firstLetter = fields[i].getName().substring(0, 1).toUpperCase();
+                String getter = "get" + firstLetter + fields[i].getName().substring(0, 1).substring(1);
+                Method method = allCompanyResultVo.getClass().getMethod(getter, new Class[] {});
+                Object value = method.invoke(allCompanyResultVo, new Object[] {});
+                cell.setCellValue(value.toString());
+            }
+        }
+        book.write(out);
+        return filePath;
+    }
+
+    /***
+     * 根据条件先导出一份单个规格的Excel文件，以供前端调用下载
+     * @param conditionVo
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public String exportResultExcel(ConditionVo conditionVo) throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        //初始化一个文件路径对象
+        String filePath="";
+        List<ResultDomain> list=getResult(conditionVo);
+        filePath = "C:\\Users\\Administrator\\Desktop\\finance\\exportExcel\\"+"导出公司维度预算对比结果.xlsx";
+        File file=new File(filePath);
+        if (!file.exists()){
+            file.createNewFile();
+        }
+        FileOutputStream out=new FileOutputStream(new File(filePath));
+        SXSSFWorkbook book=new SXSSFWorkbook(1000);
+        //添加表头
+        int num2 = 0;
+        //表头的列标
+        int i=0;
+        Row row0=book.createSheet().createRow(num2);
+        //获取规格维度结果对象的所有属性值
+        Field[] fields= ResultDomain.class.getDeclaredFields();
+        //遍历规格维度结果对象的所有属性值,并把它放到单元格中
+        for ( i=0;i<fields.length;i++){
+            Cell cell=row0.createCell(i);
+            cell.setCellValue(fields[i].getName());
+        }
+        //遍历规格维度的结果,开始添加结果数据
+        int num3=0;
+        for (ResultDomain resultDomain:list) {
+            Row row=book.getSheetAt(0).createRow(num3++);
+            for (i=0;i<fields.length;i++){
+                Cell cell=row.createCell(i);
+                String firstLetter = fields[i].getName().substring(0, 1).toUpperCase();
+                String getter = "get" + firstLetter + fields[i].getName().substring(0, 1).substring(1);
+                Method method = resultDomain.getClass().getMethod(getter, new Class[] {});
+                Object value = method.invoke(resultDomain, new Object[] {});
+                cell.setCellValue(value.toString());
+            }
+        }
+        book.write(out);
+        return filePath;
     }
 }

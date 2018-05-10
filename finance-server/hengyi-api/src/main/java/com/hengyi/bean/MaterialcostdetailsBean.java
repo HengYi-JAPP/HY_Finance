@@ -28,7 +28,7 @@ public class MaterialcostdetailsBean {
     }
 
     public void setMoney(BigDecimal money) {
-        this.money = money.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        this.money = money==null?new BigDecimal(0): money.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getKwmeng() {
@@ -36,7 +36,7 @@ public class MaterialcostdetailsBean {
     }
 
     public void setKwmeng(BigDecimal kwmeng) {
-        this.kwmeng = kwmeng.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        this.kwmeng = kwmeng==null?new BigDecimal(0): kwmeng.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public String getField() {
@@ -60,8 +60,7 @@ public class MaterialcostdetailsBean {
     }
 
     public void setConsumption(BigDecimal consumption) {
-        this.consumption = consumption;
-        this.consumption.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        this.consumption = consumption==null?new BigDecimal(0):consumption.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getUnitPrice() {
@@ -69,8 +68,7 @@ public class MaterialcostdetailsBean {
     }
 
     public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-        this.unitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        this.unitPrice = unitPrice==null?new BigDecimal(0):unitPrice.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public String getMaterialName() {
@@ -95,8 +93,7 @@ public class MaterialcostdetailsBean {
     }
 
     public void setPrice(BigDecimal price) {
-        this.price = price;
-        this.price.setScale(5,   BigDecimal.ROUND_HALF_UP);
+        this.price = price==null?new BigDecimal(0):price.setScale(5,   BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getCheckProductUnitPrice() {
@@ -104,7 +101,7 @@ public class MaterialcostdetailsBean {
     }
 
     public void setCheckProductUnitPrice(BigDecimal checkProductUnitPrice) {
-        this.checkProductUnitPrice = checkProductUnitPrice;
+        this.checkProductUnitPrice = checkProductUnitPrice==null?new BigDecimal(0):checkProductUnitPrice.setScale(5,BigDecimal.ROUND_HALF_UP);
     }
 
     @Override

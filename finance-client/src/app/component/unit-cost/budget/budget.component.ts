@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {BudgetService} from '../../../api/budget.service';
+import {ExcelServiceService} from '../../../api/excelService.service';
 import * as global from '../../../../app/global';
 
 @Component({
@@ -16,6 +17,7 @@ export class UnitBudgetComponent {
   // // 差异
   // sums3: any[] = [];
   uploadUrl: string;
+  downloadUrl: string;
   _allChecked = false;
   _indeterminate = false;
   _loading = true;
@@ -34,8 +36,12 @@ export class UnitBudgetComponent {
   _workshop = '';
   _productLine = '';
   _spec = '';
-  constructor(private budgetService: BudgetService) {
+  constructor(private budgetService: BudgetService,
+              private excelService: ExcelServiceService) {
+    // 声明导入Excel的URL(即上传文件)
     this.uploadUrl = global.baseUrl + '/FinanceBudgetController/importBudgetData';
+    // 声明导出excel的URL(即导出文件)
+    this.downloadUrl = global.baseUrl + '/FinanceBudgetController/exportBudgetData';
     this.findList({
       // year: this.getYear(),
       // month: this.getMonth(),
@@ -91,7 +97,8 @@ export class UnitBudgetComponent {
       workshop: param.workshop,
       productLine: param.productLine,
       spec: param.spec,
-      priceOrconsumer: this.priceORconsumer
+      priceOrconsumer: this.priceORconsumer,
+      type: this._fact ? (this._budget ? '' : '实际') : (this._budget ? '预算' : '无')
     };
     // this._year = param.year;
     // this._month = param.month;
@@ -122,7 +129,6 @@ export class UnitBudgetComponent {
   getTrStyle(data) {
     return {
       'background-color': data['type'] === '实际' ? 'white' : data['type1'] === '预算' ? 'white' : '#87e8de'
-      // 'display': (data['type'] === '实际' && this._fact) || (data['type'] === '预算' && this._budget) ? '' : 'none'
     };
   }
   changeList() {
@@ -159,22 +165,50 @@ export class UnitBudgetComponent {
   }
   // 导出Excel方法
   exportExcel() {
-    // window.location.href = global.baseUrl + '/FinanceBudgetController/exportExcel';
-    // window.open(global.baseUrl + '/FinanceBudgetController/exportExcel');
-    const param = {};
-    // const url = global.baseUrl + '/FinanceBudgetController/exportExcel';
-    this.budgetService.exportExcel(param).subscribe(
-      data => {
-        // Blob转化为链接
-        const link = document.createElement('a');
-        link.setAttribute('href', window.URL.createObjectURL(data));
-        link.setAttribute('download', 'filename.json');
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    const params = {
+      startMonth: this._startMonth,
+      endMonth: this._endMonth,
+      company: this._company,
+      product: this._product,
+      workshop: this._workshop,
+      productLine: this._productLine,
+      spec: this._productLine,
+      priceOrconsumer: this.priceORconsumer,
+      type: this._fact ? (this._budget ? '' : '实际') : (this._budget ? '预算' : '无')
+    };
+    const array = Object.keys(params);
+    let param = '?id=null';
+    array.forEach((item, i) => {
+      if (params[array[i]]) {
+        param = param + '&' + array[i] + '=' + params[array[i]];
       }
-    );
+    })
+    const a = window.open(this.downloadUrl + param);
+    a.document.execCommand('SaveAs');
+    // this.budgetService.exportExcel(this.downloadUrl, params).subscribe(
+    //   res => {
+    //     const a = window.open(this.downloadUrl);
+    //     a.document.execCommand('SaveAs');
+    //   }
+    // );
+    // a.close();
+    // this.excelService.exportExcel(this.downloadUrl, params).subscribe(
+    //   res => {
+    //     const blob = new Blob([res], {type: 'application/vnd.ms-excel'});
+    //     const fileName = '导出' + '.xlsx';
+    //     if (window.navigator.msSaveOrOpenBlob) {// For IE浏览器
+    //       navigator.msSaveBlob(blob, fileName);
+    //     } else { // For 其他浏览器
+    //       const objectUrl = URL.createObjectURL(blob);
+    //       const a = document.createElement('a');
+    //       document.body.appendChild(a);
+    //       a.setAttribute('style', 'display:none');
+    //       a.setAttribute('href', objectUrl);
+    //       a.setAttribute('download', fileName);
+    //       a.click();
+    //       URL.revokeObjectURL(objectUrl);
+    //     }
+    //   });
   }
   // 计算均值的方法
   sumCheck() {

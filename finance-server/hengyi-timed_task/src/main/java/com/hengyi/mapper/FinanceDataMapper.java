@@ -81,6 +81,12 @@ public interface FinanceDataMapper {
      */
    public void deletebudgetbymonth(SapDataMonthBean sapDataDelByMonthBean);
 
+    /***
+     * 按月份清空materialcostDetails表中的数据
+     * @param sapDataMonthBean
+     */
+   public void deleteMaterialCostDetails(SapDataMonthBean sapDataMonthBean);
+
     /**
      * 查找FinanceSapData表中的生产线-规格对应成本要素数据
      *
@@ -204,5 +210,66 @@ public interface FinanceDataMapper {
      * @param
      */
     public void updateCheckProductUnitPrice(MaterialcostdetailsBean materialcostdetailsBean);
+
+    /***
+     * 同步SAP数据前需要将当月的数据进行一个删除，以避免重复数据
+     * @param sapDataDelByMonthBean
+     */
+    public void deleteFinanceSapDatabymonth2(SapDataMonthBean sapDataDelByMonthBean);
+
+    /***
+     * 插入新新增表之前需要删除当月
+     * @param sapDataDelByMonthBean
+     */
+    public void deletebudgetbymonth2(SapDataMonthBean sapDataDelByMonthBean);
+
+    /***
+     * 插入数据之前需要对新增表进行一个查询，以防止重复数据出现
+     * @param budgetdetailBean
+     * @return
+     */
+    public ArrayList<String> selectBudgetdetailAdd(BudgetdetailBean budgetdetailBean);
+
+    /***
+     * 将解析同步过来的数据放到FinanceSapDataAdd表中
+     * @param financeSapDataInsertBean
+     * @return
+     */
+    int insertsapdata2(FinanceSapDataInsertBean financeSapDataInsertBean);
+
+    /***
+     * 实际数据插入预算详情数据（budgetdetailAdd）
+     * @param budgetdetailBean
+     * @return
+     */
+    public int insertbudgetdetail2(@Param("bdb") BudgetdetailBean budgetdetailBean);
+
+    /***
+     * 预算数据插入详情（budgetdetailAdd）
+     * @param budgetdetailBean
+     * @return
+     */
+    public int insertdetail2(@Param("bdb") BudgetdetailBean budgetdetailBean);
+
+    /***
+     * 查询出bugetdetailAdd中的实际数据
+     * @param budgetdetailBean
+     * @return
+     */
+    public  ArrayList<String> selectbudgetdatabybean2(BudgetdetailBean budgetdetailBean);
+
+    /***
+     * 获取SAP同步过来的数据（查询FinanceSapDataAdd）
+     * @param onthBean
+     * @return
+     */
+    public ArrayList<MaterialOfLineSelectBean> selectmaterialofline2(SapDataMonthBean onthBean);
+
+    /***
+     * 来查询该维度的总产量
+     * @param materialOfLineSelectBean
+     * @return
+     */
+    public Double selectproductquantity2(MaterialOfLineSelectBean materialOfLineSelectBean);
 
 }

@@ -13,7 +13,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath*:applicationContext.xml,
+            classpath*:applicationContext.xml
             classpath*:hsf-provider-beans.xml
         </param-value>
     </context-param>

@@ -14,4 +14,9 @@ public interface SapDataTask {
      * SAP数据同步定时任务
      */
     void getsapdata();
+
+    /***
+     * SAP同步数据到budgetdetailAdd表，用于获取新增数据的情况
+     */
+    void getsapdata2();
 }

@@ -28,12 +28,15 @@ export class BudgetService {
     return this.response.appPost(param, url + '/getAllCompanyData');
   }
   /* 导出Excel */
-  exportExcel(param): Observable<any> {
-    return this.response.appPost2(param, url + '/exportExcel');
+  exportExcel(downloadUrl, param): Observable<any> {
+    return this.response.appPost(param, downloadUrl);
     // return this.response.appPost2(param, url + '/exportExcel');
   }
   // 获取详情均值
   getSumDetail(param): Observable<any> {
     return this.response.appPost(param, url + '/getSumDetail');
+  }
+  getNewlyIncreased(param): Observable<any> {
+    return this.response.appPost(param, url + '/getNewlyIncreased');
   }
 }

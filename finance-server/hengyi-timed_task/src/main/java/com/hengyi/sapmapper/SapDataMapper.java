@@ -21,4 +21,11 @@ public interface SapDataMapper {
      */
     ArrayList<SapDataBean> selectsapdatabycompany(SapDataMonthBean sapDataMonthBean);
 
+    /***
+     * 按公司、月份 获取SAP中关于预算的数据，不添加限制条件，用于判断新增的规格
+     * @param sapDataMonthBean
+     * @return
+     */
+    ArrayList<SapDataBean> selectsapdatabycompany2(SapDataMonthBean sapDataMonthBean);
+
 }

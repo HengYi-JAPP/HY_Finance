@@ -12,8 +12,13 @@
     </listener>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:hsf-consumer-beans.xml</param-value>
+        <param-value>
+            classpath*:hsf-consumer-beans.xml
+        </param-value>
     </context-param>
+    <listener>
+        <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+    </listener>
 
     <!-- ======================== 单点登录开始 ======================== -->
     <!--<listener>-->

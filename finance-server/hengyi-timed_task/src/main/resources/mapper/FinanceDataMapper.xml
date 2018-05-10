@@ -20,6 +20,7 @@
         <result column="state" property="state" jdbcType="NVARCHAR"/>
         <result column="money" property="money" jdbcType="DOUBLE"/>
         <result column="kwmeng" property="kwmeng" jdbcType="DOUBLE"/>
+        <result column="check_product_unit_price" property="checkProductUnitPrice" jdbcType="DOUBLE"></result>
     </resultMap>
     <resultMap id="MaterialmatchResultMap" type="com.hengyi.bean.MaterialMatchBean">
         <result column="material_name" property="materialName" jdbcType="NVARCHAR"/>
@@ -62,7 +63,7 @@
         <result column="product_yarn" property="productYarn" jdbcType="NVARCHAR"/>
     </resultMap>
 
-    <update id="updateCheckProductUnitPrice" parameterType="com.hengyi.domain.CheckProductUnitPriceDomain">
+    <update id="updateCheckProductUnitPrice" parameterType="com.hengyi.bean.MaterialcostdetailsBean">
         UPDATE MaterialCostDetails SET check_product_unit_price = #{checkProductUnitPrice} WHERE id=#{id}
     </update>
 
@@ -144,7 +145,7 @@
         FROM    FinanceSapData
         WHERE  MONTH =#{month} and YEAR =#{year}
         group by
-        Company,year,month,product_name,product_specifications,product_line,state,cost_id,cost_describe,cost_material_id,cost_material_describe,product_yarn
+        Company,year,month,work_shop,product_name,product_specifications,product_line,state,cost_id,cost_describe,cost_material_id,cost_material_describe,product_yarn
     </select>
 
 
@@ -192,7 +193,8 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
     <select id="selectbudgetdatabymonth" resultType="java.util.Map" parameterType="com.hengyi.bean.SapDataMonthBean">
         select * FROM Budgetdetail WHERE month =#{month} and year=#{year}
     </select>
-    <select id="selectproductbudgetdata" resultType="java.util.LinkedHashMap" parameterType="com.hengyi.bean.SapDataMonthBean">
+    <select id="selectproductbudgetdata" resultType="java.util.LinkedHashMap"
+            parameterType="com.hengyi.bean.SapDataMonthBean">
         select * FROM Budgetdetail ORDER BY `year`,`month`,company,product,workshop,line,spec,yarnKind,type
     </select>
     <select id="selectpricelist" resultMap="PriceResultMap">
@@ -217,7 +219,7 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
 
     <select id="selectproductquantity" parameterType="com.hengyi.bean.MaterialOfLineSelectBean"
             resultType="java.lang.Double">
-        SELECT SUM(order_product_quantity) from(
+        SELECT SUM(CASE  WHEN order_id LIKE '000008%' THEN 0 ELSE order_product_quantity END) from(
         select DISTINCT order_id,order_product_quantity from FinanceSapData where
         <if test="company !=null">
             company=#{company} and
@@ -241,16 +243,22 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
             product_name IS NULL and
         </if>
         <if test="productSpecifications !=null">
-            product_specifications=#{productSpecifications} and
+            BINARY product_specifications=#{productSpecifications} and
         </if>
         <if test="productSpecifications ==null">
-            product_specifications IS NULL and
+            BINARY product_specifications IS NULL and
         </if>
         <if test="productLine !=null">
             product_line=#{productLine} and
         </if>
         <if test="productLine ==null">
             product_line IS NULL and
+        </if>
+        <if test="workShop != null">
+            work_shop=#{workShop} and
+        </if>
+        <if test="workShop == null">
+            work_shop IS NULL AND
         </if>
         <if test="productYarn !=null">
             product_yarn=#{productYarn}
@@ -266,6 +274,66 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
     </delete>
     <delete id="deletebudgetbymonth" parameterType="com.hengyi.bean.SapDataMonthBean">
         DELETE  FROM  Budgetdetail WHERE month =#{month} and year =#{year} and TYPE ='实际'
+    </delete>
+    <delete id="deleteMaterialCostDetails" parameterType="com.hengyi.bean.SapDataMonthBean">
+        DELETE a FROM MaterialCostDetails a INNER JOIN (
+        SELECT mate_pta id from Budgetdetail where mate_pta is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select mate_meg id from Budgetdetail where mate_meg is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select mate_poy id from Budgetdetail where mate_poy is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select mate_slice id from Budgetdetail where mate_slice is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_aux_yect id from Budgetdetail where poly_aux_yect is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_aux_egc id from Budgetdetail where poly_aux_egc is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_aux_eyht id from Budgetdetail where poly_aux_eyht is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_aux_jwsc id from Budgetdetail where poly_aux_jwsc is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_salary id from Budgetdetail where poly_salary is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_dep id from Budgetdetail where poly_dep is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_hdl id from Budgetdetail where poly_hdl is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select ploy_hsl id from Budgetdetail where ploy_hsl is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_mac id from Budgetdetail where poly_mac is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_fuel_biomass id from Budgetdetail where poly_fuel_biomass is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_fuel_heavyoil id from Budgetdetail where poly_fuel_heavyoil is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_fuel_smj id from Budgetdetail where poly_fuel_smj is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_fuel_diesel id from Budgetdetail where poly_fuel_diesel is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_fuel_steam id from Budgetdetail where poly_fuel_steam is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_fuel_coal id from Budgetdetail where poly_fuel_coal is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select poly_else id from Budgetdetail where poly_else is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_oil id from Budgetdetail where spin_aux_oil is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_shortSF220 id from Budgetdetail where spin_aux_shortSF220 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_shortSF2180 id from Budgetdetail where spin_aux_shortSF2180 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_delionNW2641TS id from Budgetdetail where spin_aux_delionNW2641TS is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_delionNW2642 id from Budgetdetail where spin_aux_delionNW2642 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_delion6329TS id from Budgetdetail where spin_aux_delion6329TS is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_delionTSC900 id from Budgetdetail where spin_aux_delionTSC900 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_delionTSC502 id from Budgetdetail where spin_aux_delionTSC502 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_agent id from Budgetdetail where spin_aux_agent is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_silicone id from Budgetdetail where spin_aux_silicone is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_hml id from Budgetdetail where spin_aux_hml is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_lml id from Budgetdetail where spin_aux_lml is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_bml id from Budgetdetail where spin_aux_bml is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_aux_else id from Budgetdetail where spin_aux_else is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_pack_slice id from Budgetdetail where spin_pack_slice is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_pack_weaving id from Budgetdetail where spin_pack_weaving is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_pack_packaging id from Budgetdetail where spin_pack_packaging is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_pack_cartons id from Budgetdetail where spin_pack_cartons is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_pack_wooden id from Budgetdetail where spin_pack_wooden is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_pack_foamboard id from Budgetdetail where spin_pack_foamboard is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_pack_else id from Budgetdetail where spin_pack_else is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_paper id from Budgetdetail where spin_paper is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_melt id from Budgetdetail where spin_melt is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_salary id from Budgetdetail where spin_salary is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_dep id from Budgetdetail where spin_dep is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_water id from Budgetdetail where spin_water is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_elect id from Budgetdetail where spin_elect is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_mac id from Budgetdetail where spin_mac is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_repair id from Budgetdetail where spin_repair is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_fuel_biomass id from Budgetdetail where spin_fuel_biomass is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_fuel_heavyoil id from Budgetdetail where spin_fuel_heavyoil is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_fuel_smj id from Budgetdetail where spin_fuel_smj is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_fuel_diesel id from Budgetdetail where spin_fuel_diesel is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_fuel_steam id from Budgetdetail where spin_fuel_steam is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_fuel_coal id from Budgetdetail where spin_fuel_coal is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_fuel_else id from Budgetdetail where spin_fuel_else is not null AND`month`=4 AND `year`=2018 AND type='实际' union
+        select spin_else id from Budgetdetail WHERE spin_else is not null AND`month`=4 AND `year`=2018 AND type='实际') b ON a.id=b.id
     </delete>
     <delete id="deleteunitpricecomparebymonth" parameterType="com.hengyi.bean.SapDataMonthBean">
         DELETE  FROM  UnitPriceCompare WHERE month =#{month} and year =#{year}
@@ -286,11 +354,14 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
             <if test="year != null">
                 AND year=#{year}
             </if>
+            <if test="workshop">
+                AND workshop=#{workshop}
+            </if>
             <if test="line != null">
                 AND line=#{line}
             </if>
             <if test="spec != null">
-                AND spec=#{spec}
+                AND BINARY spec=#{spec}
             </if>
             <if test="yarnkind != null">
                 AND yarnkind=#{yarnkind}
@@ -300,5 +371,170 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
             </if>
 
         </where>
+    </select>
+
+
+    <!--规格新增表的判断-->
+    <delete id="deleteFinanceSapDatabymonth2" parameterType="com.hengyi.bean.SapDataMonthBean">
+        DELETE FROM FinanceSapDataAdd WHERE month =#{month} and year =#{year}
+    </delete>
+    <delete id="deletebudgetbymonth2" parameterType="com.hengyi.bean.SapDataMonthBean">
+        DELETE FROM  BudgetdetailAdd WHERE month =#{month} and year =#{year} AND TYPE = '实际'
+    </delete>
+    <insert id="insertsapdata2" parameterType="com.hengyi.bean.FinanceSapDataInsertBean">
+        insert into FinanceSapDataAdd ( order_id, cost_id,
+        month, year,
+        cost_material_id,cost_material_describe,
+        state,cost_describe,
+        sap_material_id,company,
+        sap_material_describe,order_product_quantity,
+        money,cost_quantity,
+        unit_price,consumption,
+        product_name,product_specifications,
+        product_batch_number,product_grade,
+        leibie,product_line,
+        product_yarn,work_shop
+        )
+        values (#{orderId}, #{costId},
+        #{month}, #{year},
+        #{costMaterialId}, #{costMaterialDescribe},
+        #{state}, #{costDescribe},
+        #{sapMaterialId}, #{company},
+        #{sapMaterialDescribe}, #{orderProductQuantity},
+        #{money}, #{costQuantity},
+        #{unitPrice}, #{consumption},
+        #{productName}, #{productSpecifications},
+        #{productBatchNumber}, #{productGrade},
+        #{leibie},#{productLine},
+        #{productYarn},#{workShop}
+        )
+    </insert>
+    <insert id="insertbudgetdetail2" parameterType="com.hengyi.bean.BudgetdetailBean">
+        INSERT INTO BudgetdetailAdd (
+        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type,
+        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
+            ${item.field}
+        </foreach>
+        )
+        VALUES (
+        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际',
+        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
+            #{item.id}
+        </foreach>
+        )
+    </insert>
+    <insert id="insertdetail2" parameterType="com.hengyi.bean.BudgetdetailBean">
+        INSERT INTO BudgetdetailAdd (
+        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type,
+        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
+            ${item.field}
+        </foreach>
+        )
+        VALUES (
+        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'预算',
+        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
+            #{item.id}
+        </foreach>
+        )
+    </insert>
+    <select id="selectbudgetdatabybean2" parameterType="com.hengyi.bean.BudgetdetailBean" resultType="java.lang.String">
+        SELECT company from BudgetdetailAdd
+        <where>
+            1=1
+            <if test="company != null">
+                AND company=#{company}
+            </if>
+            <if test="product != null">
+                AND product=#{product}
+            </if>
+            <if test="month != null">
+                AND month=#{month}
+            </if>
+            <if test="year != null">
+                AND year=#{year}
+            </if>
+            <if test="workshop">
+                AND workshop=#{workshop}
+            </if>
+            <if test="line != null">
+                AND line=#{line}
+            </if>
+            <if test="spec != null">
+                AND BINARY spec=#{spec}
+            </if>
+            <if test="yarnkind != null">
+                AND yarnkind=#{yarnkind}
+            </if>
+            <if test="type != null">
+                AND type=#{type}
+            </if>
+
+        </where>
+    </select>
+    <select id="selectmaterialofline2" resultMap="MaterialOfLine" parameterType="com.hengyi.bean.SapDataMonthBean">
+        select
+        company,year,
+        month,work_shop,
+        product_name,product_specifications,
+        product_line,product_yarn,
+        state,cost_id,
+        cost_describe,cost_material_id,
+        cost_material_describe,sum(order_product_quantity)order_product_quantity,
+        sum(money)money,sum(cost_quantity)cost_quantity
+        FROM    FinanceSapDataAdd
+        WHERE  MONTH =#{month} and YEAR =#{year}
+        group by
+        Company,year,month,work_shop,product_name,product_specifications,product_line,state,cost_id,cost_describe,cost_material_id,cost_material_describe,product_yarn
+    </select>
+    <select id="selectproductquantity2" parameterType="com.hengyi.bean.MaterialOfLineSelectBean"
+            resultType="java.lang.Double">
+        SELECT SUM(order_product_quantity) from(
+        select DISTINCT order_id,order_product_quantity from FinanceSapDataAdd where
+        <if test="company !=null">
+            company=#{company} and
+        </if>
+        <if test="year !=null">
+            year=#{year} and
+        </if>
+        <if test="year ==null">
+            year IS NULL and
+        </if>
+        <if test="month !=null">
+            month=#{month} and
+        </if>
+        <if test="month ==null">
+            month IS NULL and
+        </if>
+        <if test="productName !=null">
+            product_name=#{productName} and
+        </if>
+        <if test="productName ==null">
+            product_name IS NULL and
+        </if>
+        <if test="productSpecifications !=null">
+            BINARY product_specifications=#{productSpecifications} and
+        </if>
+        <if test="productSpecifications ==null">
+            BINARY product_specifications IS NULL and
+        </if>
+        <if test="productLine !=null">
+            product_line=#{productLine} and
+        </if>
+        <if test="productLine ==null">
+            product_line IS NULL and
+        </if>
+        <if test="workShop != null">
+            work_shop=#{workShop} and
+        </if>
+        <if test="workShop == null">
+            work_shop IS NULL AND
+        </if>
+        <if test="productYarn !=null">
+            product_yarn=#{productYarn}
+        </if>
+        <if test="productYarn ==null">
+            product_yarn IS NULL
+        </if>
+        ) b
     </select>
 </mapper>

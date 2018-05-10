@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!--输出console-->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!--输出格式-->
+		<encoder>
+			<pattern>%d{HH:mm:ss} %-5level [%thread] %logger{36}.%M - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<!--输出到文件-->
+	<appender name="MQTTPubFILE"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!--消息过滤 debug执行日志，否则抛弃-->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY </onMismatch>
+		</filter>
+		<!--日志输出的文件名，路径项目根目录-->
+		<file>mqttPub.log</file>
+		<!--时间回滚，当天的记录记录在当天的已时间命名的文件中-->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>mqttPub.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<!-- keep 3 days' worth of history -->
+			<maxHistory>3</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{HH:mm:ss} %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="类路径" level="debug">
+		<!--指定日志输出方式，引用定义的appender-->
+		<appender-ref ref="MQTTSubFILE" />
+	</logger>
+	<!-- 日志输出规则 根据当前ROOT 级别，日志输出时，级别高于root默认的级别时 会输出 -->
+	<!-- 打印info级别日志及以上级别日志 -->
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
