@@ -10,7 +10,9 @@ import {AllCompanyComponent} from '../component/unit-cost/result/all-company/all
 import {NewlyIncreasedComponent} from '../component/unit-cost/newly-increased/newly-increased.component';
 import {ProductlineManageComponent} from '../component/dictionary/productline-manage/productline-manage.component';
 import {BudgetManageComponent} from '../component/unit-cost/budget/budget-manage/budget-manage.component';
+import {CompareProductComponent} from '../component/unit-cost/compare-product/compare-product.component';
 import {ErrorComponent} from '../component/error/error.component';
+import {MaterialManageComponent} from '../component/dictionary/material-manage/material-manage.component';
 const appRoutes: Routes = [
   { path: 'Home', component: HomeComponent}, // 跳转到主页面的路由
   { path: 'TotalAmountBudget', component: BudgetComponent, data: {PageName: '总金额预算成本和实际成本详情'}}, // 跳转到总金额预算界面
@@ -22,6 +24,8 @@ const appRoutes: Routes = [
   { path: 'NewlyIncreased', component: NewlyIncreasedComponent}, // 跳转到新增规格页面
   { path: 'ProductLineMange', component: ProductlineManageComponent}, // 跳转到生产线匹配关系页面
   { path: 'budgetManage', component: BudgetManageComponent}, // 跳转到预算数据维护页面
+  { path: 'CompareProduct', component: CompareProductComponent}, // 跳转到产量查询页面
+  { path: 'MaterialManage', component: MaterialManageComponent}, // 跳转到查询物料管理的页面
   { path: '', component: HomeComponent}, // 默认跳转页面
   { path: '**', component: ErrorComponent} // 如果都找不到其他的页面就会跳转到错误页面
 ];

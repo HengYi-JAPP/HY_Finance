@@ -36,6 +36,7 @@ export class BudgetService {
   getSumDetail(param): Observable<any> {
     return this.response.appPost(param, url + '/getSumDetail');
   }
+  // 获取新增规格
   getNewlyIncreased(param): Observable<any> {
     return this.response.appPost(param, url + '/getNewlyIncreased');
   }

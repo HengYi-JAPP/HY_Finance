@@ -537,4 +537,8 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
         </if>
         ) b
     </select>
+    <!--把未匹配上的物料号存放到unmatchedMaterial表中-->
+    <insert id="insertUnmatchedMaterial" parameterType="com.hengyi.bean.MaterialOfLineSelectBean">
+        INSERT INTO UnmatchedMaterial (material_id,cost_id,state) VALUES (#{costMaterialId},#{costId},#{state})
+    </insert>
 </mapper>

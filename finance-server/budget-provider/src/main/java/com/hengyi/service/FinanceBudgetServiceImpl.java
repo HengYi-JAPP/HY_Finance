@@ -264,10 +264,10 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                 }else if (key.contains("dep")){
                     DepCount+=Double.parseDouble(detail.get(key).toString());
                     Count+=Double.parseDouble(detail.get(key).toString());
-                }else if (key.contains("hdl")){
+                }else if (key.contains("hdl")||key.contains("elect")){
                     HdlCount+=Double.parseDouble(detail.get(key).toString());
                     Count+=Double.parseDouble(detail.get(key).toString());
-                }else if (key.contains("hsl")){
+                }else if (key.contains("hsl")||key.contains("water")){
                     HslCount+=Double.parseDouble(detail.get(key).toString());
                     Count+=Double.parseDouble(detail.get(key).toString());
                 }else if (key.contains("mac")){

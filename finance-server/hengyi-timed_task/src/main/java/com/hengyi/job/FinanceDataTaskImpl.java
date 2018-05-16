@@ -80,12 +80,13 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
             //设置budgetdetailBeanlist中未存在该生产线、规格、纱种（差异化）维度的对象
             boolean budgetdetailBeanexist = false;
             //遍历物料匹配关系，匹配本次搜索记录的成本项
-
+            boolean materialMatchBeanexist= false;
+            //遍历物料匹配关系，匹配本次搜索记录的成本项
             for (MaterialMatchBean materialMatchBean : materialmatchlist) {
                 //如果本条记录匹配成功，说明该生产记录是财务预算分析所需要的数据
                 if ((materialMatchBean.getMaterialId() != null && StringUtil.equals(materialOfLineSelectBean.getCostMaterialId(), "00000000" + materialMatchBean.getMaterialId())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))
-                        || (materialMatchBean.getCostId() != null && StringUtil.equals(materialOfLineSelectBean.getCostId(), materialMatchBean.getCostId()) && StringUtil.equals(materialMatchBean.getState(), materialOfLineSelectBean.getState())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))) {
-
+                        || (materialMatchBean.getCostId() != null && StringUtil.equals(materialOfLineSelectBean.getCostId(), materialMatchBean.getCostId()) && StringUtil.equals(materialMatchBean.getState(), materialOfLineSelectBean.getState())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState())))
+                {
                    //对budgetdetailBeanlist进行遍历，查看是否已有该生产线、规格、维度的对象
                     // 如果没有则添加，如果有则更新
                     for (BudgetdetailBean budgetdetailBean : budgetdetailBeanlist) {
@@ -155,8 +156,14 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                         budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(materialcostdetailsBean);
                         budgetdetailBeanlist.add(budgetdetailBean);
                     }
+                    //如果有匹配上的就把匹配标识改为true
+                    materialMatchBeanexist=true;
                     break;
                 }
+            }
+            //如果没有匹配上就把这个物料号放到数据库中，以便查询是否有物料号没有匹配上
+            if(!materialMatchBeanexist){
+                financeDataMapper.insertUnmatchedMaterial(materialOfLineSelectBean);
             }
         }
         //将得到的budgetdetailBeanlist对象遍历插入到BudgetDetail表中，获得实际生产数据 生产线、规格、纱种（差异化）维度的数据
@@ -202,8 +209,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
         for (MaterialOfLineSelectBean materialOfLineSelectBean : materialoflinelist) {
             //设置budgetdetailBeanlist中未存在该生产线、规格、纱种（差异化）维度的对象
             boolean budgetdetailBeanexist = false;
-            //遍历物料匹配关系，匹配本次搜索记录的成本项
-
+            //设置materialoflinelist中未匹配上的物料号
             for (MaterialMatchBean materialMatchBean : materialmatchlist) {
                 //如果本条记录匹配成功，说明该生产记录是财务预算分析所需要的数据
                 if ((materialMatchBean.getMaterialId() != null && StringUtil.equals(materialOfLineSelectBean.getCostMaterialId(), "00000000" + materialMatchBean.getMaterialId())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))

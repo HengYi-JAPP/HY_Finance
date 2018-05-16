@@ -272,4 +272,10 @@ public interface FinanceDataMapper {
      */
     public Double selectproductquantity2(MaterialOfLineSelectBean materialOfLineSelectBean);
 
+    /***
+     * 插入未匹配到的物料Id
+     * @param materialOfLineSelectBean
+     */
+    public void insertUnmatchedMaterial(MaterialOfLineSelectBean materialOfLineSelectBean);
+
 }

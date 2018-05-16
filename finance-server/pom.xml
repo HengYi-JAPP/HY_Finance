@@ -173,7 +173,12 @@
             <artifactId>druid</artifactId>
             <version>1.0.12</version>
         </dependency>
-
+        <!--oracle驱动包-->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.1.0.7.0-Production</version>
+        </dependency>
         <!--junit测试包-->
         <dependency>
             <groupId>junit</groupId>
@@ -223,6 +228,7 @@
             <artifactId>logback-ext-spring</artifactId>
             <version>0.1.1</version>
         </dependency>
+
     </dependencies>
 
 </project>

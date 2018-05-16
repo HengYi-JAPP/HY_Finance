@@ -9,4 +9,7 @@
 	<!--财务预算模块的消费者-->
 	<hsf:consumer id="financeBudgetService" interface="com.hengyi.service.FinanceBudgetService"
 				  version="1.0.0" group="financeBudget" clientTimeout="100000"/>
+	<!--财务预算模块从SAP获取数据-->
+	<hsf:consumer id="sapFinanceBudgetService" interface="com.hengyi.service.SAPFinanceBudgetService"
+					version="1.0.0" group="financeBudget" clientTimeout="100000"/>
 </beans>

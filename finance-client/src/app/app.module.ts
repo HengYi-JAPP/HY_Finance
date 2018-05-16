@@ -21,6 +21,8 @@ import {TableComponent} from './component/shared-component/table/table.component
 
 import {BudgetService} from './api/budget.service';
 import {ExcelServiceService} from './api/excelService.service';
+import {SapBudgetService} from './api/sapBudget.service';
+import {MaterialManageService} from './api/materialManage.service';
 // import {OverviewService} from './api/overview.service';
 // import {ResultService} from './api/result.service';
 import { AllCompanyComponent } from './component/unit-cost/result/all-company/all-company.component';
@@ -29,6 +31,8 @@ import { NewlyIncreasedComponent } from './component/unit-cost/newly-increased/n
 import { ProductlineManageComponent } from './component/dictionary/productline-manage/productline-manage.component';
 import { MaterialComponent } from './component/unit-cost/overview/material/material.component';
 import { BudgetManageComponent } from './component/unit-cost/budget/budget-manage/budget-manage.component';
+import { CompareProductComponent } from './component/unit-cost/compare-product/compare-product.component';
+import { MaterialManageComponent } from './component/dictionary/material-manage/material-manage.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +50,9 @@ import { BudgetManageComponent } from './component/unit-cost/budget/budget-manag
     NewlyIncreasedComponent,
     ProductlineManageComponent,
     MaterialComponent,
-    BudgetManageComponent
+    BudgetManageComponent,
+    CompareProductComponent,
+    MaterialManageComponent
   ],
   imports: [
     BrowserModule, // 在浏览器上运行所需的模块
@@ -63,7 +69,9 @@ import { BudgetManageComponent } from './component/unit-cost/budget/budget-manag
     ExcelServiceService,
     // OverviewService,
     // ResultService,
-    GetResponseService
+    GetResponseService,
+    SapBudgetService,
+    MaterialManageService
   ],
   bootstrap: [AppComponent]
 })
