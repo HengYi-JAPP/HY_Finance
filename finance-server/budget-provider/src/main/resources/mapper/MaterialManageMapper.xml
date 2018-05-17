@@ -55,6 +55,15 @@
     </update>
     <!--修改未匹配上的物料-->
     <update id="updateUnmatchedMaterial" parameterType="com.hengyi.domain.MaterialMatchDomain">
-        UPDATE UnmatchedMaterial SET del_flag=1 WHERE id=#{id}
+        UPDATE UnmatchedMaterial SET del_flag=1 WHERE 1=1
+        <if test="materialId != null and materialId != ''">
+            AND material_id=#{materialId}
+        </if>
+        <if test="costId != null and costId != ''">
+            AND cost_id=#{costId}
+        </if>
+        <if test="state != null and state != ''">
+            AND state=#{state}
+        </if>
     </update>
 </mapper>

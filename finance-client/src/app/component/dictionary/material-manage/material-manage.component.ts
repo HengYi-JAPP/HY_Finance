@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MaterialManageService} from '../../../api/materialManage.service';
+import {FormBuilder} from '@angular/forms';
 
 @Component({
   selector: 'app-material-manage',
@@ -17,7 +18,9 @@ export class MaterialManageComponent implements OnInit {
   _company = '';
   _product = '';
   _displayData = [];
-  constructor(private materialManageService: MaterialManageService) { }
+  matchCondition = 'matched';
+  isVisible = false;
+  constructor(private materialManageService: MaterialManageService, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.findList();
@@ -40,37 +43,40 @@ export class MaterialManageComponent implements OnInit {
   }
   //  获取物料匹配关系表信息
   findList() {
-    const params = {};
-    this.materialManageService.getMatchedMaterial(params).subscribe(
-      data => {
-        if (data.page !== null) {
-          this._total = data.page.total;
+    const params = {
+      pageIndex: 1,
+      pageCount: 50
+    };
+    // 查询已经匹配上的物料匹配关系
+    if ('matched' === this.matchCondition) {
+      this.materialManageService.getMatchedMaterial(params).subscribe(
+        data => {
+          if (data.page !== null) {
+            this._total = data.page.total;
+            this.tableData = data.data;
+          }
           this.tableData = data.data;
+          this._loading = false;
+        },
+        error2 => {
+          this._loading = false;
         }
-        this.tableData = data.data;
-        this._loading = false;
-      },
-      error2 => {
-        this._loading = false;
-      }
-    );
-  }
-  // 获取未匹配上的物料匹配关系信息，从而可以方便用户自主添加物料匹配关系
-  findUnmatchedList() {
-    const params = {};
-   this.materialManageService.getUnmatchedMaterial(params).subscribe(
-     data => {
-       if (data.page !== null) {
-         this._total = data.page.total;
-         this.tableData = data.data;
-       }
-       this.tableData = data.data;
-       this._loading = false;
-     },
-     error2 => {
-       this._loading = false;
-     }
-   );
+      );
+    } else if ('unmatched' === this.matchCondition) { // 获取未匹配上的物料匹配关系信息，从而可以方便用户自主添加物料匹配关系
+      this.materialManageService.getUnmatchedMaterial(params).subscribe(
+        data => {
+          if (data.page != null) {
+            this._total = data.page.total;
+            this.tableData = data.data;
+          }
+          this.tableData = data.data;
+          this._loading = false;
+        },
+        error2 => {
+          this._loading = false;
+        }
+      );
+    }
   }
   // 修改物料匹配关系
   updateMaterialList() {
@@ -85,6 +91,7 @@ export class MaterialManageComponent implements OnInit {
     );
   }
   addMaterialList() {
+    this.showModal();
     const params = {};
     this.materialManageService.addMatchedMaterial(params).subscribe(
       data => {
@@ -97,5 +104,18 @@ export class MaterialManageComponent implements OnInit {
   }
   // 改变分页时执行的方法
   changeList() {
+    this.findList();
+  }
+  // 弹出窗口
+  showModal() {
+    this.isVisible = true;
+  }
+  // 点击OK后窗口关闭
+  handleOk() {
+    this.isVisible = false;
+  }
+  // 点击取消后窗口关闭
+  handleCancel() {
+    this.isVisible = false;
   }
 }

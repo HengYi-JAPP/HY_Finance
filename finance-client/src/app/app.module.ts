@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
@@ -58,6 +58,7 @@ import { MaterialManageComponent } from './component/dictionary/material-manage/
     BrowserModule, // 在浏览器上运行所需的模块
     BrowserAnimationsModule, // 动画所需模块
     FormsModule,
+    ReactiveFormsModule,
     ElModule.forRoot(), // 引入element-UI
     CommonModule, // 使用*ngFor,*ngIf所需模块
     AppRoutingModule, // 引入路由模块

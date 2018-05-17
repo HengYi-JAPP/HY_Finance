@@ -1,5 +1,41 @@
 <!--物料关系管理页面-->
 <div class="box" style="overflow-x: hidden;height: auto">
+  <div style="margin-top: 10px">
+    <div class="components-table-demo-control-bar">
+      <form nz-form [nzLayout]="'inline'">
+        <div nz-row nz-form-item>
+          <div nz-form-control>
+            <div nz-form-label>
+              <label><font style="color:#108ee9">匹配情况</font></label>
+            </div>
+            <nz-radio-group [(ngModel)]="matchCondition" [ngModelOptions]="{standalone: true}" >
+              <label nz-radio-button [nzValue]="'matched'" (click)="changeList()">
+                <span>有匹配关系物料</span>
+              </label>
+              <label nz-radio-button [nzValue]="'unmatched'" (click)="changeList()">
+                <span>无匹配关系物料</span>
+              </label>
+            </nz-radio-group>
+          </div>
+          <div nz-form-control>
+            <el-button (click)="findList()" type="primary" size="small">查询</el-button>
+          </div>
+          <div nz-form-control>
+            <button nz-button nzType="primary" (click)="addMaterialList()"><i class="anticon anticon-plus"></i>增加</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="增加物料匹配关系" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <form nz-form>
+      <div nz-form-item>
+        <div nz-form-label nzFor="email">
+          <input nz-input placeholder="Username">
+        </div>
+      </div>
+    </form>
+  </nz-modal>
   <div style="margin-top: 10px;background-color: white">
     <nz-table #groupingTable
               [nzAjaxData]="tableData"
