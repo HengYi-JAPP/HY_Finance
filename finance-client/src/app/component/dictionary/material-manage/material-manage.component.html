@@ -1,0 +1,35 @@
+<!--物料关系管理页面-->
+<div class="box" style="overflow-x: hidden;height: auto">
+  <div style="margin-top: 10px;background-color: white">
+    <nz-table #groupingTable
+              [nzAjaxData]="tableData"
+              nzShowSizeChanger
+              [nzLoading]="_loading"
+              [nzTotal]="_total"
+              [(nzPageSize)]="_pageSize"
+              [(nzPageIndex)]="_current"
+              [nzPageSize]="10"
+              (nzDataChange)="_displayDataChange($event)"
+              (nzPageIndexChange)="_refreshStatus()"
+              (nzPageSizeChange)="_refreshStatus()"
+              nzBordered
+              [nzScroll]="{ x: 500, y: 400 }">
+      <thead nz-thead>
+      <tr>
+        <th class="Header-color" nz-th  style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>公司</span></th>
+        <th class="Header-color" nz-th  style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>产品</span></th>
+        <th class="Header-color" nz-th  style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>实际产量</span></th>
+      </tr>
+      </thead>
+      <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of tableData">
+        <td nz-td style="text-align: center;line-height: 10px;padding: 5px;background-color:#87e8de" *ngFor="let key of getkeys(data)">
+          <span>
+            {{data[key]}}
+          </span>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
