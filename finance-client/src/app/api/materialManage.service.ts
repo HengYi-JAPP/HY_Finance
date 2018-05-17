@@ -17,10 +17,14 @@ export class MaterialManageService {
   }
   // 添加物料匹配关系
   addMatchedMaterial(param): Observable<any> {
-    return this.response.appPost(param, url + '/addUnmatchedMaterial');
+    return this.response.appPost(param, url + '/addMatchedMaterial');
   }
   // 更新物料匹配关系
   updateMatchedMaterial(param): Observable<any> {
-    return this.response.appPost(param, url + '/updateUnmatchedMaterial');
+    return this.response.appPost(param, url + '/updateMatchedMaterial');
+  }
+  // 删除物料匹配关系
+  deleteMatchedMaterial(param): Observable<any> {
+    return this.response.appPost(param, url + '/deleteMatchMaterial');
   }
 }

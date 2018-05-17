@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hengyi.mapper.MaterialManageMapper">
+    <resultMap id="matchedMaterialMap" type="com.hengyi.domain.MaterialMatchDomain">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="material_id" property="materialId" jdbcType="VARCHAR"></result>
+        <result column="material_category" property="materialCategory" jdbcType="VARCHAR"></result>
+        <result column="material_id" property="costId" jdbcType="VARCHAR"></result>
+        <result column="field" property="field" jdbcType="VARCHAR"></result>
+        <result column="state" property="state" jdbcType="VARCHAR"></result>
+    </resultMap>
+    <!--分页上sql仅仅适用于MySQL-->
+    <sql id="page">
+        <if test="limit != null">
+            <if test="offset != null">
+                limit ${offset},${limit}
+            </if>
+            <if test="offset == null">
+                limit ${limit}
+            </if>
+        </if>
+    </sql>
+    <!--获取未匹配上的物料匹配关系的记录数-->
+    <select id="getUnmatchedMaterialCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM UnmatchedMaterial WHERE del_flag=0
+    </select>
+    <!--获取未匹配上的物料匹配关系-->
+    <select id="getUnmatchedMaterial" parameterType="com.hengyi.util.QueryDtoBase" resultMap="matchedMaterialMap">
+        SELECT * FROM  UnmatchedMaterial
+        <include refid="page"/>
+    </select>
+    <!--获取已经匹配上的物料匹配关系的记录数-->
+    <select id="getMatchedMaterialCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM MaterialMatch
+    </select>
+    <!--获取已经匹配上的物料匹配关系-->
+    <select id="getMatchedMaterial" parameterType="com.hengyi.util.QueryDtoBase" resultMap="matchedMaterialMap">
+        SELECT * FROM MaterialMatch
+        <include refid="page"/>
+    </select>
+    <!--添加物料匹配关系-->
+    <insert id="addMatchedMaterial" parameterType="com.hengyi.domain.MaterialMatchDomain">
+        INSERT INTO MaterialMatch (material_name, material_id, material_category, cost_id, field, state) VALUES
+        (#{materialName},#{materialId},#{materialCategory},#{costId},#{field},#{state})
+    </insert>
+    <!--删除物料匹配关系-->
+    <delete id="deleteMatchedMaterial" parameterType="com.hengyi.domain.MaterialMatchDomain">
+        DELETE FROM MaterialMatch WHERE  id=#{id}
+    </delete>
+    <!--修改物料匹配关系-->
+    <update id="updateMatchedMaterial" parameterType="com.hengyi.domain.MaterialMatchDomain">
+        UPDATE MaterialMatch SET material_name=#{materialName},material_id=#{materialId},
+        material_category=#{materialCategory},cost_id=#{costId},field=#{field},state=#{state}
+        WHERE id=#{id}
+    </update>
+    <!--修改未匹配上的物料-->
+    <update id="updateUnmatchedMaterial" parameterType="com.hengyi.domain.MaterialMatchDomain">
+        UPDATE UnmatchedMaterial SET del_flag=1 WHERE id=#{id}
+    </update>
+</mapper>

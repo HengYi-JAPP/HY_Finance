@@ -46,8 +46,8 @@ export class CompareProductComponent implements OnInit {
   }
   findList(param) {
     const params = {
-      PageIndex: this._current,
-      PageCount: this._pageSize,
+      pageIndex: this._current,
+      pageCount: this._pageSize,
       startMonth: param.startMonth,
       endMonth: param.endMonth,
       company: param.company,
