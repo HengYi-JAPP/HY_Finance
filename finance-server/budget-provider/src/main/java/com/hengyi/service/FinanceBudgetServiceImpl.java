@@ -298,7 +298,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
     }
 
     /***
-     * 获取详情合计的均值
+     * 获取详情合计的考核维度的均值
      * @param conditionVo
      * @return
      */
@@ -307,11 +307,11 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         //将分页去除查询出所有数据
         conditionVo.setOffset(null);
         conditionVo.setLimit(null);
-        //存储实际均值
+        //存储考核维度实际成本均值
         HashMap<String,Object> fact=new LinkedHashMap<>();
-        //存储预算均值
+        //存储考核维度预算成本均值
         HashMap<String,Object> budget=new LinkedHashMap<>();
-        //存储差异均值
+        //存储考核维度差异均值
         HashMap<String,Object> difference=new LinkedHashMap<>();
         //存放均值结果（共三个map）
         List<Map<String,Object>> resultList=new ArrayList<Map<String, Object>>();
@@ -330,7 +330,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
             budget.put(array[i],array2[i]);
             difference.put(array[i],array2[i]);
         }
-        //遍历所有字段
+        //遍历所有字段（共70个字段，循环70次）
         for (String key:mapList.get(0).keySet()) {
 //            BigDecimal sumFact= new BigDecimal(0);
 //            BigDecimal sumBudget=new BigDecimal(0);
@@ -353,8 +353,10 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                         if (i%3 == 0){
                             sumFact+=Double.parseDouble(mapList.get(i).get(key).toString())*Double.parseDouble((mapList.get(i).get("budget_total_product").toString()));
 //                            sumFact=sumFact.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i).get("budget_total_product").toString())));
-                            // 累计实际总产量
-                            sumFactProduct=sumFactProduct+Double.parseDouble(mapList.get(i).get("budget_total_product").toString());
+                            if ("budget_total_product".equals(key)){
+                                // 累计实际总产量
+                                sumFactProduct=sumFactProduct+Double.parseDouble(mapList.get(i).get("budget_total_product").toString());
+                            }
                         }else{
                             //对预算进行求和
                             sumBudget=sumBudget+Double.parseDouble(mapList.get(i).get(key+"1").toString())*Double.parseDouble(mapList.get(i-1).get("budget_total_product").toString());
@@ -379,6 +381,72 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         resultList.add(budget);
         resultList.add(difference);
         return resultList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getSumOverview(ConditionVo conditionVo) {
+        //将分页去除查询出所有数据
+        conditionVo.setOffset(null);
+        conditionVo.setLimit(null);
+        //存储考核维度实际成本均值
+        HashMap<String,Object> fact=new LinkedHashMap<>();
+        //存储考核维度预算成本均值
+        HashMap<String,Object> budget=new LinkedHashMap<>();
+        //存储考核维度差异均值
+        HashMap<String,Object> difference=new LinkedHashMap<>();
+        //存放均值结果（共三个map）
+        List<Map<String,Object>> resultList=new ArrayList<Map<String, Object>>();
+        //存放计算结果
+        List<Map<String,Object>> list= null;
+        double sumFactProduct=0;
+        String [] array=new String[]{"company","month","year","product","workshop","line","spec","yarnKind","AArate","FSrate","day_product"};
+        String [] array2=new String[]{conditionVo.getCompany(),conditionVo.getStartMonth().toString(),conditionVo.getEndMonth().toString(),conditionVo.getProduct(),conditionVo.getWorkshop(),conditionVo.getProductLine(),conditionVo.getSpec(),null,null,null,null};
+        fact.put("type","实际");
+        budget.put("type","预算");
+        difference.put("type","差异");
+        for (int i = 0; i < array.length; i++) {
+            fact.put(array[i],array2[i]);
+            budget.put(array[i],array2[i]);
+            difference.put(array[i],array2[i]);
+        }
+        if ("stage".equals(conditionVo.getStageType())) {
+            list = this.getCostItem(conditionVo);
+        }else if ("noneStage".equals(conditionVo.getStageType())) {
+            list = this.getSumCostItem(conditionVo);
+        }
+            for (String key : list.get(0).keySet()) {
+                double sumFact = 0;
+                double sumBudget = 0;
+                if ("id".equals(key) || "id1".equals(key) || "type".equals(key) || "type1".equals(key) || "company".equals(key) || "month".equals(key) || "year".equals(key) ||
+                        "product".equals(key) || "workshop".equals(key) || "line".equals(key)
+                        || "spec".equals(key) || "yarnKind".equals(key) || "AArate".equals(key) ||
+                        "FSrate".equals(key) || "day_product".equals(key) || "company1".equals(key) ||
+                        "month1".equals(key) || "year1".equals(key) ||
+                        "product1".equals(key) || "workshop1".equals(key) || "line1".equals(key)
+                        || "spec1".equals(key) || "yarnKind1".equals(key) || "AArate1".equals(key) ||
+                        "FSrate1".equals(key) || "day_product1".equals(key)) {
+                    continue;
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        if ((i + 1) % 3 == 0) {
+                        } else {
+                            //对实际进行求和
+                            if (i%3 == 0){
+                                sumFact+=Double.parseDouble(list.get(i).get(key).toString())*Double.parseDouble((list.get(i).get("budget_total_product").toString()));
+//                            sumFact=sumFact.add(new BigDecimal(mapList.get(i).get(key).toString()).multiply(new BigDecimal(mapList.get(i).get("budget_total_product").toString())));
+                                if ("budget_total_product".equals(key)){
+                                    // 累计实际总产量
+                                    sumFactProduct=sumFactProduct+Double.parseDouble(list.get(i).get("budget_total_product").toString());
+                                }
+                            }else{
+                                //对预算进行求和
+                                sumBudget=sumBudget+Double.parseDouble(list.get(i).get(key+"1").toString())*Double.parseDouble(list.get(i-1).get("budget_total_product").toString());
+                            }
+                        }
+                    }
+                }
+            }
+        return null;
     }
 
 //    /***

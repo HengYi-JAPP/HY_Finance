@@ -3,6 +3,7 @@
 <mapper namespace="com.hengyi.mapper.MaterialManageMapper">
     <resultMap id="matchedMaterialMap" type="com.hengyi.domain.MaterialMatchDomain">
         <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="material_name" property="materialName" jdbcType="VARCHAR"></result>
         <result column="material_id" property="materialId" jdbcType="VARCHAR"></result>
         <result column="material_category" property="materialCategory" jdbcType="VARCHAR"></result>
         <result column="material_id" property="costId" jdbcType="VARCHAR"></result>

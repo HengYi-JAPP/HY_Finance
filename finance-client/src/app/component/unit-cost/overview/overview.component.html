@@ -36,6 +36,11 @@
           <button nz-button (click)="exportExcel()">导出数据</button>
         </div>
       </div>
+      <div nz-row nz-form-item>
+        <div nz-form-control>
+          <button nz-button [nzType]="'primary'" (click)="sumCheck()">计算均值</button>
+        </div>
+      </div>
     </form>
     <nz-table #groupingTable
               [nzAjaxData]="tableData"
@@ -107,20 +112,15 @@
       </ng-template>
       <tbody nz-tbody style="background-color: #87e8de">
       <tr nz-tbody-tr *ngFor="let data of tableData" [ngStyle]="getTrStyle(data)" style="line-height: 5px">
-        <!--<td nz-td nzCheckbox>-->
-          <!--<label nz-checkbox  [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">-->
-          <!--</label>-->
-        <!--</td>-->
         <td nz-td style="text-align: center;line-height: 10px;padding: 5px;line-height: 10px;padding: 5px" *ngFor="let key of getkeys(data)">
           <span>
             {{data[key]}}
           </span>
         </td>
       </tr>
-      <!--<tr nz-tbody-tr>-->
-        <!--<td nz-td style="text-align: center;line-height: 10px;padding: 5px"><el-button type="primary" size="mini">合计</el-button></td>-->
-        <!--<td *ngFor="let sum of sums" style="text-align: center;line-height: 10px;padding: 5px">{{sum}}</td>-->
-      <!--</tr>-->
+      <tr nz-tbody-tr style="background-color: #67C23A" *ngFor="let sum of sums">
+        <td nz-td *ngFor="let key of getkeys(sum)" style="line-height: 10px;padding: 5px">{{sum[key]}}</td>
+      </tr>
       </tbody>
     </nz-table>
   </div>

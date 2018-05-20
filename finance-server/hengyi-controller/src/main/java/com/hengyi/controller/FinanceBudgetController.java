@@ -38,6 +38,10 @@ public class FinanceBudgetController {
     }
     @Resource
     private FinanceBudgetService financeBudgetService;
+    @RequestMapping(value = "/test")
+    public void test(HttpServletRequest request){
+        System.out.println(request.getParameter("aaa"));
+    }
 
     /***
      * 获取详细数据（预算和实际数据都有）
@@ -76,6 +80,23 @@ public class FinanceBudgetController {
         try {
             ConditionVo conditionVo=InputSteamToJSON.getParams(request.getInputStream(),ConditionVo.class);
             List<Map<String,Object>> list=financeBudgetService.getSumDetail(conditionVo);
+            return ServerResponse.createBySuccess(Const.SUCCESS_MSG,list);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ServerResponse.createByError(Const.FAIL_MSG);
+    }
+    @RequestMapping(value = "/getSumOverview")
+    @ResponseBody
+    public ServerResponse<List<Map<String,Object>>> getSumOverview(HttpServletRequest request,HttpServletResponse response){
+        try {
+            ConditionVo conditionVo=InputSteamToJSON.getParams(request.getInputStream(),ConditionVo.class);
+            if ("dimension".equals(conditionVo.getDimension())) {
+                conditionVo.setPriceOrconsumer("checkUnitPrice");
+            }else if ("noneDimension".equals(conditionVo.getDimension())){
+                conditionVo.setPriceOrconsumer("cost");
+            }
+            List<Map<String,Object>> list=financeBudgetService.getSumOverview(conditionVo);
             return ServerResponse.createBySuccess(Const.SUCCESS_MSG,list);
         }catch (Exception e){
             e.printStackTrace();

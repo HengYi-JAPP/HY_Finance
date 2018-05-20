@@ -32,7 +32,8 @@ public class InputSteamToJSON {
                 baos.write(str.getBytes());
             }
             baos.flush();
-            System.out.println("传入>>>>>>>>>>>>>:"+baos.toString());
+            LoggerUtil.info("传入>>>>>>>"+baos.toString());
+//            System.out.println("传入>>>>>>>>>>>>>:"+baos.toString());
             json = JSONObject.parseObject(baos.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,7 +92,8 @@ public class InputSteamToJSON {
                 baos.write(str.getBytes());
             }
             baos.flush();
-            System.out.println("传入Array>>>>>>>>>>>>>:"+baos.toString());
+            LoggerUtil.info("传入Array>>>>>>>>"+baos.toString());
+//            System.out.println("传入Array>>>>>>>>>>>>>:"+baos.toString());
             jsonarray = JSONArray.parseArray(baos.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,7 +137,8 @@ public class InputSteamToJSON {
                 baos.write(str.getBytes());
             }
             baos.flush();
-            System.out.println("fast传入>>>>>>>>>>>>>:"+baos.toString());
+            LoggerUtil.info("fast传入>>>>>>>>>"+ baos.toString());
+//            System.out.println("fast传入>>>>>>>>>>>>>:"+baos.toString());
             json = JSONObject.parseObject(baos.toString());
         } catch (IOException e) {
             e.printStackTrace();
@@ -176,7 +179,8 @@ public class InputSteamToJSON {
                 baos.write(str.getBytes());
             }
             baos.flush();
-            System.out.println("fast传入>>>>>>>>>>>>>:"+baos.toString());
+            LoggerUtil.info("fast传入>>>>>>>:"+ baos.toString());
+//            System.out.println("fast传入>>>>>>>>>>>>>:"+baos.toString());
             json = JSONObject.parseObject(baos.toString());
         } catch (IOException e) {
             e.printStackTrace();
@@ -213,7 +217,8 @@ public class InputSteamToJSON {
             baos.write(str.getBytes());
         }
         baos.flush();
-        System.out.println("fastJsonArr传入>>>>>>>>>>>>>:"+baos.toString());
+        LoggerUtil.info("fastJsonArr传入>>>>>>>>>");
+//        System.out.println("fastJsonArr传入>>>>>>>>>>>>>:"+baos.toString());
         jsonArray = JSONArray.parseArray(baos.toString());
         try {
             if (br != null) {
@@ -246,7 +251,8 @@ public class InputSteamToJSON {
             baos.write(str.getBytes());
         }
         baos.flush();
-        System.out.println("fastJsonArr传入>>>>>>>>>>>>>:"+baos.toString());
+        LoggerUtil.info("fastJsonArr传入>>>>>>>>>:"+baos.toString());
+//        System.out.println("fastJsonArr传入>>>>>>>>>>>>>:"+baos.toString());
         jsonArray = JSONArray.parseArray(baos.toString());
         try {
             if (br != null) {

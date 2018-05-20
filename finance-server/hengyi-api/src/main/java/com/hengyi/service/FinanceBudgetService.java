@@ -29,6 +29,8 @@ public interface FinanceBudgetService {
 
     // 获取详情合计的均值
     List<Map<String,Object>> getSumDetail(ConditionVo conditionVo);
+    // 获取概览合计的均值
+    List<Map<String,Object>> getSumOverview(ConditionVo conditionVo);
 
     //获取字典表数据
     List<DictionaryDomain> getDictionary();

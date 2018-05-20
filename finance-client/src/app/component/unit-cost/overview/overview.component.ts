@@ -16,6 +16,7 @@ export class UnitOverviewComponent {
   _total = 1; // 默认总记录数为1
   _current = 1; // 默认当前页为1
   _pageSize = 10; // 默认每页显示10条记录
+  sums: any[] = [];
   // _year = '';
   // _month = '';
   _startMonth = '';
@@ -162,9 +163,32 @@ export class UnitOverviewComponent {
       if (params[array[i]]) {
         param = param + '&' + array[i] + '=' + params[array[i]];
       }
-    })
+    });
     const a = window.open(this.downloadUrl + param);
     a.document.execCommand('SaveAs');
+  }
+  sumCheck() {
+    const params = {
+      // year: this._year,
+      // month: this._month,
+      startMonth: this._startMonth,
+      endMonth: this._endMonth,
+      company: this._company,
+      product: this._product,
+      workshop: this._workshop,
+      productLine: this._productLine,
+      spec: this._spec,
+      demesion: this.dimension,
+      stageType: this.stageType
+    };
+    if (this.sums != null) {
+      this.sums.splice(0, this.sums.length);
+    }
+    this.budgetService.getSumOverview(params).subscribe(
+      data => {
+        this.sums = data.data;
+      }
+    );
   }
   getTrStyle(data) {
     return {

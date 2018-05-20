@@ -40,4 +40,8 @@ export class BudgetService {
   getNewlyIncreased(param): Observable<any> {
     return this.response.appPost(param, url + '/getNewlyIncreased');
   }
+  // 获取概览的合计均值
+  getSumOverview(param): Observable<any> {
+    return this.response.appPost(param, url + '/getSumOverview');
+  }
 }

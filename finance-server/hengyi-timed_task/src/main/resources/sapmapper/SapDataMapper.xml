@@ -621,7 +621,7 @@
           when maktx like '%三甘醇%' then 1
           when maktx like '%二氧化钛%' then 1
           when  maktx like '%乙二醇锑%' then 1
-          when  maktx like '%季戊四醇%' then 1~
+          when  maktx like '%季戊四醇%' then 1
           else 2 end kind,matnr,maktx from sap_makt) e
           on a.matnr_mx=e.matnr
           left join sap_makt f

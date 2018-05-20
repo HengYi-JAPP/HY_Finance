@@ -37,7 +37,7 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-    @Scheduled(cron = "00 00 11 * * ?")
+    @Scheduled(cron = "00 52 18 * * ?")
     public void getsapdata() {
         ArrayList<SapDataBean> datalist = new ArrayList<SapDataBean>();
         ArrayList<String> companylist = new ArrayList<String>();
@@ -45,7 +45,7 @@ public class SapDataTaskImpl implements SapDataTask {
         System.out.println("同步开始");
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
-//        sapDataMonthBean.setMonth(new BigDecimal(2));
+        sapDataMonthBean.setMonth(new BigDecimal(5));
         //查找所有公司并放入集合
         companylist = financeDataMapper.selectallcompany();
         //将生产线匹配关系放入集合

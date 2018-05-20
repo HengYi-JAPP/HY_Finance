@@ -182,7 +182,7 @@ export class UnitBudgetComponent {
       if (params[array[i]]) {
         param = param + '&' + array[i] + '=' + params[array[i]];
       }
-    })
+    });
     const a = window.open(this.downloadUrl + param);
     a.document.execCommand('SaveAs');
     // this.budgetService.exportExcel(this.downloadUrl, params).subscribe(
@@ -222,7 +222,7 @@ export class UnitBudgetComponent {
       workshop: this._workshop,
       productLine: this._productLine,
       spec: this._spec,
-      priceOrconsumer: 'checkUnitPrice',
+      priceOrconsumer: this.priceORconsumer,
       type: this._fact ? (this._budget ? '' : '实际') : (this._budget ? '预算' : '无')
     };
     if (this.sums != null) {

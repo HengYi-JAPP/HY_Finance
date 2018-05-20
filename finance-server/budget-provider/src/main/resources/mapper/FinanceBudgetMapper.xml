@@ -327,7 +327,7 @@
     <!--获取规格列表-->
     <select id="getSpec" parameterType="com.hengyi.vo.ConditionVo" resultType="java.util.HashMap">
         SELECT DISTINCT(spec) FROM Budgetdetail WHERE 1=1
-        <if test="startMonth != nulll">
+        <if test="startMonth != null">
             AND STR_TO_DATE((CONCAT(`year`,'-',`month`)),'%Y-%m') &gt;= STR_TO_DATE(#{startMonth},'%Y-%m')
         </if>
         <if test="endMonth != null">

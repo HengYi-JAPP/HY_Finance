@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MaterialManageService} from '../../../api/materialManage.service';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 
 @Component({
   selector: 'app-material-manage',
@@ -20,9 +20,17 @@ export class MaterialManageComponent implements OnInit {
   _displayData = [];
   matchCondition = 'matched';
   isVisible = false;
+  validateForm: FormGroup;
+  controlArray = [];
   constructor(private materialManageService: MaterialManageService, private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.validateForm = this.fb.group({});
+
+    for (let i = 0; i < 10; i++) {
+      this.controlArray.push({ index: i, show: i < 6 });
+      this.validateForm.addControl(`field${i}`, new FormControl());
+    }
     this.findList();
   }
   _displayDataChange($event) {
@@ -44,8 +52,8 @@ export class MaterialManageComponent implements OnInit {
   //  获取物料匹配关系表信息
   findList() {
     const params = {
-      pageIndex: 1,
-      pageCount: 50
+      pageIndex: this._current,
+      pageCount: this._pageSize
     };
     // 查询已经匹配上的物料匹配关系
     if ('matched' === this.matchCondition) {
@@ -92,15 +100,15 @@ export class MaterialManageComponent implements OnInit {
   }
   addMaterialList() {
     this.showModal();
-    const params = {};
-    this.materialManageService.addMatchedMaterial(params).subscribe(
-      data => {
-        this.findList();
-      },
-      error2 => {
-        this._loading = false;
-      }
-    );
+    // const params = {};
+    // this.materialManageService.addMatchedMaterial(params).subscribe(
+    //   data => {
+    //     this.findList();
+    //   },
+    //   error2 => {
+    //     this._loading = false;
+    //   }
+    // );
   }
   // 改变分页时执行的方法
   changeList() {
