@@ -411,16 +411,16 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
     </insert>
     <insert id="insertbudgetdetail2" parameterType="com.hengyi.bean.BudgetdetailBean">
         INSERT INTO BudgetdetailAdd (
-        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type,
-        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
+        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type
+        <!--<foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
             ${item.field}
-        </foreach>
+        </foreach>-->
         )
         VALUES (
-        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际',
-        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
-            #{item.id}
-        </foreach>
+        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际'
+        <!--<foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">-->
+            <!--#{item.id}-->
+        <!--</foreach>-->
         )
     </insert>
     <insert id="insertdetail2" parameterType="com.hengyi.bean.BudgetdetailBean">

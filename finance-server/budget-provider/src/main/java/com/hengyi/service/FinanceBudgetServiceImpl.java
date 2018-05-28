@@ -359,7 +359,10 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                             }
                         }else{
                             //对预算进行求和
-                            sumBudget=sumBudget+Double.parseDouble(mapList.get(i).get(key+"1").toString())*Double.parseDouble(mapList.get(i-1).get("budget_total_product").toString());
+                            if ("budget_total_product".equals(key)) {
+                            }else {
+                                sumBudget=sumBudget+Double.parseDouble(mapList.get(i).get(key+"1").toString())*Double.parseDouble(mapList.get(i-1).get("budget_total_product").toString());
+                            }
                         }
                     }
                 }
@@ -399,7 +402,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         //存放计算结果
         List<Map<String,Object>> list= null;
         double sumFactProduct=0;
-        String [] array=new String[]{"company","month","year","product","workshop","line","spec","yarnKind","AArate","FSrate","day_product"};
+        String [] array=new String[]{"company","month","year","product","workshop","line","spec","yarnKind"};
         String [] array2=new String[]{conditionVo.getCompany(),conditionVo.getStartMonth().toString(),conditionVo.getEndMonth().toString(),conditionVo.getProduct(),conditionVo.getWorkshop(),conditionVo.getProductLine(),conditionVo.getSpec(),null,null,null,null};
         fact.put("type","实际");
         budget.put("type","预算");
@@ -440,13 +443,31 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                                 }
                             }else{
                                 //对预算进行求和
-                                sumBudget=sumBudget+Double.parseDouble(list.get(i).get(key+"1").toString())*Double.parseDouble(list.get(i-1).get("budget_total_product").toString());
+                                if("budget_total_product".equals(key)){
+                                }else {
+                                    sumBudget=sumBudget+Double.parseDouble(list.get(i).get(key).toString())*Double.parseDouble(list.get(i-1).get("budget_total_product").toString());
+                                }
                             }
                         }
                     }
+                    fact.put(key,sumFactProduct);
+                    budget.put(key,sumFactProduct);
+                    budget.put(key,sumFactProduct);
+                    if (sumFactProduct==0){
+                        fact.put(key,0);
+                        budget.put(key,0);
+                        difference.put(key,0);
+                    }else {
+                        fact.put(key,new BigDecimal(sumFact/sumFactProduct).setScale(5,BigDecimal.ROUND_HALF_UP));
+                        budget.put(key,new BigDecimal(sumBudget/sumFactProduct).setScale(5,BigDecimal.ROUND_HALF_UP));
+                        difference.put(key,new BigDecimal(sumFact/sumFactProduct-sumBudget/sumFactProduct).setScale(5,BigDecimal.ROUND_HALF_UP));
+                    }
                 }
             }
-        return null;
+        resultList.add(fact);
+        resultList.add(budget);
+        resultList.add(difference);
+        return resultList;
     }
 
 //    /***
@@ -632,7 +653,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                 if (row==null){
                     continue;
                 }
-                if (i >= 4&&row.getCell(0)!=null&&!ExcelUtil.changetostring(row.getCell(0)).equals("")) {
+                if (i >= 4&&row.getCell(0)!=null&&!ExcelUtil.changetostring(row.getCell(0),j,i,0).equals("")) {
                     //一行数据作为一个对象插入
                     BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
                     budgetdetailBean.setType("预算");
@@ -648,22 +669,22 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                             //一列数据作为一个对象插入
                             MaterialcostdetailsBean mcdb = new MaterialcostdetailsBean();
                             //名称
-                            mcdb.setMaterialName(ExcelUtil.changetostring(cell_name));
+                            mcdb.setMaterialName(ExcelUtil.changetostring(cell_name,j,3,k));
                             //单耗
-                            if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell))) {
-                                mcdb.setConsumption(new BigDecimal((ExcelUtil.changenumbertostring(cell))));
+                            if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell,j,i,k))) {
+                                mcdb.setConsumption(new BigDecimal((ExcelUtil.changenumbertostring(cell,j,i,k))));
                             }else {
                                 continue;
                             }
                             //单价
-                            if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price))) {
-                                mcdb.setPrice(new BigDecimal(ExcelUtil.changenumbertostring(cell_price)));
+                            if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price,j,0,k))) {
+                                mcdb.setPrice(new BigDecimal(ExcelUtil.changenumbertostring(cell_price,j,0,k)));
                             }else {
                                 continue;
                             }
                             //单位成本
-                            if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price)) && StringUtil.isNotEmpty(ExcelUtil.changetostring(cell))) {
-                                BigDecimal decimal = new BigDecimal(ExcelUtil.changenumbertostring(cell)).multiply(new BigDecimal(ExcelUtil.changenumbertostring(cell_price)));
+                            if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price,j,0,k)) && StringUtil.isNotEmpty(ExcelUtil.changetostring(cell,j,i,k))) {
+                                BigDecimal decimal = new BigDecimal(ExcelUtil.changenumbertostring(cell,j,i,k)).multiply(new BigDecimal(ExcelUtil.changenumbertostring(cell_price,j,0,k)));
                                 mcdb.setUnitPrice(decimal);
                             }else {
                                 continue;
@@ -690,31 +711,31 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                     Cell cell_dayProduct = sheet.getRow(i).getCell(10);
                     Cell cell_budgetTotalProduct = sheet.getRow(i).getCell(11);
 
-                    budgetdetailBean.setCompany(ExcelUtil.changeinttostring(cell_company));
+                    budgetdetailBean.setCompany(ExcelUtil.changeinttostring(cell_company,j,i,0));
 
-                    if (StringUtil.isNotEmpty(ExcelUtil.changeinttostring(cell_month))) {
-                        budgetdetailBean.setMonth(new BigDecimal(ExcelUtil.changeinttostring(cell_month)));
+                    if (StringUtil.isNotEmpty(ExcelUtil.changeinttostring(cell_month,j,i,1))) {
+                        budgetdetailBean.setMonth(new BigDecimal(ExcelUtil.changeinttostring(cell_month,j,i,1)));
                     }
-                    if (StringUtil.isNotEmpty(ExcelUtil.changeinttostring(cell_year))) {
-                        budgetdetailBean.setYear(new BigDecimal(ExcelUtil.changeinttostring(cell_year)));
+                    if (StringUtil.isNotEmpty(ExcelUtil.changeinttostring(cell_year,j,i,2))) {
+                        budgetdetailBean.setYear(new BigDecimal(ExcelUtil.changeinttostring(cell_year,j,i,2)));
                     }
-                    budgetdetailBean.setProduct(ExcelUtil.changetostring(cell_product));
-                    budgetdetailBean.setWorkshop(ExcelUtil.changetostring(cell_workshop));
-                    budgetdetailBean.setLine(ExcelUtil.changeinttostring(cell_line));
-                    budgetdetailBean.setSpec(ExcelUtil.changetostring(cell_spec));
-                    budgetdetailBean.setYarnkind(ExcelUtil.changetostring(cell_yarnkind));
+                    budgetdetailBean.setProduct(ExcelUtil.changetostring(cell_product,j,i,3));
+                    budgetdetailBean.setWorkshop(ExcelUtil.changetostring(cell_workshop,j,i,4));
+                    budgetdetailBean.setLine(ExcelUtil.changeinttostring(cell_line,j,i,5));
+                    budgetdetailBean.setSpec(ExcelUtil.changetostring(cell_spec,j,i,6));
+                    budgetdetailBean.setYarnkind(ExcelUtil.changetostring(cell_yarnkind,j,i,7));
 
-                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_aarate))) {
-                        budgetdetailBean.setAarate(new BigDecimal(ExcelUtil.changenumbertostring(cell_aarate)));
+                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_aarate,j,i,8))) {
+                        budgetdetailBean.setAarate(new BigDecimal(ExcelUtil.changenumbertostring(cell_aarate,j,i,8)));
                     }
-                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_fsrate))) {
-                        budgetdetailBean.setFsrate(new BigDecimal(ExcelUtil.changenumbertostring(cell_fsrate)));
+                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_fsrate,j,i,9))) {
+                        budgetdetailBean.setFsrate(new BigDecimal(ExcelUtil.changenumbertostring(cell_fsrate,j,i,9)));
                     }
-                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_dayProduct))) {
-                        budgetdetailBean.setDayProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_dayProduct)));
+                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_dayProduct,j,i,10))) {
+                        budgetdetailBean.setDayProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_dayProduct,j,i,10)));
                     }
-                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_budgetTotalProduct))) {
-                        budgetdetailBean.setBudgetTotalProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_budgetTotalProduct)));
+                    if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_budgetTotalProduct,j,i,11))) {
+                        budgetdetailBean.setBudgetTotalProduct(new BigDecimal(ExcelUtil.changenumbertostring(cell_budgetTotalProduct,j,i,11)));
                     }
                     String[] lines=new String[1];
                     //遍历一行中的所有的数据添加进budgetdetailBeanList集合
@@ -820,6 +841,7 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
                     if ("1".equals(key.substring(key.length() - 1, key.length()))) {
                         hashMapBudget = getValue(hashMapBudget, key1, conditionVo, map);
                         StringBuilder sb = new StringBuilder(key);
+//                        System.out.println(hashMapBudget.get(key));
                         hashMapDifference.put(key, new BigDecimal(hashMapFact.get(sb.deleteCharAt(sb.length() - 1).toString()).toString()).subtract(new BigDecimal(hashMapBudget.get(key).toString())));
                     } else {
                         hashMapFact = getValue(hashMapFact, key, conditionVo, map);

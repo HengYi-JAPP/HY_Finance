@@ -38,11 +38,6 @@ public class FinanceBudgetController {
     }
     @Resource
     private FinanceBudgetService financeBudgetService;
-    @RequestMapping(value = "/test")
-    public void test(HttpServletRequest request){
-        System.out.println(request.getParameter("aaa"));
-    }
-
     /***
      * 获取详细数据（预算和实际数据都有）
      * @param request
@@ -86,6 +81,13 @@ public class FinanceBudgetController {
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
+
+    /***
+     * 获取概览均值
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/getSumOverview")
     @ResponseBody
     public ServerResponse<List<Map<String,Object>>> getSumOverview(HttpServletRequest request,HttpServletResponse response){

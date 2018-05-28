@@ -50,7 +50,8 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      */
 //    @Scheduled(cron = "00 30 05 * * ?")
     @Override
-    @Scheduled(cron = "00 30 12 * * ?")
+//    @Scheduled(cron = "00 45 18 * * ?")
+    @Scheduled(cron = "00 00 20 * * ?")
     public void productlinedatatask() {
         System.out.println("开始存放");
         //集合存放每条生产线的各个成本项数据
@@ -61,7 +62,7 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
         ArrayList<MaterialMatchBean> materialmatchlist = new ArrayList<MaterialMatchBean>();
         //获得当前时间的年份与上个月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
-//        sapDataMonthBean.setMonth(new BigDecimal(2));
+//        sapDataMonthBean.setMonth(new BigDecimal(4));
         //根据id清除上月实际materialcostdetail表的数据
         financeDataMapper.deleteMaterialCostDetails(sapDataMonthBean);
         //清空原有表中的上个月份实际生产数据以便重新导入
@@ -182,7 +183,8 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      *从SAP定期同步数据到本系统Mysql数据库,将物料描述分解成生产线、规格、产品等信息,存放到BudgetdetailAdd表中
      */
     @Override
-    @Scheduled(cron = "00 30 12 * * ?")
+//    @Scheduled(cron = "00 45 18 * * ?")
+//    @Scheduled(cron = "00 05 18 * * ?")
     public void productlinedatatask2() {
         System.out.println("开始存放实际数据(用于查询出新增规格)");
         //集合存放每条生产线的各个成本项数据
@@ -193,11 +195,11 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
         ArrayList<MaterialMatchBean> materialmatchlist = new ArrayList<MaterialMatchBean>();
         //获得当前时间的年份与上个月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
-//        sapDataMonthBean.setMonth(new BigDecimal(2));
+//        sapDataMonthBean.setMonth(new BigDecimal(5));
         //清空原有表中的上个月份实际生产数据以便重新导入
         financeDataMapper.deletebudgetbymonth2(sapDataMonthBean);
-        //查询物料匹配关系
-        materialmatchlist = financeDataMapper.selectmaterialmatch();
+//        //查询物料匹配关系
+//        materialmatchlist = financeDataMapper.selectmaterialmatch();
         //查询上个月每条生产线的各个成本项数据
         materialoflinelist = financeDataMapper.selectmaterialofline2(sapDataMonthBean);
         /**
@@ -210,10 +212,10 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
             //设置budgetdetailBeanlist中未存在该生产线、规格、纱种（差异化）维度的对象
             boolean budgetdetailBeanexist = false;
             //设置materialoflinelist中未匹配上的物料号
-            for (MaterialMatchBean materialMatchBean : materialmatchlist) {
+//            for (MaterialMatchBean materialMatchBean : materialmatchlist) {
                 //如果本条记录匹配成功，说明该生产记录是财务预算分析所需要的数据
-                if ((materialMatchBean.getMaterialId() != null && StringUtil.equals(materialOfLineSelectBean.getCostMaterialId(), "00000000" + materialMatchBean.getMaterialId())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))
-                        || (materialMatchBean.getCostId() != null && StringUtil.equals(materialOfLineSelectBean.getCostId(), materialMatchBean.getCostId()) && StringUtil.equals(materialMatchBean.getState(), materialOfLineSelectBean.getState())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))) {
+//                if ((materialMatchBean.getMaterialId() != null && StringUtil.equals(materialOfLineSelectBean.getCostMaterialId(), "00000000" + materialMatchBean.getMaterialId())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))
+//                        || (materialMatchBean.getCostId() != null && StringUtil.equals(materialOfLineSelectBean.getCostId(), materialMatchBean.getCostId()) && StringUtil.equals(materialMatchBean.getState(), materialOfLineSelectBean.getState())&&StringUtil.equals(materialOfLineSelectBean.getState(),materialMatchBean.getState()))) {
 
                     //对budgetdetailBeanlist进行遍历，查看是否已有该生产线、规格、维度的对象
                     // 如果没有则添加，如果有则更新
@@ -227,64 +229,22 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
                                 && MathUtil.bigdecimalequals(budgetdetailBean.getYear(), materialOfLineSelectBean.getYear())
                                 && StringUtil.equals(budgetdetailBean.getType(), "实际")
                                 ) {
-                            boolean materialcostdetailsBeanexist = false;
-                            for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
-                                if (StringUtil.equals(materialcostdetailsBean.getMaterialName(), materialMatchBean.getMaterialName())) {
-                                    materialcostdetailsBean.setState(materialOfLineSelectBean.getState());
-                                    materialcostdetailsBean.setMoney(MathUtil.add(materialcostdetailsBean.getMoney(),materialOfLineSelectBean.getMoney()));
-                                    materialcostdetailsBean.setKwmeng(MathUtil.add(materialcostdetailsBean.getKwmeng(),materialOfLineSelectBean.getCostQuantity()));
-                                    materialcostdetailsBean.setUnitPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),budgetdetailBean.getBudgetTotalProduct()));
-                                    materialcostdetailsBean.setConsumption(MathUtil.divide(materialcostdetailsBean.getKwmeng(),budgetdetailBean.getBudgetTotalProduct()));
-                                    materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),materialcostdetailsBean.getKwmeng()));
-                                    materialcostdetailsBeanexist = true;
-                                    break;
-                                }
-                            }
-                            if (!materialcostdetailsBeanexist) {
-                                MaterialcostdetailsBean materialcostdetailsBean = new MaterialcostdetailsBean();
-                                materialcostdetailsBean.setMaterialName(materialMatchBean.getMaterialName());
-                                materialcostdetailsBean.setState(materialOfLineSelectBean.getState());
-                                materialcostdetailsBean.setField(materialMatchBean.getField());
-                                materialcostdetailsBean.setMoney(materialOfLineSelectBean.getMoney());
-                                materialcostdetailsBean.setKwmeng(materialOfLineSelectBean.getCostQuantity());
-                                materialcostdetailsBean.setUnitPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),budgetdetailBean.getBudgetTotalProduct()));
-                                materialcostdetailsBean.setConsumption(MathUtil.divide(materialcostdetailsBean.getKwmeng(),budgetdetailBean.getBudgetTotalProduct()));
-                                materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),materialcostdetailsBean.getKwmeng()));
-                                budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(materialcostdetailsBean);
-                            }
-                            budgetdetailBeanexist = true;
+                            budgetdetailBeanexist=true;
                             break;
-                        }
                     }
-                    if (!budgetdetailBeanexist) {
-                        BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
-                        budgetdetailBean.setCompany(materialOfLineSelectBean.getCompany());
-                        budgetdetailBean.setProduct(materialOfLineSelectBean.getProductName());
-                        budgetdetailBean.setMonth(materialOfLineSelectBean.getMonth());
-                        budgetdetailBean.setYear(materialOfLineSelectBean.getYear());
-                        budgetdetailBean.setWorkshop(materialOfLineSelectBean.getWorkShop());
-                        budgetdetailBean.setType("实际");
-                        BigDecimal totalProduct =MathUtil.divide(new BigDecimal(financeDataMapper.selectproductquantity2(materialOfLineSelectBean)), new BigDecimal("1000"));
-                        if (totalProduct!=null){
-                            budgetdetailBean.setBudgetTotalProduct(totalProduct);
-                        }
-                        budgetdetailBean.setLine(materialOfLineSelectBean.getProductLine());
-                        budgetdetailBean.setSpec(materialOfLineSelectBean.getProductSpecifications());
-                        budgetdetailBean.setYarnkind(materialOfLineSelectBean.getProductYarn());
-                        MaterialcostdetailsBean materialcostdetailsBean = new MaterialcostdetailsBean();
-                        materialcostdetailsBean.setMaterialName(materialMatchBean.getMaterialName());
-                        materialcostdetailsBean.setState(materialOfLineSelectBean.getState());
-                        materialcostdetailsBean.setMoney(materialOfLineSelectBean.getMoney());
-                        materialcostdetailsBean.setKwmeng(materialOfLineSelectBean.getCostQuantity());
-                        materialcostdetailsBean.setUnitPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),budgetdetailBean.getBudgetTotalProduct()));
-                        materialcostdetailsBean.setConsumption(MathUtil.divide(materialcostdetailsBean.getKwmeng(),budgetdetailBean.getBudgetTotalProduct()));
-                        materialcostdetailsBean.setPrice(MathUtil.divide(materialcostdetailsBean.getMoney(),materialcostdetailsBean.getKwmeng()));
-                        materialcostdetailsBean.setField(materialMatchBean.getField());
-                        budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(materialcostdetailsBean);
-                        budgetdetailBeanlist.add(budgetdetailBean);
-                    }
-                    break;
                 }
+            if (!budgetdetailBeanexist){
+                BudgetdetailBean budgetdetailBean1 = new BudgetdetailBean();
+                budgetdetailBean1.setCompany(materialOfLineSelectBean.getCompany());
+                budgetdetailBean1.setProduct(materialOfLineSelectBean.getProductName());
+                budgetdetailBean1.setMonth(materialOfLineSelectBean.getMonth());
+                budgetdetailBean1.setYear(materialOfLineSelectBean.getYear());
+                budgetdetailBean1.setWorkshop(materialOfLineSelectBean.getWorkShop());
+                budgetdetailBean1.setType("实际");
+                budgetdetailBean1.setLine(materialOfLineSelectBean.getProductLine());
+                budgetdetailBean1.setSpec(materialOfLineSelectBean.getProductSpecifications());
+                budgetdetailBean1.setYarnkind(materialOfLineSelectBean.getProductYarn());
+                budgetdetailBeanlist.add(budgetdetailBean1);
             }
         }
         //将得到的budgetdetailBeanlist对象遍历插入到BudgetDetail表中，获得实际生产数据 生产线、规格、纱种（差异化）维度的数据
@@ -307,12 +267,12 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      */
 //    @Scheduled(cron = "00 30 06 * * ?")
     @Override
-    @Scheduled(cron = "00 00 13 * * ?")
+//    @Scheduled(cron = "00 15 01 * * ?")
     public void unitpricecomparetask ()  {
         System.out.println("开始计算");
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
-//        sapDataMonthBean.setMonth(new BigDecimal(2));
+//        sapDataMonthBean.setMonth(new BigDecimal(5));
         //每次更新之前清空相应数据
         financeDataMapper.deleteunitpricecomparebymonth(sapDataMonthBean);
         //查询上月的所有详情数据，包含实际与预算
@@ -465,24 +425,6 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
         Date day=new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("计算结束时间："+df.format(day));
-    }
-
-    /***
-     * 考核维度单位成本
-     */
-//    @Scheduled(cron = "00 00 00 02 * ?")
-    public void checkBudgetUnitPrice(){
-        ConditionVo conditionVo=new ConditionVo();
-        conditionVo.setPriceOrconsumer("price");
-        conditionVo.setLimit(10);
-        conditionVo.setOffset(10);
-        conditionVo.setPageIndex(2);
-        conditionVo.setPageCount(10);
-//        List<Map<String, Object>> list = financeBudgetService.getDetailData(conditionVo);
-////        for (Map<String,Object> map:list) {
-//        for (String key: list.get(0).keySet()) {
-//            System.out.println("key:" + key);
-//        }
     }
 }
 

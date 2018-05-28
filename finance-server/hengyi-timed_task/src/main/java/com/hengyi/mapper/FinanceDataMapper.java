@@ -228,7 +228,7 @@ public interface FinanceDataMapper {
      * @param budgetdetailBean
      * @return
      */
-    public ArrayList<String> selectBudgetdetailAdd(BudgetdetailBean budgetdetailBean);
+//    public ArrayList<String> selectBudgetdetailAdd(BudgetdetailBean budgetdetailBean);
 
     /***
      * 将解析同步过来的数据放到FinanceSapDataAdd表中
