@@ -212,6 +212,7 @@ export class UnitBudgetComponent {
   }
   // 计算均值的方法
   sumCheck() {
+    this._loading = true;
     const params = {
       // year: this._year,
       // month: this._month,
@@ -231,6 +232,10 @@ export class UnitBudgetComponent {
     this.budgetService.getSumDetail(params).subscribe(
       data => {
           this.sums = data.data;
+          this._loading = false;
+      },
+      error2 => {
+        this._loading = false;
       }
     );
   }
