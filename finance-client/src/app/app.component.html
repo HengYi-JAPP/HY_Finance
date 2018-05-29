@@ -2,25 +2,23 @@
 
 <!--菜单栏配置页面-->
 <body style="overflow-y: hidden;overflow-x: hidden;width:100%;height:100%;MARGIN-RIGHT: auto;MARGIN-LEFT: auto;">
-<div style="height: 700px;background-color:#87e8de">
+<div style="height: 700px;"> 
   <div el-row>
-    <div style="background-color:#1890ff;height: 70px;float: left;width: 100%;text-align: center">
-      <img src="assets/picture/logo3.png" style="float: left; cursor:pointer;margin-left: 10px;margin-top: 10px"
-           routerLink="/Home" routerLinkActive="active">
+    <div style="background-color:#0070c1;height: 60px;float: left;width: 100%;text-align: center">
+      <img src="assets/picture/logo3.png" style="float: left; cursor:pointer;margin-left: 10px;margin-top: 10px; height: 40px;"
+        routerLink="/Home" routerLinkActive="active">
       <div id="nav" style="float: right;margin-right: 70px;margin-top: 10px;margin-bottom: 0px">
         <el-menu [model]="0" (modelChange)="handle($event)" class="el-menu-demo" mode="horizontal"
-                 background-color="#1890ff"
+                 background-color="#0070c1"
                  active-text-color="#b5f5ec"
                  text-color="white"
-
         >
-          <el-submenu index="2" title="Hi,欢迎使用财务预算系统" style="font-family:sans-serif,Times, serif;font-weight:900">
+          <el-submenu index="2" class="el-menu-title" title="Hi,欢迎使用财务预算系统" style="font-family:sans-serif,Times, serif;font-weight:900; height: 50px; line-height: 50px;">
             <el-menu-item index="2-1">查看个人信息</el-menu-item>
             <el-menu-item index="2-2">修改个人信息</el-menu-item>
             <el-menu-item index="2-3">退出登录</el-menu-item>
           </el-submenu>
         </el-menu>
-
       </div>
       <!--<h2  class="welcome-font"  >欢迎使用财务预算系统!</h2>-->
       <!--<el-tag *ngFor="let tag of  tags"-->
@@ -31,20 +29,26 @@
       <!--</el-tag>-->
     </div>
   </div>
-  <div el-row style="height: 580px">
+  <div el-row style="height:680px; background-color:  #2a2e34 !important;">
     <div el-col span="2" *ngIf="!isCollapse">
       <el-button class="anticon anticon-menu-unfold"
-                 style="  margin-bottom: 10px;border-style: none;margin-top: 10px;margin-right:10px;margin-left: 10px; background-color:#e6fffb"
+                 style="  margin-bottom: 10px;border-style: none;
+                 margin-top: 10px;margin-right:10px;margin-left: 10px; 
+                 background-color:#0070c1 !important;color: #fff;"
                  (click)="expand()"
                  size="small"></el-button>
-      <i class="anticon anticon-appstore" style="margin-left: 20px"></i>
+      <!-- <i class="anticon anticon-appstore" style="margin-left: 20px"></i> -->
     </div>
     <div el-col span="4" *ngIf="isCollapse">
-      <el-button class="anticon anticon-menu-fold"
-                 style=" border-style: none;margin-bottom: 10px;margin-left: 180px ;margin-top: 10px;background-color:#e6fffb"
-                 (click)="getTogether()"
-                 size="small"></el-button>
-      <ul class="ui-li-set" nz-menu [nzMode]="'inline'" [nzTheme]="'dark'" style="margin-top: 10px">
+      <div style="width: 100%;background-color:  #2a2e34 !important;">
+          <el-button class="anticon anticon-menu-fold"
+                    style=" border-style: none;margin-bottom: 
+                    10px;margin-left: 180px ;margin-top: 10px;"
+                    (click)="getTogether()"
+                    size="small">
+          </el-button>
+      </div>
+      <ul class="ui-li-set" nz-menu [nzMode]="'inline'" [nzTheme]="'dark'" style=" height: 700px;">
         <li class="ui-li-set" nz-submenu [nzOpen]="true">
           <span title>
             <i class="anticon anticon-appstore"></i>
@@ -136,7 +140,7 @@
 
 </div>
 <div class="footer">
-  <p style="text-align: center;color:black;margin-bottom: 10px;margin-top: auto;font-weight:500;">版权所有：恒逸集团 ©2010-2017
+  <p style="text-align: center;color:black;font-weight:500;line-height: 30px;color: #fff;">版权所有：恒逸集团 ©2010-2017
     Zhejiang Hengyi Group Co.,
     Ltd. All Rights Reserved </p>
 </div>
