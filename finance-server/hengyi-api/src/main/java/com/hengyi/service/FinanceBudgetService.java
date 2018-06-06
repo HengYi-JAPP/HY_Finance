@@ -84,4 +84,6 @@ public interface FinanceBudgetService {
      String exportAllCompanyExcel(ConditionVo conditionVo) throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException;
      //根据条件导出当个规格的数据
      String exportResultExcel(ConditionVo conditionVo) throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException;
+    //将导入的Excel表格的预算数据插入到数据库中
+    void insertBudgetData();
 }

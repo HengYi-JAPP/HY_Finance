@@ -3,28 +3,17 @@ package com.hengyi.job;
 import com.hengyi.bean.*;
 import com.hengyi.mapper.FinanceDataMapper;
 import com.hengyi.sapmapper.SapDataMapper;
-import com.hengyi.service.FinanceBudgetService;
 import com.hengyi.util.DateUtil;
-import com.hengyi.util.ExcelUtil;
+import com.hengyi.util.LoggerUtil;
 import com.hengyi.util.MathUtil;
 import com.hengyi.util.StringUtil;
-import com.hengyi.vo.ConditionVo;
-import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 
@@ -51,9 +40,12 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
 //    @Scheduled(cron = "00 30 05 * * ?")
     @Override
 //    @Scheduled(cron = "00 45 18 * * ?")
-    @Scheduled(cron = "00 00 20 * * ?")
+    @Scheduled(cron = "00 00 05 * * ?")
     public void productlinedatatask() {
-        System.out.println("开始存放");
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LoggerUtil.info("开始存放时间："+df.format(day));
+//        System.out.println("开始存放");
         //集合存放每条生产线的各个成本项数据
         ArrayList<MaterialOfLineSelectBean> materialoflinelist = new ArrayList<MaterialOfLineSelectBean>();
         //集合存放将要插入Budgetdetail表的对象
@@ -174,19 +166,21 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
             }
             financeDataMapper.insertbudgetdetail(budgetdetailBean);
         }
-        Date day=new Date();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("结束存放时间："+df.format(day));
+        Date day2=new Date();
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LoggerUtil.info("结束存放时间："+df.format(day2));
     }
 
     /***
      *从SAP定期同步数据到本系统Mysql数据库,将物料描述分解成生产线、规格、产品等信息,存放到BudgetdetailAdd表中
      */
     @Override
-//    @Scheduled(cron = "00 45 18 * * ?")
+    @Scheduled(cron = "00 00 05 * * ?")
 //    @Scheduled(cron = "00 05 18 * * ?")
     public void productlinedatatask2() {
-        System.out.println("开始存放实际数据(用于查询出新增规格)");
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println("开始存放实际数据(用于查询出新增规格)时间:"+df.format(day));
         //集合存放每条生产线的各个成本项数据
         ArrayList<MaterialOfLineSelectBean> materialoflinelist = new ArrayList<MaterialOfLineSelectBean>();
         //集合存放将要插入Budgetdetail表的对象
@@ -254,7 +248,9 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
 //            }
             financeDataMapper.insertbudgetdetail2(budgetdetailBean);
         }
-        System.out.println("结束存放2");
+        Date day2=new Date();
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println("结束存放2时间:"+df.format(day2));
     }
 
 
@@ -267,9 +263,12 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
      */
 //    @Scheduled(cron = "00 30 06 * * ?")
     @Override
-//    @Scheduled(cron = "00 15 01 * * ?")
+    @Scheduled(cron = "00 20 05 * * ?")
     public void unitpricecomparetask ()  {
-        System.out.println("开始计算");
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LoggerUtil.info("开始计算时间："+df.format(day));
+//        System.out.println("开始计算");
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
 //        sapDataMonthBean.setMonth(new BigDecimal(5));
@@ -422,9 +421,9 @@ public class FinanceDataTaskImpl implements FinanceDataTask {
               financeDataMapper.insertunitpricecomparedata(unitPriceCompareBean);
             }
            }
-        Date day=new Date();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("计算结束时间："+df.format(day));
+        Date day2=new Date();
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LoggerUtil.info("计算结束时间："+df.format(day2));
     }
 }
 

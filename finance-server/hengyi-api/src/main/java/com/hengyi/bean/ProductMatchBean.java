@@ -79,4 +79,5 @@ public class ProductMatchBean {
         this.productMatch = productMatch;
         this.productLine = productLine;
     }
+    public ProductMatchBean(){}
 }

@@ -11,8 +11,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ExcelUtil {
@@ -185,7 +183,7 @@ public class ExcelUtil {
      */
     public static BigDecimal changeToBigDecimal(String value,int sheetNum,int rowNum,int colNum){
         try {
-            BigDecimal bigDecimal=new BigDecimal(value);
+            BigDecimal bigDecimal=new BigDecimal(value.trim());
             return bigDecimal;
         }catch (Exception e){//如果出现异常就记录下第几个sheet第几行第几列的格式错误
             LoggerUtil.error("sheet:"+sheetNum+",row:"+rowNum+",col:"+colNum+"出现格式错误");

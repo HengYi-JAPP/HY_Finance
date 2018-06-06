@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,6 +33,19 @@ public interface FinanceDataMapper {
      * @return
      */
    public ArrayList<ProductMatchBean>  selectproductmatch();
+
+    /***
+     *获取字段名
+     * @return
+     */
+   public ArrayList<FieldBean> selectField();
+
+    /***
+     * 获取预算的值
+     * @param sapDataMonthBean
+     * @return
+     */
+    public List<BudgetdetailBean> selectBudgetDataByYear(SapDataMonthBean sapDataMonthBean);
 
     /**
      * 查找物料匹配关系
@@ -277,5 +291,30 @@ public interface FinanceDataMapper {
      * @param materialOfLineSelectBean
      */
     public void insertUnmatchedMaterial(MaterialOfLineSelectBean materialOfLineSelectBean);
+
+    /***
+     * 根据月份删除预算详情数据
+     * @param sapDataMonthBean
+     */
+    public void deleteBudgetDetail(SapDataMonthBean sapDataMonthBean);
+
+    /***
+     * 根据月份删除预算详情数据的值
+     * @param sapDataMonthBean
+     */
+    public void deleteBudgetDetailValue(SapDataMonthBean sapDataMonthBean);
+
+    /***
+     *
+     * @param sapDataMonthBean
+     * @return
+     */
+    public List<BudgetdetailBean> selectBudgetDataByMonth(SapDataMonthBean sapDataMonthBean);
+
+    /***
+     * 删除已经导入的相应月份数据
+     * @param sapDataMonthBean
+     */
+    public void deleteBudgetDetailAdd(SapDataMonthBean sapDataMonthBean);
 
 }

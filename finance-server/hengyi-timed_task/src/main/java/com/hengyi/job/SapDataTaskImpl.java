@@ -4,6 +4,7 @@ import com.hengyi.bean.*;
 import com.hengyi.mapper.FinanceDataMapper;
 import com.hengyi.sapmapper.SapDataMapper;
 import com.hengyi.util.DateUtil;
+import com.hengyi.util.LoggerUtil;
 import com.hengyi.util.MathUtil;
 import com.hengyi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +39,15 @@ public class SapDataTaskImpl implements SapDataTask {
      */
     @Override
     //@Scheduled(fixedRate = 1000*30)
-//    @Scheduled(cron = "00 41 09 * * ?")
+    @Scheduled(cron = "00 00 04 * * ?")
     public void getsapdata() {
         ArrayList<SapDataBean> datalist = new ArrayList<SapDataBean>();
         ArrayList<String> companylist = new ArrayList<String>();
         ArrayList<ProductMatchBean> productmatchlist = new ArrayList<>();
-        System.out.println("同步开始");
+//        System.out.println("同步开始");
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LoggerUtil.info("同步开始时间：");
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
 //        sapDataMonthBean.setMonth(new BigDecimal(5));
@@ -178,9 +182,10 @@ public class SapDataTaskImpl implements SapDataTask {
                 }
             }
         }
-        Date day=new Date();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("同步结束时间："+df.format(day));
+        Date day2=new Date();
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        System.out.println("同步结束时间："+df.format(day));
+        LoggerUtil.info("同步结束时间"+ df.format(day2));
     }
 
     /***
@@ -188,12 +193,15 @@ public class SapDataTaskImpl implements SapDataTask {
      * (每月的23号同步物料获取新增规格批号，每月月底同步获取当月产量，每月月初4号获取计算结果数据)
      */
     @Override
-//    @Scheduled(cron = "00 41 09 * * ?")
+    @Scheduled(cron = "00 00 04 * * ?")
     public void getsapdata2() {
         ArrayList<SapDataBean> datalist = new ArrayList<SapDataBean>();
         ArrayList<String> companylist = new ArrayList<String>();
         ArrayList<ProductMatchBean> productmatchlist = new ArrayList<>();
-        System.out.println("开始同步数据，不加过滤条件");
+        Date day=new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LoggerUtil.info("开始同步数据(不加过滤条件时间)2："+df.format(day));
+//        System.out.println("开始同步数据，不加过滤条件");
         //获得当前时间的年份与上月月份
         SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
 //        sapDataMonthBean.setMonth(new BigDecimal(5));
@@ -328,9 +336,9 @@ public class SapDataTaskImpl implements SapDataTask {
                 }
             }
         }
-        Date day=new Date();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("同步结束时间2："+df.format(day));
+        Date day2=new Date();
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        LoggerUtil.info("同步结束时间2："+df.format(day2));
     }
 
 

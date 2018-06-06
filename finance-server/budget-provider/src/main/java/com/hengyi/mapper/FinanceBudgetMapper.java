@@ -1,8 +1,6 @@
 package com.hengyi.mapper;
 
-import com.hengyi.bean.BudgetdetailBean;
-import com.hengyi.bean.MaterialcostdetailsBean;
-import com.hengyi.bean.ProductMatchBean;
+import com.hengyi.bean.*;
 import com.hengyi.domain.DetailAddDomain;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
@@ -112,9 +110,17 @@ public interface FinanceBudgetMapper {
      */
     List<DetailAddDomain> getNewlyIncreasd(ConditionVo conditionVo);
 
-
+    /***
+     * 根据物料名称获取字段名
+     * @param materialName
+     * @return
+     */
     ArrayList<String> selectfieldbymaterialname(String materialName);
 
+    /***
+     * 插入物料详情表价格
+     * @param materialcostdetailsBean
+     */
     void insertmaterialcostdetails(MaterialcostdetailsBean materialcostdetailsBean);
     /**
      * 插入一条预算的详情数据到BudgetDetail表中
@@ -152,4 +158,27 @@ public interface FinanceBudgetMapper {
      * @return
      */
     MaterialcostdetailsBean selectBudgetDetailById(Integer i);
+    /***
+     * 根据月份删除预算详情数据
+     * @param sapDataMonthBean
+     */
+    public void deleteBudgetDetail(SapDataMonthBean sapDataMonthBean);
+
+    /***
+     * 根据月份删除预算详情数据的值
+     * @param sapDataMonthBean
+     */
+    public void deleteBudgetDetailValue(SapDataMonthBean sapDataMonthBean);
+
+    /***
+     *
+     * @param sapDataMonthBean
+     * @return
+     */
+    public List<BudgetdetailBean> selectBudgetDataByYear(SapDataMonthBean sapDataMonthBean);
+    /***
+     *获取字段名
+     * @return
+     */
+    public ArrayList<FieldBean> selectField();
 }

@@ -2,6 +2,9 @@ package com.hengyi.util;
 
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
  * @author liuyuan
  * @create 2018-05-09 10:14
@@ -11,6 +14,14 @@ import org.slf4j.LoggerFactory;
  * 同时也不会有对象的创建与销毁造成的性能损失
  **/
 public class LoggerUtil {
+    //获取日志信息，以便输出到日志文件中
+    public static String getTrace(Throwable t) {
+         StringWriter stringWriter= new StringWriter();
+         PrintWriter writer= new PrintWriter(stringWriter);
+         t.printStackTrace(writer);
+         StringBuffer buffer= stringWriter.getBuffer();
+         return buffer.toString();
+    }
     public static void error(String msg) {
         LoggerFactory.getLogger(getClassName()).error(msg);
     }

@@ -1,13 +1,13 @@
 package com.hengyi.service;
 
-import com.hengyi.bean.BudgetdetailBean;
-import com.hengyi.bean.MaterialcostdetailsBean;
-import com.hengyi.bean.ProductMatchBean;
+import com.hengyi.bean.*;
 import com.hengyi.domain.DetailAddDomain;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
 import com.hengyi.mapper.FinanceBudgetMapper;
+import com.hengyi.util.DateUtil;
 import com.hengyi.util.ExcelUtil;
+import com.hengyi.util.LoggerUtil;
 import com.hengyi.util.StringUtil;
 import com.hengyi.vo.AllCompanyResultVo;
 import com.hengyi.vo.ConditionVo;
@@ -1169,5 +1169,196 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
         }
         book.write(out);
         return filePath;
+    }
+
+    /***
+     * 将预算数据插入到数据库中
+     */
+    @Override
+    public void insertBudgetData() {
+        try {
+            //删除当月的预算数据
+            SapDataMonthBean sapDataMonthBean = DateUtil.getsapdatamonthbeannow();
+            //删除当前月份的预算详情数据的预算数据对应的值（即MaterialCostDetails表中的值）
+            financeBudgetMapper.deleteBudgetDetailValue(sapDataMonthBean);
+            //删除当前月份的预算详情数据的预算数据
+            financeBudgetMapper.deleteBudgetDetail(sapDataMonthBean);
+            Date day = new Date();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            LoggerUtil.info("开始导入预算数据到budgetdetail表：" + df.format(day));
+            String path = "C:\\Users\\hi60\\Desktop\\finance\\importExcel";
+            File directory = new File(path);
+            String[] files = directory.list();
+            String file = "";
+            if (files.length > 0) {
+                for (String myFile : files) {
+                    file = myFile;
+                }
+            }
+            // 创建文件流对象和工作簿对象
+            FileInputStream in = new FileInputStream(path + "//" + file); // 文件流
+            Workbook book = WorkbookFactory.create(in); //工作簿
+            System.out.println(book);
+            List<BudgetdetailBean> budgetdetailBeanList = new ArrayList<>();
+            //将生产线匹配关系放入集合
+            ArrayList<ProductMatchBean> productmatchlist = new ArrayList<>();
+            productmatchlist = financeBudgetMapper.selectproductmatch();
+            //获取字段
+            List<FieldBean> fields = new ArrayList<FieldBean>();
+            fields = financeBudgetMapper.selectField();
+            //根据月份获取预算数据
+            List<BudgetdetailBean> budgetDataByMonths = new ArrayList<BudgetdetailBean>();
+            budgetDataByMonths = financeBudgetMapper.selectBudgetDataByYear(sapDataMonthBean);
+            //j: sheet,  i: 行,  k: 列
+            //遍历所有的sheet
+            for (int j = 0; j < book.getNumberOfSheets(); j++) {
+                // 获取当前excel中sheet的下标：0开始
+                Sheet sheet = book.getSheetAt(j);   // 遍历Sheet
+                //遍历所有的行和列
+                for (int i = 0; i < sheet.getLastRowNum() + 1; i++) {
+                    Row row = sheet.getRow(i);
+                    if (row == null) {
+                        continue;
+                    }
+                    if (i >= 4 && row.getCell(0) != null && !ExcelUtil.changetostring(row.getCell(0), j, i, 0).equals("")) {
+                        //一行数据作为一个对象插入
+                        BudgetdetailBean budgetdetailBean = new BudgetdetailBean();
+                        budgetdetailBean.setType("预算");
+                        for (int k = 0; k < sheet.getRow(0).getLastCellNum(); k++) {
+
+                            if (k > 11 && k < 69 && row.getCell(k) != null) {
+                                //单耗
+                                Cell cell = row.getCell(k);
+                                //单价
+                                Cell cell_price = sheet.getRow(0).getCell(k);
+                                //列名
+                                Cell cell_name = sheet.getRow(3).getCell(k);
+                                //一列数据作为一个对象插入
+                                MaterialcostdetailsBean mcdb = new MaterialcostdetailsBean();
+                                //名称
+                                mcdb.setMaterialName(ExcelUtil.changetostring(cell_name, j, 3, k));
+                                //单耗
+                                if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell, j, i, k))) {
+                                    mcdb.setConsumption(ExcelUtil.changeToBigDecimal(ExcelUtil.changenumbertostring(cell, j, i, k), j, i, k));
+                                } else {
+                                    continue;
+                                }
+                                //单价
+                                if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price, j, 0, k))) {
+                                    mcdb.setPrice(ExcelUtil.changeToBigDecimal(ExcelUtil.changenumbertostring(cell_price, j, 0, k), j, 0, k));
+                                } else {
+                                    continue;
+                                }
+                                //单位成本
+                                if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_price, j, i, k)) && StringUtil.isNotEmpty(ExcelUtil.changetostring(cell, j, i, k))) {
+                                    BigDecimal decimal = ExcelUtil.changeToBigDecimal(ExcelUtil.changenumbertostring(cell, j, i, k), j, i, k).multiply(new BigDecimal(ExcelUtil.changenumbertostring(cell_price, j, 0, k)));
+                                    mcdb.setUnitPrice(decimal);
+                                } else {
+                                    continue;
+                                }
+                                //聚酯or纺丝
+                                //   mcdb.setField(sheet.getRow(4).getCell(k).getStringCellValue());
+                                //将该列数据添加进mcdbList集合
+                                for (FieldBean field : fields) {
+                                    if (mcdb.getMaterialName().equals(field.getMaterialName())) {
+                                        mcdb.setField(field.getField());
+                                        budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(mcdb);
+                                    }
+                                }
+//                            ArrayList<String> fields=financeDataMapper.selectfieldbymaterialname(mcdb.getMaterialName());
+//                            if (fields.size()>0){
+//                                mcdb.setField(fields.get(0));
+//                                budgetdetailBean.getMaterialcostdetailsBeanArrayList().add(mcdb);
+//                            }
+                            }
+                        }
+                        Cell cell_company = sheet.getRow(i).getCell(0);
+                        Cell cell_month = sheet.getRow(i).getCell(1);
+                        Cell cell_year = sheet.getRow(i).getCell(2);
+                        Cell cell_product = sheet.getRow(i).getCell(3);
+                        Cell cell_workshop = sheet.getRow(i).getCell(4);
+                        Cell cell_line = sheet.getRow(i).getCell(5);
+                        Cell cell_spec = sheet.getRow(i).getCell(6);
+                        Cell cell_yarnkind = sheet.getRow(i).getCell(7);
+                        Cell cell_aarate = sheet.getRow(i).getCell(8);
+                        Cell cell_fsrate = sheet.getRow(i).getCell(9);
+                        Cell cell_dayProduct = sheet.getRow(i).getCell(10);
+                        Cell cell_budgetTotalProduct = sheet.getRow(i).getCell(11);
+
+                        budgetdetailBean.setCompany(ExcelUtil.changeinttostring(cell_company, j, i, 0));
+
+                        if (StringUtil.isNotEmpty(ExcelUtil.changeinttostring(cell_month, j, i, 1))) {
+                            budgetdetailBean.setMonth(ExcelUtil.changeToBigDecimal(ExcelUtil.changeinttostring(cell_month, j, i, 1), j, i, 1));
+                        }
+                        if (StringUtil.isNotEmpty(ExcelUtil.changeinttostring(cell_year, j, i, 2))) {
+                            budgetdetailBean.setYear(ExcelUtil.changeToBigDecimal(ExcelUtil.changeinttostring(cell_year, j, i, 2), j, i, 2));
+                        }
+                        budgetdetailBean.setProduct(ExcelUtil.changetostring(cell_product, j, i, 3));
+                        budgetdetailBean.setWorkshop(ExcelUtil.changetostring(cell_workshop, j, i, 4));
+                        budgetdetailBean.setLine(ExcelUtil.changeinttostring(cell_line, j, i, 5));
+                        budgetdetailBean.setSpec(ExcelUtil.changetostring(cell_spec, j, i, 6));
+                        budgetdetailBean.setYarnkind(ExcelUtil.changetostring(cell_yarnkind, j, i, 7));
+
+                        if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_aarate, j, i, 8))) {
+                            budgetdetailBean.setAarate(ExcelUtil.changeToBigDecimal(ExcelUtil.changenumbertostring(cell_aarate, j, i, 8), j, i, 8));
+                        }
+                        if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_fsrate, j, i, 9))) {
+                            budgetdetailBean.setFsrate(ExcelUtil.changeToBigDecimal(ExcelUtil.changenumbertostring(cell_fsrate, j, i, 9), j, i, 9));
+                        }
+                        if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_dayProduct, j, i, 10))) {
+                            budgetdetailBean.setDayProduct(ExcelUtil.changeToBigDecimal(ExcelUtil.changenumbertostring(cell_dayProduct, j, i, 10), j, i, 10));
+                        }
+                        if (StringUtil.isNotEmpty(ExcelUtil.changetostring(cell_budgetTotalProduct, j, i, 11))) {
+                            budgetdetailBean.setBudgetTotalProduct(ExcelUtil.changeToBigDecimal(ExcelUtil.changenumbertostring(cell_budgetTotalProduct, j, i, 11), j, i, 11));
+                        }
+                        String[] lines = new String[1];
+                        //遍历一行中的所有的数据添加进budgetdetailBeanList集合
+                        for (ProductMatchBean productMatchBean : productmatchlist) {
+                            if (StringUtil.equals(productMatchBean.getProductLine(), budgetdetailBean.getLine(), productMatchBean.getCompany(), budgetdetailBean.getCompany())) {
+                                lines = productMatchBean.getProductMatch().split("/");
+                                break;
+                            }
+                        }
+
+                        for (int k = 0; k < lines.length; k++) {
+                            budgetdetailBean.setLine(lines[k]);
+                            //设置一个标识用于判断是否重复
+                            boolean flag= true;
+//                      ArrayList<String>  result= financeDataMapper.selectbudgetdatabybean(budgetdetailBean);
+                                for (BudgetdetailBean budgetdetailBean1 : budgetDataByMonths) {
+                                    if (StringUtil.isNotEmpty(budgetdetailBean1.getCompany())&&
+                                            StringUtil.isNotEmpty(budgetdetailBean1.getProduct())&&
+                                            StringUtil.isNotEmpty(budgetdetailBean1.getWorkshop())&&
+                                            StringUtil.isNotEmpty(budgetdetailBean1.getLine())&&
+                                            StringUtil.isNotEmpty(budgetdetailBean1.getSpec())&&
+                                            StringUtil.isNotEmpty(budgetdetailBean1.getYarnkind())){
+                                        if (budgetdetailBean1.getCompany().equals(budgetdetailBean.getCompany()) &&
+                                                budgetdetailBean1.getProduct().equals(budgetdetailBean.getProduct()) &&
+                                                budgetdetailBean1.getWorkshop().equals(budgetdetailBean.getWorkshop()) &&
+                                                budgetdetailBean1.getLine().equals(budgetdetailBean.getLine()) &&
+                                                budgetdetailBean1.getSpec().equals(budgetdetailBean.getSpec()) &&
+                                                budgetdetailBean1.getYarnkind().equals(budgetdetailBean.getYarnkind())) {
+                                            flag=false;
+                                        }
+                                    }
+                            }
+                           if (flag){
+                               for (MaterialcostdetailsBean materialcostdetailsBean : budgetdetailBean.getMaterialcostdetailsBeanArrayList()) {
+                                   financeBudgetMapper.insertmaterialcostdetails(materialcostdetailsBean);
+                               }
+                               financeBudgetMapper.insertdetail(budgetdetailBean);
+                               budgetdetailBeanList.add(budgetdetailBean);
+                           }
+                        }
+                    }
+                }
+            }
+            Date day2 = new Date();
+            LoggerUtil.info("导入数据结束时间：" + df.format(day2));
+        }catch (Exception e){
+            e.printStackTrace();
+//            LoggerUtil.error(String.valueOf(e.getStackTrace()[0].getLineNumber()));
+        }
+
     }
 }

@@ -7,8 +7,10 @@ debug: 当此属性设置为true时，将打印出logback内部日志信息，�
 <configuration scan="true" scanPeriod="60">
     <!-- 自定义变量：日志保留天数 -->
     <property name="maxHistoryDay" value="30" />
+    <!--<property resource="classpath*:configure.properties"></property>-->
     <!--自定义变量，日志保存路径-->
-    <property name="savePath" value="C:/Users/hi60/Desktop/finance/logs"></property>
+    <!--<property name="savePath" value="C:/Users/hi60/Desktop/finance/logs"></property>-->
+    <property name="savePath" value="C:/Users/Administrator/Desktop/finance/logs"></property>
     <!-- 控制台输出日志 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
