@@ -1,43 +1,77 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-	<!--输出console-->
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!--输出格式-->
-		<encoder>
-			<pattern>%d{HH:mm:ss} %-5level [%thread] %logger{36}.%M - %msg%n
-			</pattern>
-		</encoder>
-	</appender>
-	<!--输出到文件-->
-	<appender name="MQTTPubFILE"
-			  class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<!--消息过滤 debug执行日志，否则抛弃-->
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
-			<level>DEBUG</level>
-			<onMatch>ACCEPT</onMatch>
-			<onMismatch>DENY </onMismatch>
-		</filter>
-		<!--日志输出的文件名，路径项目根目录-->
-		<file>mqttPub.log</file>
-		<!--时间回滚，当天的记录记录在当天的已时间命名的文件中-->
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<!-- daily rollover -->
-			<fileNamePattern>mqttPub.%d{yyyy-MM-dd}.log</fileNamePattern>
-			<!-- keep 3 days' worth of history -->
-			<maxHistory>3</maxHistory>
-		</rollingPolicy>
-		<encoder>
-			<pattern>%d{HH:mm:ss} %msg%n</pattern>
-		</encoder>
-	</appender>
+<!--
+scan: 当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+scanPeriod: 设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+debug: 当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+-->
+<configuration scan="true" scanPeriod="60">
+    <!-- 自定义变量：日志保留天数 -->
+    <property name="maxHistoryDay" value="30" />
+    <!--<property resource="classpath*:configure.properties"></property>-->
+    <!--自定义变量，日志保存路径-->
+    <!--<property name="savePath" value="C:/Users/hi60/Desktop/finance/logs"></property>-->
+    <property name="savePath" value="C:/Users/Administrator/Desktop/finance/logs"></property>
+    <!-- 控制台输出日志 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+    <appender name="INFO_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${savePath}/info.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>${maxHistoryDay}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+            <level>INFO</level>
+        </filter>
+    </appender>
+    <appender name="ERROR_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${savePath}/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>${maxHistoryDay}</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter"><!-- 只打印错误日志 -->
+            <level>WARN</level>
+        </filter>
+    </appender>
+    <!--<appender name="DUBBO_INFO_FILE"-->
+              <!--class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+            <!--<fileNamePattern>${savePath}/.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+            <!--<maxHistory>${maxHistoryDay}</maxHistory>-->
+        <!--</rollingPolicy>-->
+        <!--<encoder>-->
+            <!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n-->
+            <!--</pattern>-->
+        <!--</encoder>-->
+        <!--<filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+            <!--<onMatch>ACCEPT</onMatch>-->
+            <!--<onMismatch>DENY</onMismatch>-->
+            <!--<level>INFO</level>-->
+        <!--</filter>-->
+    <!--</appender>-->
 
-	<logger name="类路径" level="debug">
-		<!--指定日志输出方式，引用定义的appender-->
-		<appender-ref ref="MQTTSubFILE" />
-	</logger>
-	<!-- 日志输出规则 根据当前ROOT 级别，日志输出时，级别高于root默认的级别时 会输出 -->
-	<!-- 打印info级别日志及以上级别日志 -->
-	<root level="info">
-		<appender-ref ref="STDOUT" />
-	</root>
+    <!--根logger控制 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="INFO_FILE" />
+        <appender-ref ref="ERROR_FILE" />
+    </root>
 </configuration>

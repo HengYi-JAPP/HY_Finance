@@ -5,5 +5,7 @@
     <!--配置mybatis使其字段为空也能存放到map中-->
     <settings>
         <setting name="callSettersOnNulls" value="true"/>
+        <!--<setting name="logImpl" value="SLF4J"/>-->
+        <!--<setting name="logPrefix" value="dao."/>-->
     </settings>
 </configuration>

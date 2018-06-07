@@ -38,11 +38,6 @@ public class FinanceBudgetController {
     }
     @Resource
     private FinanceBudgetService financeBudgetService;
-    @RequestMapping(value = "/test")
-    public void test(HttpServletRequest request){
-        System.out.println(request.getParameter("aaa"));
-    }
-
     /***
      * 获取详细数据（预算和实际数据都有）
      * @param request
@@ -86,6 +81,13 @@ public class FinanceBudgetController {
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
+
+    /***
+     * 获取概览均值
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/getSumOverview")
     @ResponseBody
     public ServerResponse<List<Map<String,Object>>> getSumOverview(HttpServletRequest request,HttpServletResponse response){
@@ -279,7 +281,8 @@ public class FinanceBudgetController {
 //                            //程序退出时将临时文件删除
 //                            file.deleteOnExit();
 
-                            File directory=new File("C:\\Users\\Administrator\\Desktop\\finance\\importExcel");
+//                            File directory=new File("C:\\Users\\Administrator\\Desktop\\finance\\importExcel");
+                            File directory=new File("C:\\Users\\hi60\\Desktop\\finance\\importExcel");
                             String [] files=directory.list();
                             //如果目录下有文件就把目录下所有文件删除
                             if (files.length>0){
@@ -303,6 +306,7 @@ public class FinanceBudgetController {
                     }
                 }
             }
+            financeBudgetService.insertBudgetData();
 //            return ServerResponse.createBySuccess(Const.SUCCESS_MSG,1);
         }catch (Exception e){
             e.printStackTrace();
@@ -326,10 +330,10 @@ public class FinanceBudgetController {
             financeBudgetService.exportExcel(conditionVo);
             //定义文件路径
             String filePath="C:\\Users\\Administrator\\Desktop\\finance\\exportExcel\\导出.xlsx";
-            //通过返回的文件路径去下载给前端
+            //通过返回的文件路径去给前端下载
             ExcelUtil.download(filePath,response);
         }catch (Exception e){
-            LoggerUtil.error("loggerBack");
+            LoggerUtil.error("下载失败");
         }
         return null;
     }

@@ -168,7 +168,10 @@ export class UnitOverviewComponent {
     a.document.execCommand('SaveAs');
   }
   sumCheck() {
+    this._loading = true;
     const params = {
+      dimension: this.dimension,
+      stageType: this.stageType,
       // year: this._year,
       // month: this._month,
       startMonth: this._startMonth,
@@ -177,9 +180,7 @@ export class UnitOverviewComponent {
       product: this._product,
       workshop: this._workshop,
       productLine: this._productLine,
-      spec: this._spec,
-      demesion: this.dimension,
-      stageType: this.stageType
+      spec: this._spec
     };
     if (this.sums != null) {
       this.sums.splice(0, this.sums.length);
@@ -187,6 +188,10 @@ export class UnitOverviewComponent {
     this.budgetService.getSumOverview(params).subscribe(
       data => {
         this.sums = data.data;
+        this._loading = false;
+      },
+      error2 => {
+        this._loading = false;
       }
     );
   }

@@ -185,6 +185,9 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
     <select id="selectfieldbymaterialname" parameterType="java.lang.String" resultType="java.lang.String">
         select field FROM MaterialMatch WHERE material_name=#{_parameter}
     </select>
+    <select id="selectField" resultType="com.hengyi.bean.FieldBean">
+        SELECT DISTINCT(material_name) materialName,field FROM  MaterialMatch
+    </select>
 
     <select id="selectbudgetdata" resultType="java.util.Map">
         select * FROM Budgetdetail
@@ -195,7 +198,7 @@ select material_name,material_id,material_category,cost_id,field,state FROM Mate
     </select>
     <select id="selectproductbudgetdata" resultType="java.util.LinkedHashMap"
             parameterType="com.hengyi.bean.SapDataMonthBean">
-        select * FROM Budgetdetail ORDER BY `year`,`month`,company,product,workshop,line,spec,yarnKind,type
+        select * FROM Budgetdetail ORDER BY year, month,company,product,workshop,line,spec,yarnKind,type
     </select>
     <select id="selectpricelist" resultMap="PriceResultMap">
         select * FROM MaterialPrice
@@ -277,63 +280,63 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
     </delete>
     <delete id="deleteMaterialCostDetails" parameterType="com.hengyi.bean.SapDataMonthBean">
         DELETE a FROM MaterialCostDetails a INNER JOIN (
-        SELECT mate_pta id from Budgetdetail where mate_pta is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select mate_meg id from Budgetdetail where mate_meg is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select mate_poy id from Budgetdetail where mate_poy is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select mate_slice id from Budgetdetail where mate_slice is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_aux_yect id from Budgetdetail where poly_aux_yect is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_aux_egc id from Budgetdetail where poly_aux_egc is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_aux_eyht id from Budgetdetail where poly_aux_eyht is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_aux_jwsc id from Budgetdetail where poly_aux_jwsc is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_salary id from Budgetdetail where poly_salary is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_dep id from Budgetdetail where poly_dep is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_hdl id from Budgetdetail where poly_hdl is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select ploy_hsl id from Budgetdetail where ploy_hsl is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_mac id from Budgetdetail where poly_mac is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_fuel_biomass id from Budgetdetail where poly_fuel_biomass is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_fuel_heavyoil id from Budgetdetail where poly_fuel_heavyoil is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_fuel_smj id from Budgetdetail where poly_fuel_smj is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_fuel_diesel id from Budgetdetail where poly_fuel_diesel is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_fuel_steam id from Budgetdetail where poly_fuel_steam is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_fuel_coal id from Budgetdetail where poly_fuel_coal is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select poly_else id from Budgetdetail where poly_else is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_oil id from Budgetdetail where spin_aux_oil is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_shortSF220 id from Budgetdetail where spin_aux_shortSF220 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_shortSF2180 id from Budgetdetail where spin_aux_shortSF2180 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_delionNW2641TS id from Budgetdetail where spin_aux_delionNW2641TS is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_delionNW2642 id from Budgetdetail where spin_aux_delionNW2642 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_delion6329TS id from Budgetdetail where spin_aux_delion6329TS is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_delionTSC900 id from Budgetdetail where spin_aux_delionTSC900 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_delionTSC502 id from Budgetdetail where spin_aux_delionTSC502 is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_agent id from Budgetdetail where spin_aux_agent is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_silicone id from Budgetdetail where spin_aux_silicone is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_hml id from Budgetdetail where spin_aux_hml is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_lml id from Budgetdetail where spin_aux_lml is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_bml id from Budgetdetail where spin_aux_bml is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_aux_else id from Budgetdetail where spin_aux_else is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_pack_slice id from Budgetdetail where spin_pack_slice is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_pack_weaving id from Budgetdetail where spin_pack_weaving is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_pack_packaging id from Budgetdetail where spin_pack_packaging is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_pack_cartons id from Budgetdetail where spin_pack_cartons is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_pack_wooden id from Budgetdetail where spin_pack_wooden is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_pack_foamboard id from Budgetdetail where spin_pack_foamboard is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_pack_else id from Budgetdetail where spin_pack_else is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_paper id from Budgetdetail where spin_paper is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_melt id from Budgetdetail where spin_melt is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_salary id from Budgetdetail where spin_salary is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_dep id from Budgetdetail where spin_dep is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_water id from Budgetdetail where spin_water is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_elect id from Budgetdetail where spin_elect is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_mac id from Budgetdetail where spin_mac is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_repair id from Budgetdetail where spin_repair is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_fuel_biomass id from Budgetdetail where spin_fuel_biomass is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_fuel_heavyoil id from Budgetdetail where spin_fuel_heavyoil is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_fuel_smj id from Budgetdetail where spin_fuel_smj is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_fuel_diesel id from Budgetdetail where spin_fuel_diesel is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_fuel_steam id from Budgetdetail where spin_fuel_steam is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_fuel_coal id from Budgetdetail where spin_fuel_coal is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_fuel_else id from Budgetdetail where spin_fuel_else is not null AND`month`=4 AND `year`=2018 AND type='实际' union
-        select spin_else id from Budgetdetail WHERE spin_else is not null AND`month`=4 AND `year`=2018 AND type='实际') b ON a.id=b.id
+        SELECT mate_pta id from Budgetdetail where mate_pta is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select mate_meg id from Budgetdetail where mate_meg is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select mate_poy id from Budgetdetail where mate_poy is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select mate_slice id from Budgetdetail where mate_slice is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_aux_yect id from Budgetdetail where poly_aux_yect is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_aux_egc id from Budgetdetail where poly_aux_egc is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_aux_eyht id from Budgetdetail where poly_aux_eyht is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_aux_jwsc id from Budgetdetail where poly_aux_jwsc is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_salary id from Budgetdetail where poly_salary is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_dep id from Budgetdetail where poly_dep is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_hdl id from Budgetdetail where poly_hdl is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select ploy_hsl id from Budgetdetail where ploy_hsl is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_mac id from Budgetdetail where poly_mac is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_fuel_biomass id from Budgetdetail where poly_fuel_biomass is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_fuel_heavyoil id from Budgetdetail where poly_fuel_heavyoil is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_fuel_smj id from Budgetdetail where poly_fuel_smj is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_fuel_diesel id from Budgetdetail where poly_fuel_diesel is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_fuel_steam id from Budgetdetail where poly_fuel_steam is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_fuel_coal id from Budgetdetail where poly_fuel_coal is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select poly_else id from Budgetdetail where poly_else is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_oil id from Budgetdetail where spin_aux_oil is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_shortSF220 id from Budgetdetail where spin_aux_shortSF220 is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_shortSF2180 id from Budgetdetail where spin_aux_shortSF2180 is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_delionNW2641TS id from Budgetdetail where spin_aux_delionNW2641TS is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_delionNW2642 id from Budgetdetail where spin_aux_delionNW2642 is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_delion6329TS id from Budgetdetail where spin_aux_delion6329TS is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_delionTSC900 id from Budgetdetail where spin_aux_delionTSC900 is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_delionTSC502 id from Budgetdetail where spin_aux_delionTSC502 is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_agent id from Budgetdetail where spin_aux_agent is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_silicone id from Budgetdetail where spin_aux_silicone is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_hml id from Budgetdetail where spin_aux_hml is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_lml id from Budgetdetail where spin_aux_lml is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_bml id from Budgetdetail where spin_aux_bml is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_aux_else id from Budgetdetail where spin_aux_else is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_pack_slice id from Budgetdetail where spin_pack_slice is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_pack_weaving id from Budgetdetail where spin_pack_weaving is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_pack_packaging id from Budgetdetail where spin_pack_packaging is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_pack_cartons id from Budgetdetail where spin_pack_cartons is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_pack_wooden id from Budgetdetail where spin_pack_wooden is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_pack_foamboard id from Budgetdetail where spin_pack_foamboard is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_pack_else id from Budgetdetail where spin_pack_else is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_paper id from Budgetdetail where spin_paper is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_melt id from Budgetdetail where spin_melt is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_salary id from Budgetdetail where spin_salary is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_dep id from Budgetdetail where spin_dep is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_water id from Budgetdetail where spin_water is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_elect id from Budgetdetail where spin_elect is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_mac id from Budgetdetail where spin_mac is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_repair id from Budgetdetail where spin_repair is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_fuel_biomass id from Budgetdetail where spin_fuel_biomass is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_fuel_heavyoil id from Budgetdetail where spin_fuel_heavyoil is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_fuel_smj id from Budgetdetail where spin_fuel_smj is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_fuel_diesel id from Budgetdetail where spin_fuel_diesel is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_fuel_steam id from Budgetdetail where spin_fuel_steam is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_fuel_coal id from Budgetdetail where spin_fuel_coal is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_fuel_else id from Budgetdetail where spin_fuel_else is not null AND month=#{month} AND year=#{year} AND type='实际' union
+        select spin_else id from Budgetdetail WHERE spin_else is not null AND month=#{month} AND year=#{year} AND type='实际') b ON a.id=b.id
     </delete>
     <delete id="deleteunitpricecomparebymonth" parameterType="com.hengyi.bean.SapDataMonthBean">
         DELETE  FROM  UnitPriceCompare WHERE month =#{month} and year =#{year}
@@ -379,7 +382,7 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
         DELETE FROM FinanceSapDataAdd WHERE month =#{month} and year =#{year}
     </delete>
     <delete id="deletebudgetbymonth2" parameterType="com.hengyi.bean.SapDataMonthBean">
-        DELETE FROM  BudgetdetailAdd WHERE month =#{month} and year =#{year} AND TYPE = '实际'
+        DELETE FROM  BudgetdetailAdd WHERE year =#{year} and month=#{month} AND TYPE = '实际'
     </delete>
     <insert id="insertsapdata2" parameterType="com.hengyi.bean.FinanceSapDataInsertBean">
         insert into FinanceSapDataAdd ( order_id, cost_id,
@@ -411,16 +414,16 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
     </insert>
     <insert id="insertbudgetdetail2" parameterType="com.hengyi.bean.BudgetdetailBean">
         INSERT INTO BudgetdetailAdd (
-        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type,
-        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
+        company,month,YEAR ,product,workshop,line,spec,yarnKind,budget_total_product,type
+        <!--<foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
             ${item.field}
-        </foreach>
+        </foreach>-->
         )
         VALUES (
-        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际',
-        <foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">
-            #{item.id}
-        </foreach>
+        #{bdb.company},#{bdb.month},#{bdb.year},#{bdb.product},#{bdb.workshop},#{bdb.line},#{bdb.spec},#{bdb.yarnkind},#{bdb.budgetTotalProduct},'实际'
+        <!--<foreach collection="bdb.materialcostdetailsBeanArrayList" item="item" index="index" separator=",">-->
+            <!--#{item.id}-->
+        <!--</foreach>-->
         )
     </insert>
     <insert id="insertdetail2" parameterType="com.hengyi.bean.BudgetdetailBean">
@@ -541,4 +544,83 @@ select id,dict_type,dict_value from SysDict where dict_key=#{_parameter}
     <insert id="insertUnmatchedMaterial" parameterType="com.hengyi.bean.MaterialOfLineSelectBean">
         INSERT INTO UnmatchedMaterial (material_id,cost_id,state) VALUES (#{costMaterialId},#{costId},#{state})
     </insert>
+    <!--根据当前年月删除相应的预算详情数据-->
+    <delete id="deleteBudgetDetail" parameterType="com.hengyi.bean.SapDataMonthBean">
+        DELETE FROM Budgetdetail WHERE year=#{year} and type='预算'
+    </delete>
+    <!--根据当前年月删除相应的预算详情数据对应的值-->
+    <delete id="deleteBudgetDetailValue" parameterType="com.hengyi.bean.SapDataMonthBean">
+        DELETE a FROM MaterialCostDetails a INNER JOIN (
+        SELECT mate_pta id from Budgetdetail where mate_pta is not null  AND year=#{year} AND type='预算' union
+        select mate_meg id from Budgetdetail where mate_meg is not null  AND year=#{year} AND type='预算' union
+        select mate_poy id from Budgetdetail where mate_poy is not null  AND year=#{year} AND type='预算' union
+        select mate_slice id from Budgetdetail where mate_slice is not null  AND year=#{year} AND type='预算' union
+        select poly_aux_yect id from Budgetdetail where poly_aux_yect is not null  AND year=#{year} AND type='预算' union
+        select poly_aux_egc id from Budgetdetail where poly_aux_egc is not null  AND year=#{year} AND type='预算' union
+        select poly_aux_eyht id from Budgetdetail where poly_aux_eyht is not null  AND year=#{year} AND type='预算' union
+        select poly_aux_jwsc id from Budgetdetail where poly_aux_jwsc is not null  AND year=#{year} AND type='预算' union
+        select poly_salary id from Budgetdetail where poly_salary is not null  AND year=#{year} AND type='预算' union
+        select poly_dep id from Budgetdetail where poly_dep is not null  AND year=#{year} AND type='预算' union
+        select poly_hdl id from Budgetdetail where poly_hdl is not null  AND year=#{year} AND type='预算' union
+        select ploy_hsl id from Budgetdetail where ploy_hsl is not null  AND year=#{year} AND type='预算' union
+        select poly_mac id from Budgetdetail where poly_mac is not null  AND year=#{year} AND type='预算' union
+        select poly_fuel_biomass id from Budgetdetail where poly_fuel_biomass is not null  AND year=#{year} AND type='预算' union
+        select poly_fuel_heavyoil id from Budgetdetail where poly_fuel_heavyoil is not null  AND year=#{year} AND type='预算' union
+        select poly_fuel_smj id from Budgetdetail where poly_fuel_smj is not null  AND year=#{year} AND type='预算' union
+        select poly_fuel_diesel id from Budgetdetail where poly_fuel_diesel is not null  AND year=#{year} AND type='预算' union
+        select poly_fuel_steam id from Budgetdetail where poly_fuel_steam is not null  AND year=#{year} AND type='预算' union
+        select poly_fuel_coal id from Budgetdetail where poly_fuel_coal is not null  AND year=#{year} AND type='预算' union
+        select poly_else id from Budgetdetail where poly_else is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_oil id from Budgetdetail where spin_aux_oil is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_shortSF220 id from Budgetdetail where spin_aux_shortSF220 is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_shortSF2180 id from Budgetdetail where spin_aux_shortSF2180 is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_delionNW2641TS id from Budgetdetail where spin_aux_delionNW2641TS is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_delionNW2642 id from Budgetdetail where spin_aux_delionNW2642 is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_delion6329TS id from Budgetdetail where spin_aux_delion6329TS is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_delionTSC900 id from Budgetdetail where spin_aux_delionTSC900 is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_delionTSC502 id from Budgetdetail where spin_aux_delionTSC502 is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_agent id from Budgetdetail where spin_aux_agent is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_silicone id from Budgetdetail where spin_aux_silicone is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_hml id from Budgetdetail where spin_aux_hml is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_lml id from Budgetdetail where spin_aux_lml is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_bml id from Budgetdetail where spin_aux_bml is not null  AND year=#{year} AND type='预算' union
+        select spin_aux_else id from Budgetdetail where spin_aux_else is not null  AND year=#{year} AND type='预算' union
+        select spin_pack_slice id from Budgetdetail where spin_pack_slice is not null  AND year=#{year} AND type='预算' union
+        select spin_pack_weaving id from Budgetdetail where spin_pack_weaving is not null  AND year=#{year} AND type='预算' union
+        select spin_pack_packaging id from Budgetdetail where spin_pack_packaging is not null  AND year=#{year} AND type='预算' union
+        select spin_pack_cartons id from Budgetdetail where spin_pack_cartons is not null  AND year=#{year} AND type='预算' union
+        select spin_pack_wooden id from Budgetdetail where spin_pack_wooden is not null  AND year=#{year} AND type='预算' union
+        select spin_pack_foamboard id from Budgetdetail where spin_pack_foamboard is not null  AND year=#{year} AND type='预算' union
+        select spin_pack_else id from Budgetdetail where spin_pack_else is not null  AND year=#{year} AND type='预算' union
+        select spin_paper id from Budgetdetail where spin_paper is not null  AND year=#{year} AND type='预算' union
+        select spin_melt id from Budgetdetail where spin_melt is not null  AND year=#{year} AND type='预算' union
+        select spin_salary id from Budgetdetail where spin_salary is not null  AND year=#{year} AND type='预算' union
+        select spin_dep id from Budgetdetail where spin_dep is not null  AND year=#{year} AND type='预算' union
+        select spin_water id from Budgetdetail where spin_water is not null  AND year=#{year} AND type='预算' union
+        select spin_elect id from Budgetdetail where spin_elect is not null  AND year=#{year} AND type='预算' union
+        select spin_mac id from Budgetdetail where spin_mac is not null  AND year=#{year} AND type='预算' union
+        select spin_repair id from Budgetdetail where spin_repair is not null  AND year=#{year} AND type='预算' union
+        select spin_fuel_biomass id from Budgetdetail where spin_fuel_biomass is not null  AND year=#{year} AND type='预算' union
+        select spin_fuel_heavyoil id from Budgetdetail where spin_fuel_heavyoil is not null  AND year=#{year} AND type='预算' union
+        select spin_fuel_smj id from Budgetdetail where spin_fuel_smj is not null  AND year= #{year} AND type='预算' union
+        select spin_fuel_diesel id from Budgetdetail where spin_fuel_diesel is not null  AND year= #{year} AND type='预算' union
+        select spin_fuel_steam id from Budgetdetail where spin_fuel_steam is not null  AND year= #{year} AND type='预算' union
+        select spin_fuel_coal id from Budgetdetail where spin_fuel_coal is not null  AND year= #{year} AND type='预算' union
+        select spin_fuel_else id from Budgetdetail where spin_fuel_else is not null  AND year= #{year} AND type='预算' union
+        select spin_else id from Budgetdetail WHERE spin_else is not null  AND year= #{year} AND type='预算') b ON a.id=b.id
+    </delete>
+    <!--按年查询预算的值-->
+    <select id="selectBudgetDataByYear" parameterType="com.hengyi.bean.SapDataMonthBean" resultType="com.hengyi.bean.BudgetdetailBean">
+        SELECT type,company,`month`,`year`,product,workshop,line,spec,yarnKind
+        FROM Budgetdetail WHERE type='预算' AND  year = #{year}
+    </select>
+    <!--按月查询预算数据的值-->
+    <select id="selectBudgetDataByMonth" parameterType="com.hengyi.bean.SapDataMonthBean" resultType="com.hengyi.bean.BudgetdetailBean">
+        SELECT type,company,`month`,`year`,product,workshop,line,spec,yarnKind
+        FROM Budgetdetail WHERE type='预算' AND month = #{month} and year = #{year}
+    </select>
+    <!--根据月份删除budgetdetailAdd表中的预算数据-->
+    <delete id="deleteBudgetDetailAdd" parameterType="com.hengyi.bean.SapDataMonthBean">
+        DELETE FROM BudgetdetailAdd WHERE year= #{year} and type='预算'
+    </delete>
 </mapper>
