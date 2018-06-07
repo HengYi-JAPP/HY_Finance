@@ -2,7 +2,7 @@
 
 <!--菜单栏配置页面-->
 <body style="overflow-y: hidden;overflow-x: hidden;width:100%;height:100%;MARGIN-RIGHT: auto;MARGIN-LEFT: auto;">
-<div style="height: 700px;"> 
+<div style="height: 700px;">
   <div el-row>
     <div style="background-color:#0070c1;height: 60px;float: left;width: 100%;text-align: center">
       <img src="assets/picture/logo3.png" style="float: left; cursor:pointer;margin-left: 10px;margin-top: 10px; height: 40px;"
@@ -33,7 +33,7 @@
     <div el-col span="2" *ngIf="!isCollapse">
       <el-button class="anticon anticon-menu-unfold"
                  style="  margin-bottom: 10px;border-style: none;
-                 margin-top: 10px;margin-right:10px;margin-left: 10px; 
+                 margin-top: 10px;margin-right:10px;margin-left: 10px;
                  background-color:#0070c1 !important;color: #fff;"
                  (click)="expand()"
                  size="small"></el-button>
@@ -42,7 +42,7 @@
     <div el-col span="4" *ngIf="isCollapse">
       <div style="width: 100%;background-color:  #2a2e34 !important;">
           <el-button class="anticon anticon-menu-fold"
-                    style=" border-style: none;margin-bottom: 
+                    style=" border-style: none;margin-bottom:
                     10px;margin-left: 180px ;margin-top: 10px;"
                     (click)="getTogether()"
                     size="small">
@@ -108,7 +108,7 @@
                   <span class="left-title-style">字典维护</span>
                 </span>
                 <ul class="ui-li-set">
-                  <li class="ui-li-set" nz-menu-item routerLink="/ProductLineMange" routerLinkActive="active" disabled>
+                  <li class="ui-li-set" nz-menu-item routerLink="/ProductLineManage" routerLinkActive="active" disabled>
                   <span title>
                     <i class="el-icon-view"></i>
                     <span class="left-title-style">维护生产线匹配关系</span>

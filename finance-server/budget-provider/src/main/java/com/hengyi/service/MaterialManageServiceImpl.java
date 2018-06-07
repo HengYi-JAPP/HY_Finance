@@ -71,6 +71,7 @@ public class MaterialManageServiceImpl implements MaterialManageService {
      */
     @Override
     public void deleteMatchedMaterial(MaterialMatchDomain materialMatchDomain) {
+
         materialManageMapper.deleteMatchedMaterial(materialMatchDomain);
     }
 }

@@ -1,3 +1,151 @@
+<!--维护生产线匹配关系页面-->
 <div class="box" style="overflow-x: hidden;height: auto">
-  <span>生产线匹配关系管理页面正在开发中</span>
+  <div style="margin-top: 10px">
+    <div class="components-table-demo-control-bar">
+      <form nz-form [nzLayout]="'inline'">
+        <div nz-row nz-form-item>
+          <div nz-form-control>
+            <el-button (click)="findList()" type="primary" size="small">查询</el-button>
+          </div>
+          <div nz-form-control>
+            <button nz-button nzType="primary" (click)="addProductlineList()"><i class="anticon anticon-plus"></i>增加生产线匹配关系</button>
+          </div>
+          <div style="position: relative;top: 2px">
+            <button nz-button [disabled]="_disabledButton" [nzType]="'primary'" [nzLoading]="_operating" (click)="_operateData()">删除</button>
+            <span style="margin-left: 8px;" *ngIf="_checkedNumber">选择了 {{_checkedNumber}} 条数据</span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+
+  <nz-modal [(nzVisible)]="isVisible" nzTitle="更新生产线匹配关系" [nzContent]="modalContent" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+    <ng-template #modalContent>
+<h1 style="color:red">红色为必填项</h1>
+      <div class="components-table-demo-control-bar">
+        <form nz-form >
+          <div nz-row nz-form-item>
+            <div nz-form-label style="color:red">
+              生产线名称
+            </div>
+            <div nz-form-control >
+              <input nz-input name="product_line"   [(ngModel)]="product_line">
+            </div>
+          </div>
+          <div nz-row nz-form-item>
+            <div nz-form-label style="color:red">
+              生产线匹配关系
+            </div>
+            <div nz-form-control>
+              <input nz-input name="product_match"   [(ngModel)]="product_match">
+            </div>
+          </div>
+          <div nz-row nz-form-item>
+            <div nz-form-label style="color:red">
+              生产线-物料匹配关系
+            </div>
+            <div nz-form-control>
+              <input nz-input name="product_material_match"   [(ngModel)]="product_material_match">
+            </div>
+          </div>
+          <div nz-row nz-form-item>
+            <div nz-form-label>
+              产品物料纱种
+            </div>
+            <div nz-form-control>
+              <input nz-input name="product_material_yarn"   [(ngModel)]="product_material_yarn">
+            </div>
+          </div>
+          <div nz-row nz-form-item style="color:red">
+            <div nz-form-label>
+              公司代码
+            </div>
+            <div nz-form-control>
+              <input nz-input name="company"   [(ngModel)]="company">
+            </div>
+          </div>
+          <div nz-row nz-form-item>
+            <div nz-form-label>
+              产品规格匹配关系
+            </div>
+            <div nz-form-control>
+              <input nz-input name="product_specifications_match"   [(ngModel)]="product_specifications_match">
+            </div>
+          </div>
+          <div nz-row nz-form-item>
+            <div nz-form-label>
+              生产规格纱种
+            </div>
+            <div nz-form-control>
+              <input nz-input name="product_specifications_yarn"   [(ngModel)]="product_specifications_yarn">
+            </div>
+          </div>
+        </form>
+        <!--<h1>123</h1>
+      <p>Content one</p>
+      <p>Content two</p>
+      <p>Content three</p>-->
+      </div>
+    </ng-template>
+
+  </nz-modal>
+
+
+
+  <div style="margin-top: 10px;background-color: white">
+    <nz-table #groupingTable
+              [nzAjaxData]="tableData"
+              nzShowSizeChanger
+              [nzLoading]="_loading"
+              [nzTotal]="_total"
+              [(nzPageSize)]="_pageSize"
+              [(nzPageIndex)]="_current"
+              [nzPageSize]="10"
+              (nzDataChange)="_displayDataChange($event)"
+              (nzPageIndexChange)="_refreshStatus()"
+              (nzPageSizeChange)="_refreshStatus()"
+              nzBordered
+              [nzScroll]="{ x: 1024, y: 400 }"
+              [nzDataSource]="_dataSet">
+      <ng-template #nzFixedHeader >
+        <thead nz-thead>
+        <tr>
+          <th class="Header-color" nzCheckbox nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1">
+            <label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)">
+            </label>
+            <span>选择</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>序号</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>生产线名称</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>生产线匹配关系</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>生产线-物料匹配关系</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>产品物料纱种</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>公司</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>产品规格匹配关系</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>生产规格纱种</span></th>
+          <th class="Header-color" nz-th nzWidth="74px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="1"><span>操作</span></th>
+        </tr>
+        </thead>
+      </ng-template>
+      <tbody nz-tbody>
+      <tr nz-tbody-tr *ngFor="let data of tableData">
+        <td nz-td style="text-align: center;line-height: 10px;padding: 5px;background-color:#87e8de" nzCheckbox >
+          <label nz-checkbox [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus2($event)">
+          </label>
+        </td>
+        <td nz-td style="text-align: center;line-height: 10px;padding: 5px;background-color:#87e8de" *ngFor="let key of getkeys(data)">
+          <span>
+            {{data[key]}}
+          </span>
+        </td>
+        <td nz-td  style="text-align: center;line-height: 10px;padding: 5px;background-color:#87e8de" >
+          <button nz-button nzType="primary" (click)="updateProductlineList(data)"><i class="anticon"></i>修改</button>
+          <button nz-button nzType="primary" (click)="deleteProductlineList(data)"><i class="anticon"></i>删除</button>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </div>
 </div>

@@ -22,7 +22,7 @@ const appRoutes: Routes = [
   { path: 'UnitCostResult', component: AllCompanyComponent, data: {PageName: '单位预算成本和实际成本对比分析结果'}}, // 跳转到单价对比分析界面
   { path: 'OneCompany', component: UnitResultComponent}, // 跳转到单个公司的页面
   { path: 'NewlyIncreased', component: NewlyIncreasedComponent}, // 跳转到新增规格页面
-  { path: 'ProductLineMange', component: ProductlineManageComponent}, // 跳转到生产线匹配关系页面
+  { path: 'ProductLineManage', component: ProductlineManageComponent}, // 跳转到生产线匹配关系页面
   { path: 'budgetManage', component: BudgetManageComponent}, // 跳转到预算数据维护页面
   { path: 'CompareProduct', component: CompareProductComponent}, // 跳转到产量查询页面
   { path: 'MaterialManage', component: MaterialManageComponent}, // 跳转到查询物料管理的页面
