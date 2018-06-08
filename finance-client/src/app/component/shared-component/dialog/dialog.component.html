@@ -1,0 +1,24 @@
+<!--预算编辑弹窗-->
+<div style="margin-top: 10px">
+  <nz-modal
+    [nzVisible]="isVisible"
+    [nzTitle]="'增加预算数据'"
+    [nzContent]="modalContent"
+    nzOkText="确定"
+    nzCancelText="取消"
+    (nzOnCancel)="handleCancel($event)"
+    (nzOnOk)="handleOk($event)">
+    <ng-template #modalContent>
+      <form nz-form [nzLayout]="'horizontal'" [formGroup]="validateForm">
+        <div nz-form-item nz-row>
+          <div nz-form-label nz-col [nzSm]="6" [nzXs]="24">
+            <label nz-form-item-required></label>
+          </div>
+          <div nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+            <nz-input [nzSize]="'large'" formControlName="email" [nzId]="'email'"></nz-input>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+  </nz-modal>
+</div>

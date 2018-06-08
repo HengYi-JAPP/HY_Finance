@@ -342,4 +342,10 @@ public class FinanceBudgetServiceImplTest {
 //            e.printStackTrace();
 //        }
 //    }
+@Test
+    public void test(){
+        String t="111  ";
+//        System.out.println(new BigDecimal(t));
+        System.out.println(new BigDecimal(t.trim()));
+    }
 }

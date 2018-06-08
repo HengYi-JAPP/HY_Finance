@@ -7,8 +7,8 @@ package com.hengyi.util;
  */
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import java.io.*;
+import java.util.List;
 
 /***
  * 数据传输对象，将前台传入的流统一转化为fastJson对象
@@ -114,6 +114,43 @@ public class InputSteamToJSON {
         }
 
         return jsonarray;
+
+    }
+    public static  <T> List<T> getJSONList(InputStream in, Class<T> clazz) {
+
+        List<T> list=null;
+        ByteArrayOutputStream baos = null;
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(in));
+            String str = "";
+            baos = new ByteArrayOutputStream();
+            while ((str = br.readLine()) != null) {
+                baos.write(str.getBytes());
+            }
+            baos.flush();
+            LoggerUtil.info("传入Array>>>>>>>>"+baos.toString());
+//            System.out.println("传入Array>>>>>>>>>>>>>:"+baos.toString());
+            list = JSONArray.parseArray(baos.toString(),clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (br != null) {
+                    br.close();
+                }
+                if (baos != null) {
+                    baos.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+
+        return list;
 
     }
 

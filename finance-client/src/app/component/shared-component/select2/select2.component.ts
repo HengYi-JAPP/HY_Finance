@@ -7,27 +7,11 @@ import {BudgetService} from '../../../api/budget.service';
 })
 export class Select2Component implements OnInit {
   @Output() FindList = new EventEmitter();
-  // @Input() year: string;
-  // @Input() month: string;
   @Input() startMonth: string;
   @Input() endMonth: string;
   @Input() company: string;
   @Input() product: string;
   years: any[] = [];
-  // months: any[] = [
-  //   {value: '1', label: '1月'},
-  //   {value: '2', label: '2月'},
-  //   {value: '3', label: '3月'},
-  //   {value: '4', label: '4月'},
-  //   {value: '5', label: '5月'},
-  //   {value: '6', label: '6月'},
-  //   {value: '7', label: '7月'},
-  //   {value: '8', label: '8月'},
-  //   {value: '9', label: '9月'},
-  //   {value: '10', label: '10月'},
-  //   {value: '11', label: '11月'},
-  //   {value: '12', label: '12月'},
-  //   ];
   companys: any[] = [];
   products: any[] = [];
   productLines: any[] = [];
@@ -35,7 +19,6 @@ export class Select2Component implements OnInit {
   specs: any[] = [];
   productLine: string;
   spec: string;
-  workshop: string;
   // 构造函数中放入测试数据
   constructor(private budgetService: BudgetService) {
     // 年份选择框可以选择16年到当前年份
@@ -64,8 +47,6 @@ export class Select2Component implements OnInit {
     );
   }
   ngOnInit() {
-    // this.year = new Date().getFullYear() + '';
-    // this.month = new Date().getMonth() + '';
     this.startMonth = this.getYear() + '-' + this.getMonth();
     this.endMonth = this.getYear() + '-' + this.getMonth();
     this.changeProduct();
@@ -76,8 +57,6 @@ export class Select2Component implements OnInit {
     this.productLines = [];
     this.specs = [];
     const param = {
-      // year: this.year,
-      // month: this.month,
       startMonth: new Date(this.startMonth).getFullYear() + '-' + (new Date(this.startMonth).getMonth() + 1),
       endMonth: new Date(this.endMonth).getFullYear() + '-' + (new Date(this.endMonth).getMonth() + 1),
       company: this.company,
@@ -103,10 +82,7 @@ export class Select2Component implements OnInit {
       startMonth: new Date(this.startMonth).getFullYear() + '-' + (new Date(this.startMonth).getMonth() + 1),
       endMonth: new Date(this.endMonth).getFullYear() + '-' + (new Date(this.endMonth).getMonth() + 1),
       company: this.company,
-      product: this.product,
-      // workshop: this.workshop,
-      // productLine: this.productLine,
-      // spec: this.spec
+      product: this.product
     };
     this.FindList.emit(obj);
   }

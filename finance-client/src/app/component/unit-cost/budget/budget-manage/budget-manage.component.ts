@@ -12,16 +12,32 @@ export class BudgetManageComponent implements OnInit {
   _company='';
   _product='';
   tableData=[];
-  _loading: '';
+  _loading = true;
   _total='';
   _pageSize='';
   _current = '';
   _displayData = [];
   constructor(private budgetService:BudgetService) {
+    this.findList({
+      startMonth: this.getYear() + '-' + this.getMonth(),
+      endMonth: this.getYear() + '-' + this.getMonth()
+    });
   }
 
   ngOnInit() {}
-  findList() {
+  findList(param) {
+    this._loading = true;
+    const params = {
+      pageIndex: this._current,
+      pageCount: this._pageSize,
+      startMonth: param.startMonth,
+      endMonth: param.endMonth,
+      company: param.company,
+      product: param.product,
+      workshop: param.workshop,
+      productLine: param.productLine,
+      spec: param.spec,
+    }
   }
   //根据key获取值
   getkeys(item) {

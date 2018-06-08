@@ -1,5 +1,9 @@
 package com.hengyi.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.hengyi.domain.DetailAddDomain;
 import com.hengyi.domain.DictionaryDomain;
 import com.hengyi.domain.ResultDomain;
@@ -7,7 +11,6 @@ import com.hengyi.service.FinanceBudgetService;
 import com.hengyi.util.*;
 import com.hengyi.vo.AllCompanyResultVo;
 import com.hengyi.vo.ConditionVo;
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,7 +62,7 @@ public class FinanceBudgetController {
 //            result[1]=financeBudgetService.getSumDetail(conditionVo);
             return ServerResponse.createBySuccess(Const.SUCCESS_MSG, result,page);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("getDetailData调用异常："+LoggerUtil.getTrace(e));
         }
         return  ServerResponse.createByError(Const.FAIL_MSG);
     }
@@ -77,7 +80,7 @@ public class FinanceBudgetController {
             List<Map<String,Object>> list=financeBudgetService.getSumDetail(conditionVo);
             return ServerResponse.createBySuccess(Const.SUCCESS_MSG,list);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("getSumDetail调用异常："+LoggerUtil.getTrace(e));
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
@@ -101,7 +104,7 @@ public class FinanceBudgetController {
             List<Map<String,Object>> list=financeBudgetService.getSumOverview(conditionVo);
             return ServerResponse.createBySuccess(Const.SUCCESS_MSG,list);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("getSumOverview调用异常："+LoggerUtil.getTrace(e));
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
@@ -133,7 +136,7 @@ public class FinanceBudgetController {
             }
             return  ServerResponse.createBySuccess(Const.SUCCESS_MSG,list,page);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("getCostItem调用异常："+LoggerUtil.getTrace(e));
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
@@ -168,7 +171,7 @@ public class FinanceBudgetController {
             array[3]=specList;
             return  ServerResponse.createBySuccess(Const.SUCCESS_MSG,array);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("getDictionary调用异常："+LoggerUtil.getTrace(e));
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
@@ -191,7 +194,7 @@ public class FinanceBudgetController {
             List<ResultDomain> list=financeBudgetService.getResult(conditionVo);
             return ServerResponse.createBySuccess(Const.SUCCESS_MSG,list,page);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("getResult调用异常："+LoggerUtil.getTrace(e));
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
@@ -214,7 +217,7 @@ public class FinanceBudgetController {
             List<AllCompanyResultVo> list = financeBudgetService.getAllCompanyData(conditionVo);
             return ServerResponse.createBySuccess(Const.SUCCESS_MSG,list,page);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("getAllCompanyData调用异常："+LoggerUtil.getTrace(e));
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
@@ -237,7 +240,7 @@ public class FinanceBudgetController {
             List<DetailAddDomain> list=financeBudgetService.getNewlyIncreased(conditionVo);
             return  ServerResponse.createBySuccess(Const.SUCCESS_MSG,list,page);
         }catch (Exception e){
-            e.printStackTrace();
+            LoggerUtil.error("getNewlyIncreased调用异常："+LoggerUtil.getTrace(e));
         }
         return ServerResponse.createByError(Const.FAIL_MSG);
     }
@@ -359,7 +362,7 @@ public class FinanceBudgetController {
             //通过返回的文件路径去给前端下载
             ExcelUtil.download(filePath,response);
         }catch (Exception e){
-            LoggerUtil.error("出错了，访问失败");
+            LoggerUtil.error("exportOverviewExcel调用异常："+LoggerUtil.getTrace(e));
         }
         return null;
     }
@@ -380,7 +383,7 @@ public class FinanceBudgetController {
             //通过返回的文件路径去给前端下载
             ExcelUtil.download(filePath,response);
         }catch (Exception e){
-            LoggerUtil.error("出错了，访问失败");
+            LoggerUtil.error("exportAllCompanyExcel调用异常："+LoggerUtil.getTrace(e));
         }
         return null;
     }
@@ -401,9 +404,25 @@ public class FinanceBudgetController {
             //通过返回的文件路径去给前端下载
             ExcelUtil.download(filePath,response);
         }catch (Exception e){
-            LoggerUtil.error("出错了，访问失败");
+            LoggerUtil.error("exportResultExcel调用异常："+LoggerUtil.getTrace(e));
         }
         return null;
+    }
+
+    /***
+     * 保存修改时候触发的方法，会修改两个表的数据
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/updateBudgetDetail",method = RequestMethod.PUT)
+    @ResponseBody
+    public void updateBudgetDetail(HttpServletRequest request,HttpServletResponse response) {
+        try {
+            List<LinkedHashMap> list=InputSteamToJSON.getJSONList(request.getInputStream(),LinkedHashMap.class);
+            financeBudgetService.updateBudgetDetail(list);
+        }catch (Exception e) {
+            LoggerUtil.error("updateBudgetDetail调用异常："+LoggerUtil.getTrace(e));
+        }
     }
 
 }

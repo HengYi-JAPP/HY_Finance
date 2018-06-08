@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,4 +87,6 @@ public interface FinanceBudgetService {
      String exportResultExcel(ConditionVo conditionVo) throws IOException, InvocationTargetException, IllegalAccessException, NoSuchMethodException;
     //将导入的Excel表格的预算数据插入到数据库中
     void insertBudgetData();
+    //更新预算详情数据
+    void updateBudgetDetail(List<LinkedHashMap> mapList);
 }

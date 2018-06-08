@@ -181,4 +181,16 @@ public interface FinanceBudgetMapper {
      * @return
      */
     public ArrayList<FieldBean> selectField();
+
+    /***
+     * 更新预算详情数据
+     * @param list
+     */
+    public void updateBudgetDetail(List<LinkedHashMap> list);
+
+    /***
+     * 更新预算详情价格
+     * @param list
+     */
+    public void updateBudgetDetailPrice(List<LinkedHashMap> list);
 }

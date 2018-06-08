@@ -44,4 +44,8 @@ export class BudgetService {
   getSumOverview(param): Observable<any> {
     return this.response.appPost(param, url + '/getSumOverview');
   }
+  // 更新预算详情数据
+  updateBudgetDetail(param): Observable<any> {
+    return this.response.appUpdate(param, url + '/updateBudgetDetail')
+  }
 }

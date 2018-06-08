@@ -60,6 +60,16 @@
             <button nz-button [nzType]="'primary'" (click)="sumCheck()">计算均值</button>
           </div>
         </div>
+        <div nz-row nz-form-item>
+          <div nz-form-control>
+            <button nz-button [nzType]="'primary'" (click)="edit()">{{operate}}</button>
+          </div>
+        </div>
+        <div nz-row nz-form-item>
+          <div nz-form-control>
+            <button nz-button [nzType]="'primary'" (click)="add()" *ngIf="showFlag">增加</button>
+          </div>
+        </div>
       </form>
   </div>
     <nz-table #groupingTable
@@ -70,16 +80,20 @@
               [(nzPageSize)]="_pageSize"
               [(nzPageIndex)]="_current"
               (nzDataChange)="_displayDataChange($event)"
-              (nzPageIndexChange)="_refreshStatus()"
-              (nzPageSizeChange)="_refreshStatus()"
+              (nzPageIndexChange)="changeList()"
+              (nzPageSizeChange)="changeList()"
               nzBordered
               [nzIsPagination]="true"
-              [nzScroll]="{ x: 5120, y: 320 }" >
+              [nzScroll]="{ x: 5120, y: 350 }" >
       <ng-template #nzFixedHeader >
         <thead nz-thead  >
         <tr  style="line-height: 5px">
+          <th nz-th nzCheckbox class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px" rowspan="3" *ngIf="showFlag">
+            <label nz-checkbox [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll($event)">
+            </label>
+          </th>
           <th class="Header-color" nz-th nzWidth="50px" style=" text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>预算or实际</span></th>
-          <th class="Header-color" nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>公司</span></th>
+          <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>公司</span></th>
           <th class="Header-color" nz-th nzWidth="30px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>月份</span></th>
           <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>年份</span></th>
           <th class="Header-color" nz-th nzWidth="50px" style="text-align: center;line-height: 10px;padding: 5px" rowspan="3"><span>产品</span></th>
@@ -163,12 +177,23 @@
         </tr>
         </thead>
       </ng-template>
-      <tbody nz-tbody>
+      <tbody nz-tbody *ngIf="!showFlag">
       <tr nz-tbody-tr *ngFor="let data of tableData" [ngStyle]="getTrStyle(data)" style="line-height: 5px">
-        <td nz-td style="text-align: center;line-height: 10px;padding: 5px" *ngFor="let key of getkeys(data)">{{data[key]}}</td>
+        <td nz-td style="text-align: center;line-height: 10px;padding: 5px" *ngFor="let key of getkeys(data)"><span *ngIf="!showFlag">{{data[key]}}</span></td>
       </tr>
       <tr nz-tbody-tr style="background-color: #67C23A" *ngFor="let sum of sums">
         <td nz-td *ngFor="let key of getkeys(sum)" style="text-align: center;line-height: 10px;padding: 5px">{{sum[key]}}</td>
+      </tr>
+      </tbody>
+      <tbody nz-tbody *ngIf="showFlag">
+      <tr nz-tbody-tr *ngFor="let data of tableData" style="line-height: 5px">
+        <td nz-td nzCheckbox>
+          <label nz-checkbox [(ngModel)]="data.checked" (ngModelChange)="_refreshStatus($event)">
+          </label>
+        </td>
+        <td nz-td style="text-align: center;line-height: 10px;padding: 5px" *ngFor="let key of getkeys(data)">
+          <nz-input [(ngModel)]="data[key]" [nzSize]="'small'"></nz-input>
+        </td>
       </tr>
       </tbody>
     </nz-table>

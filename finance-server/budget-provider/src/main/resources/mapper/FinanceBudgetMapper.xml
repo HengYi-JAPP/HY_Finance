@@ -675,4 +675,51 @@
     <select id="selectField" resultType="com.hengyi.bean.FieldBean">
         SELECT DISTINCT(material_name) materialName,field FROM  MaterialMatch
     </select>
+    <update id="updateBudgetDetail" parameterType="java.util.List">
+        <foreach collection="list" index="index" item="item" separator=",">
+        UPDATE Budgetdetail SET
+            <foreach collection="item.entrySet" item="value" index="key" separator=",">
+                <if test="key =='company'">
+                    company = VALUE
+                </if>
+                <if test="key =='month'">
+                    month= VALUE
+                </if>
+                <if test="key =='year'">
+                    year= VALUE
+                </if>
+                <if test="key =='product'">
+                    product= VALUE
+                </if>
+                <if test="key =='workshop'">
+                    workshop= VALUE
+                </if>
+                <if test="key =='line'">
+                    line=VALUE
+                </if>
+                <if test="key =='spec'">
+                    spec=VALUE
+                </if>
+                <if test="key == yarnKind">
+                    yarnKind=VALUE
+                </if>
+            </foreach>
+            WHERE id=#{item.id}
+        </foreach>
+    </update>
+    <update id="updateBudgetDetailPrice" parameterType="java.util.List">
+        UPDATE MaterialCostDetails SET
+        consumption=1,
+        unit_price=2,
+        material_name='',
+        state='',
+        price=1,
+        money='',
+        kwmeng='',
+        check_product_unit_price=''
+        WHERE id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
 </mapper>

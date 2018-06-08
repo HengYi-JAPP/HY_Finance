@@ -23,8 +23,7 @@ import {BudgetService} from './api/budget.service';
 import {ExcelServiceService} from './api/excelService.service';
 import {SapBudgetService} from './api/sapBudget.service';
 import {MaterialManageService} from './api/materialManage.service';
-// import {OverviewService} from './api/overview.service';
-// import {ResultService} from './api/result.service';
+
 import { AllCompanyComponent } from './component/unit-cost/result/all-company/all-company.component';
 import {GetResponseService} from './api/getResponse.service';
 import { NewlyIncreasedComponent } from './component/unit-cost/newly-increased/newly-increased.component';
@@ -33,6 +32,7 @@ import { MaterialComponent } from './component/unit-cost/overview/material/mater
 import { BudgetManageComponent } from './component/unit-cost/budget/budget-manage/budget-manage.component';
 import { CompareProductComponent } from './component/unit-cost/compare-product/compare-product.component';
 import { MaterialManageComponent } from './component/dictionary/material-manage/material-manage.component';
+import { DialogComponent } from './component/shared-component/dialog/dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +52,8 @@ import { MaterialManageComponent } from './component/dictionary/material-manage/
     MaterialComponent,
     BudgetManageComponent,
     CompareProductComponent,
-    MaterialManageComponent
+    MaterialManageComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule, // 在浏览器上运行所需的模块

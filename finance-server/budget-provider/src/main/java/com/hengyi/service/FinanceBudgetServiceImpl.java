@@ -1356,9 +1356,18 @@ public class FinanceBudgetServiceImpl implements FinanceBudgetService {
             Date day2 = new Date();
             LoggerUtil.info("导入数据结束时间：" + df.format(day2));
         }catch (Exception e){
-            e.printStackTrace();
-//            LoggerUtil.error(String.valueOf(e.getStackTrace()[0].getLineNumber()));
+            LoggerUtil.error(LoggerUtil.getTrace(e));
         }
 
+    }
+
+    /***
+     * 更新预算详情数据
+     * @param mapList
+     */
+    @Override
+    public void updateBudgetDetail(List<LinkedHashMap> mapList) {
+        financeBudgetMapper.updateBudgetDetail(mapList);
+        financeBudgetMapper.updateBudgetDetailPrice(mapList);
     }
 }
