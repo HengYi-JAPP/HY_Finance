@@ -18,12 +18,14 @@ import { ErrorComponent } from './component/error/error.component';
 import {SelectComponent} from './component/shared-component/select/select.component';
 import {Select2Component} from './component/shared-component/select2/select2.component';
 import {TableComponent} from './component/shared-component/table/table.component';
-
 import {BudgetService} from './api/budget.service';
 import {ExcelServiceService} from './api/excelService.service';
 import {SapBudgetService} from './api/sapBudget.service';
 import {MaterialManageService} from './api/materialManage.service';
+import {ProductlineManageService} from './api/productlineManage.service';
 
+// import {OverviewService} from './api/overview.service';
+// import {ResultService} from './api/result.service';
 import { AllCompanyComponent } from './component/unit-cost/result/all-company/all-company.component';
 import {GetResponseService} from './api/getResponse.service';
 import { NewlyIncreasedComponent } from './component/unit-cost/newly-increased/newly-increased.component';
@@ -73,7 +75,8 @@ import { DialogComponent } from './component/shared-component/dialog/dialog.comp
     // ResultService,
     GetResponseService,
     SapBudgetService,
-    MaterialManageService
+    MaterialManageService,
+    ProductlineManageService
   ],
   bootstrap: [AppComponent]
 })

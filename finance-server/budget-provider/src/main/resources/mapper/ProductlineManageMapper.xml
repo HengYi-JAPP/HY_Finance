@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hengyi.mapper.ProductlineManageMapper">
+    <resultMap id="matchedProductlineMap" type="com.hengyi.domain.ProductlineMatchDomain">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="product_line" property="productLine" jdbcType="VARCHAR"></result>
+        <result column="product_match" property="productMatch" jdbcType="VARCHAR"></result>
+        <result column="product_material_match" property="productMaterialMatch" jdbcType="VARCHAR"></result>
+        <result column="product_material_yarn" property="productMaterialYarn" jdbcType="VARCHAR"></result>
+        <result column="company" property="company" jdbcType="VARCHAR"></result>
+        <result column="product_specifications_match" property="productSpecificationsMatch" jdbcType="VARCHAR"></result>
+        <result column="product_specifications_yarn" property="productSpecificationsYarn" jdbcType="VARCHAR"></result>
+    </resultMap>
+    <!--分页上sql仅仅适用于MySQL-->
+    <sql id="page">
+        <if test="limit != null">
+            <if test="offset != null">
+                limit ${offset},${limit}
+            </if>
+            <if test="offset == null">
+                limit ${limit}
+            </if>
+        </if>
+    </sql>
+    <!--获取未匹配上的生产线匹配关系的记录数-->
+    <select id="getUnmatchedProductlineCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM UnmatchedMaterial WHERE del_flag=0             /* 未实现未实现未实现未实现未实现 */
+    </select>
+    <!--获取未匹配上的生产线匹配关系-->
+    <select id="getUnmatchedProductline" parameterType="com.hengyi.util.QueryDtoBase" resultMap="matchedProductlineMap">
+        SELECT * FROM  UnmatchedMaterial                                    /* 未实现未实现未实现未实现未实现 */
+        <include refid="page"/>
+    </select>
+    <!--获取已经匹配上的生产线匹配关系的记录数-->
+    <select id="getMatchedProductlineCount" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM ProductLineMatch
+    </select>
+    <!--获取已经匹配上的生产线匹配关系-->
+    <select id="getMatchedProductline" parameterType="com.hengyi.util.QueryDtoBase" resultMap="matchedProductlineMap">
+        SELECT * FROM ProductLineMatch
+        <include refid="page"/>
+    </select>
+    <!--添加生产线匹配关系-->
+    <insert id="addMatchedProductline" parameterType="com.hengyi.domain.ProductlineMatchDomain">
+        INSERT INTO ProductLineMatch (product_line,product_match,product_material_match,product_material_yarn,
+        company,product_specifications_match,product_specifications_yarn) VALUES
+        (#{productLine},#{productMatch},#{productMaterialMatch},#{productMaterialYarn},#{company},
+        #{productSpecificationsMatch},#{productSpecificationsYarn})
+    </insert>
+    <!--删除生产线匹配关系-->
+    <delete id="deleteMatchedProductline" parameterType="com.hengyi.domain.ProductlineMatchDomain">
+        DELETE FROM ProductLineMatch WHERE  id=#{id}
+    </delete>
+    <!--修改生产线匹配关系-->
+    <update id="updateMatchedProductline" parameterType="com.hengyi.domain.ProductlineMatchDomain">
+        UPDATE ProductLineMatch SET product_line=#{ productLine},product_match=#{productMatch},
+        product_material_match=#{productMaterialMatch},product_material_yarn=#{productMaterialYarn},company=#{company},
+        product_specifications_match=#{productSpecificationsMatch},product_specifications_yarn=#{productSpecificationsYarn}
+        WHERE id=#{id}
+    </update>
+    <!--修改未匹配上的生产线-->
+    <update id="updateUnmatchedProductline" parameterType="com.hengyi.domain.ProductlineMatchDomain">
+        UPDATE UnmatchedMaterial SET del_flag=1 WHERE 1=1                                 /* 未实现未实现未实现未实现未实现 */
+        <if test="materialId != null and materialId != ''">
+            AND material_id=#{materialId}
+        </if>
+        <if test="costId != null and costId != ''">
+            AND cost_id=#{costId}
+        </if>
+        <if test="state != null and state != ''">
+            AND state=#{state}
+        </if>
+    </update>
+</mapper>
